@@ -5,9 +5,11 @@ public class ProceduralGen extends Canvas implements KeyListener
 {        
     private final int HEIGHT = 800;
     private final int WIDTH = 1300;
-    private final int SQUARE_SIZE = 10;
+    private final int SQUARE_SIZE = 5;
 
     private double[][] heights = new double[WIDTH / SQUARE_SIZE + 1][HEIGHT / SQUARE_SIZE + 1];
+
+    private int thing = 10;
 
     public ProceduralGen()    
     {    
@@ -29,39 +31,36 @@ public class ProceduralGen extends Canvas implements KeyListener
     // TODO I think incrementing by square size in the for loops is breaking things
     // I think it needs to be one then we multiply i and j by square size to move the squares to the right spots
     public void update(Graphics g) {
-        g.setColor(Color.white);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
-        heights = generateTerrainArray(3);
+        generateTerrainArray(3);
         for(int i = 0; i < heights.length; i++) {
-            for(int j = 0; j < heights[i].length; j++) {
+            for(int j = 0; j < heights[0].length; j++) {
                 int c = (int) (heights[i][j] * 255.0);
-                System.out.println("thing: "+ heights[i][j] * 255.0);
                 g.setColor(new Color(c, c, c));
                 g.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
             }
         }
     }
 
-    private double[][] generateTerrainArray(int octaves) {
-        
-        for(double[] row : heights) {
-            for(double height : row) {
-                for(int i = 0; i < octaves; i++) {
+    private void generateTerrainArray(int octaves) {
+        for(int i = 0; i < heights.length; i++) {
+            for(int j = 0; j < heights[0].length; j++) {
+                double height = 0;
+                for(int k = 1; k <= octaves; k++) {
                     height += Math.random() / (2.0 * octaves);
                 }
+                heights[i][j] = height;
             }
         }
-        return heights;
+    }
+
+    public void keyTyped(KeyEvent e) { }
+    public void keyReleased(KeyEvent e) { }
+    public void keyPressed(KeyEvent e) { 
+        repaint();
     }
 
     public static void main(String args[])    
     {    
         new ProceduralGen();    
     }   
-    
-    public void keyTyped(KeyEvent e) { }
-    public void keyPressed(KeyEvent e) { 
-        repaint();
-    }
-    public void keyReleased(KeyEvent e) { }
 }
