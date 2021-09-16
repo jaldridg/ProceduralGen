@@ -31,11 +31,13 @@ public class ProceduralGen extends Canvas implements KeyListener
     public void update(Graphics g) {
         g.setColor(Color.white);
         g.fillRect(0, 0, WIDTH, HEIGHT);
-        for(int i = 0; i < WIDTH; i += SQUARE_SIZE) {
-            for(int j = 0; j < HEIGHT; j += SQUARE_SIZE) {
-                int c = (int) (heights[i][j] * 255);
+        heights = generateTerrainArray(3);
+        for(int i = 0; i < heights.length; i++) {
+            for(int j = 0; j < heights[i].length; j++) {
+                int c = (int) (heights[i][j] * 255.0);
+                System.out.println("thing: "+ heights[i][j] * 255.0);
                 g.setColor(new Color(c, c, c));
-                g.fillRect(i, j, SQUARE_SIZE, SQUARE_SIZE);
+                g.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
             }
         }
     }
