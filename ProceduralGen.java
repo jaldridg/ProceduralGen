@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Random;
 
 public class ProceduralGen extends Canvas implements KeyListener
 {        
@@ -28,13 +29,12 @@ public class ProceduralGen extends Canvas implements KeyListener
 
     public void paint(Graphics g) { }   
     
-    // TODO I think incrementing by square size in the for loops is breaking things
-    // I think it needs to be one then we multiply i and j by square size to move the squares to the right spots
     public void update(Graphics g) {
         generateTerrainArray(3);
-        for(int i = 0; i < heights.length; i++) {
-            for(int j = 0; j < heights[0].length; j++) {
-                int c = (int) (heights[i][j] * 255.0);
+        //normalizeHeightArray();
+        for (int i = 0; i < heights.length; i++) {
+            for (int j = 0; j < heights[0].length; j++) {
+                int c = (int) ((heights[i][j] + 5) * 30);
                 g.setColor(new Color(c, c, c));
                 g.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
             }
@@ -42,13 +42,48 @@ public class ProceduralGen extends Canvas implements KeyListener
     }
 
     private void generateTerrainArray(int octaves) {
-        for(int i = 0; i < heights.length; i++) {
-            for(int j = 0; j < heights[0].length; j++) {
-                double height = 0;
-                for(int k = 1; k <= octaves; k++) {
-                    height += Math.random() / (2.0 * octaves);
+        Random r = new Random();
+        for (int i = 0; i < heights.length; i++) {
+            for (int j = 0; j < heights[0].length; j++) {
+                // If not on the top and left borders
+                if (i > 0 && j > 0) {
+                    double avgHeight = (heights[i][j-1] + heights[i-1][j]) / 2;
+                    heights[i][j] = avgHeight + (r.nextGaussian() / 10);
+                // If on the top border
+                } else if (i > 0) {
+                    heights[i][j] = heights[i-1][j] + (r.nextGaussian() / 10);
+                // If on the right border
+                } else if (j > 0) {
+                    heights[i][j] = heights[i][j-1] + (r.nextGaussian() / 10);
                 }
-                heights[i][j] = height;
+                // If in the corner start with a random value
+                if (i == 0 && j == 0) {
+                    heights[i][j] = r.nextDouble();
+                }
+            }
+        }
+    }
+
+    // TODO fix this or make a better generation algorithm that doesn't need normalization
+    private void normalizeHeightArray() {
+        double high = 0;
+        double low = 0;
+        // Find highest and lowest value
+        for (int i = 0; i < heights.length; i++) {
+            for (int j = 0; j < heights[0].length; j++) {
+                double height = heights[i][j];
+                if(height > high) {
+                    high = height;
+                }
+                if(height < low) {
+                    low = height;
+                }
+            }
+        }
+        // Divide values by highest after adding the lowest value (because its negative)
+        for (int i = 0; i < heights.length; i++) {
+            for (int j = 0; j < heights[0].length; j++) {
+                heights[i][j] = (heights[i][j] - low) / high;
             }
         }
     }
