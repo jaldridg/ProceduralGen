@@ -4,8 +4,8 @@ import java.awt.event.*;
 public class ProceduralGen extends Canvas implements KeyListener
 {        
     private final int HEIGHT = 700;
-    private final int WIDTH = 700;
-    private final int PIXEL_SIZE = 10;
+    private final int WIDTH = 1500;
+    private final int PIXEL_SIZE = 1;
 
     private final double NOISE_ZOOM = 1.0;
 
@@ -32,13 +32,35 @@ public class ProceduralGen extends Canvas implements KeyListener
         scroll();
         for (int i = 0; i < heights.length; i++) {
             for (int j = 0; j < heights[0].length; j++) {
-                int c = (int) (heights[i][j] * 255);
-                g.setColor(new Color(c, c, c));
+                g.setColor(generateColor(heights[i][j]));
                 g.fillRect(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
             }
         }
     }
 
+    private Color generateColor(double height) {
+        if (height < 0.2) {
+            // Dark blue
+            return new Color(0, 0, 150);
+        } else if (height < 0.3) {
+            // Light blue
+            return new Color(0, 100, 150);
+        } else if (height < 0.5) {
+            // Sand
+            return new Color(255, 255, 100);
+        } else if(height < 0.7) {
+            // Light grass
+            return new Color(40, 150, 0);
+        } else if(height < 0.80) {
+            // Dark grass
+            return new Color(25, 100, 0);
+        } else {
+            // Mountain
+            return new Color(80, 40, 0);
+        }
+    }
+
+    // TODO Lets generate pixels based off the surrounding four not the top and left pixels
     private void generateTerrainArray() {
         for (int i = 0; i < heights.length; i++) {
             for (int j = 0; j < heights[0].length; j++) {
@@ -102,6 +124,7 @@ public class ProceduralGen extends Canvas implements KeyListener
     public void keyTyped(KeyEvent e) { }
     public void keyReleased(KeyEvent e) { }
     public void keyPressed(KeyEvent e) { 
+        //TODO Make a button for scrolling, refreshing, and killing the program
         repaint();
     }
 
