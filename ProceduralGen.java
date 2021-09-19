@@ -2,11 +2,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.JFrame;
 
+// TODO Make a velocity tht changes which is for changing points rather than adding/subtracting random values
+
 public class ProceduralGen extends Canvas implements KeyListener
 {        
-    private final int HEIGHT = 700;
-    private final int WIDTH = 1500;
-    private final int PIXEL_SIZE = 10;
+    private final int HEIGHT = 500;
+    private final int WIDTH = 500;
+    private final int PIXEL_SIZE = 5;
 
     private final double NOISE_ZOOM = 1.0;
 
@@ -30,7 +32,7 @@ public class ProceduralGen extends Canvas implements KeyListener
     public void paint(Graphics g) { }   
     
     public void update(Graphics g) {
-        //generateTerrainArray();
+        generateTerrainArray();
         //scroll();
         for (int i = 0; i < heights.length; i++) {
             for (int j = 0; j < heights[0].length; j++) {
@@ -66,17 +68,17 @@ public class ProceduralGen extends Canvas implements KeyListener
     private void generateTerrainArray() {
         // Start with two heights
         heights[0][0] = Math.random();
-        heights[heights[0].length - 1][0] = Math.random();
+        heights[0][heights[0].length - 1] = Math.random();
 
         // Generate the top and bottom edges
-        for(int i = 0; i < heights[0].length; i += heights[0].length - 1) {
-            for(int j = 1; j < heights.length; j++) {
-                heights[i][j] = generateNewHeight(heights[i][j - 1]);
+        for(int i = 1; i < heights.length; i++) {
+            for(int j = 0; j < heights[0].length; j += heights[0].length - 1) {
+                heights[i][j] = generateNewHeight(heights[i - i][j]);
             }
         }
-        /*
+        
         // Generate the right and left edges
-        for(int i = 0; i < heights.length; i += heights.length - 2) {
+        for(int i = 0; i < heights.length; i += heights.length - 1) {
             for(int j = 1; j < heights[0].length - 1; j++) {
                 heights[i][j] = generateNewHeight(heights[i][j - 1]);
             }
@@ -86,7 +88,7 @@ public class ProceduralGen extends Canvas implements KeyListener
             for(int j = 1; j < heights[0].length - 1; j++) {
                 heights[i][j] = generateNewHeight(heights[i + 1][j], heights[i - 1][j], heights[i][j + 1], heights[i][j - 1]);
             }
-        }*/
+        }
     }
     /*
     // Moves array up and to the left and generates new values in bottom and right edges
@@ -113,11 +115,15 @@ public class ProceduralGen extends Canvas implements KeyListener
             double heightToLeft = heights[heights.length - 1][i - 1];
             heights[heights.length - 1][i] = generateNewHeight(heightAbove, heightToLeft);
         }
-    }*/
+    }
+    */
 
     private double generateNewHeight(double referenceHeight) {
         double deltaHeight = Math.random() - 0.5;
-        return referenceHeight + deltaHeight * ((referenceHeight - 1) * (referenceHeight));
+        if (((referenceHeight - 0.5) * deltaHeight) > 0) {
+            return referenceHeight + deltaHeight * ((referenceHeight - 1) * (referenceHeight));
+        }
+        return referenceHeight + 2 * (deltaHeight * ((referenceHeight - 1) * (referenceHeight)));
     }
 
     private double generateNewHeight(double heightOne, double heightTwo, double heightThree, double heightFour) {
