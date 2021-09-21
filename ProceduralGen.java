@@ -9,12 +9,12 @@ public class ProceduralGen extends Canvas implements KeyListener
     // TODO these values are not very flexible so write a method that takes any
     // number and adjusts these values if they're not in proper form without messing
     // with the general idea
-    private final int PIXEL_SIZE = 5;
-    private final int NUM_PIXELS = 127; // Must be in the form 2^n - 1
+    private final int PIXEL_SIZE = 50;
+    private final int NUM_PIXELS = 7; // Must be in the form 2^n - 1
     private final int SIZE = PIXEL_SIZE * NUM_PIXELS;
 
     // The higher the more zoomed out the noise is
-    private final double NOISE_ZOOM = 4.0;
+    private final double NOISE_ZOOM = 1.0;
 
     private double[][] heights = new double[SIZE / PIXEL_SIZE][SIZE / PIXEL_SIZE];
 
@@ -29,7 +29,6 @@ public class ProceduralGen extends Canvas implements KeyListener
         frame.setVisible(true); 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        generateTerrainArray();
         repaint();
     }    
 
@@ -54,18 +53,25 @@ public class ProceduralGen extends Canvas implements KeyListener
         heights[heights.length - 1][heights.length - 1] = Math.random();
 
         // Generate the midpoint
-        for(int i = 0; i < 7; i++) {
-            int heightOneIndex = 0;
-            int heightTwoIndex = (int) ((heights.length - 1) / (Math.pow(2, i)));
-            int midPointIndex = (int) (heightTwoIndex / 2);
-            double heightOne = heights[heightOneIndex][heightOneIndex];
-            double heightTwo = heights[heightTwoIndex][heightTwoIndex];
-            double averageHeight = (heightOne + heightTwo) / 2;
-            double distanceToDomain = Math.abs(averageHeight - 1) > averageHeight ? averageHeight : Math.abs(averageHeight - 1);
-            int distanceBetweenPoints = (int) (NUM_PIXELS / Math.pow(2, i + 1));
-            double heightMultiplier = (NOISE_ZOOM * distanceToDomain) / distanceBetweenPoints;
-            heights[midPointIndex][midPointIndex] = averageHeight + (Math.random() * heightMultiplier);
+        System.out.println("\n\n\nSTART OF BIG THING");
+        for(int i = 0; i < 2; i++) {
+            int id = (int) (NUM_PIXELS / Math.pow(2, i));
+            generateRandomMidpoint(0, 0, id, id);
         }
+    }
+
+    private void generateRandomMidpoint(int i1, int j1, int i2, int j2) {
+        double avgHeight = (heights[i1][j1] + heights[i2][j2]) / 2;
+        double minDistToEdge = Math.abs(avgHeight - 1) > avgHeight ? avgHeight : Math.abs(avgHeight - 1);
+        // Calculates the distance between the points and counts diagonal squares as one
+        // If the points are diagonal, i or j is the diagonal squares
+        // If they're not diagonal, use the sum of differences because one difference is 0
+        // int distBetweenPoints = (i1 - i2) == (j1 - j2) ? Math.abs(i1 - i2) : Math.abs((i1 - i2) + (j1 - j2));
+        heights[(i1 + i2) / 2][(j1 + j2) / 2] = avgHeight + (Math.random() * minDistToEdge);
+        System.out.println("\nSTART OF THING");
+        System.out.println("avgHeight " + avgHeight);
+        System.out.println("minDistToEdge " + minDistToEdge);
+        System.out.println("calculation " + (avgHeight + (Math.random() * minDistToEdge)));
     }
 
     private Color generateColor(double height) {
