@@ -6,13 +6,17 @@ import javax.swing.JFrame;
 
 public class ProceduralGen extends Canvas implements KeyListener
 {        
-    private final int HEIGHT = 500;
-    private final int WIDTH = 500;
+    // TODO these values are not very flexible so write a method that takes any
+    // number and adjusts these values if they're not in proper form without messing
+    // with the general idea
     private final int PIXEL_SIZE = 5;
+    private final int NUM_PIXELS = 127; // Must be in the form 2^n - 1
+    private final int SIZE = PIXEL_SIZE * NUM_PIXELS;
 
-    private final double NOISE_ZOOM = 1.0;
+    // The higher the more zoomed out the noise is
+    private final double NOISE_ZOOM = 4.0;
 
-    private double[][] heights = new double[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
+    private double[][] heights = new double[SIZE / PIXEL_SIZE][SIZE / PIXEL_SIZE];
 
     public ProceduralGen()    
     {    
@@ -21,7 +25,7 @@ public class ProceduralGen extends Canvas implements KeyListener
         
         addKeyListener(this);
         frame.add(this);    
-        frame.setSize(WIDTH, HEIGHT);    
+        frame.setSize(SIZE, 800);    
         frame.setVisible(true); 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -33,12 +37,34 @@ public class ProceduralGen extends Canvas implements KeyListener
     
     public void update(Graphics g) {
         generateTerrainArray();
-        //scroll();
         for (int i = 0; i < heights.length; i++) {
             for (int j = 0; j < heights[0].length; j++) {
                 g.setColor(generateColor(heights[i][j]));
                 g.fillRect(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
             }
+        }
+    }
+
+    
+    private void generateTerrainArray() {
+        // Generate the four corners
+        heights[0][0] = Math.random();
+        heights[heights.length - 1][0] = Math.random();
+        heights[0][heights.length - 1] = Math.random();
+        heights[heights.length - 1][heights.length - 1] = Math.random();
+
+        // Generate the midpoint
+        for(int i = 0; i < 7; i++) {
+            int heightOneIndex = 0;
+            int heightTwoIndex = (int) ((heights.length - 1) / (Math.pow(2, i)));
+            int midPointIndex = (int) (heightTwoIndex / 2);
+            double heightOne = heights[heightOneIndex][heightOneIndex];
+            double heightTwo = heights[heightTwoIndex][heightTwoIndex];
+            double averageHeight = (heightOne + heightTwo) / 2;
+            double distanceToDomain = Math.abs(averageHeight - 1) > averageHeight ? averageHeight : Math.abs(averageHeight - 1);
+            int distanceBetweenPoints = (int) (NUM_PIXELS / Math.pow(2, i + 1));
+            double heightMultiplier = (NOISE_ZOOM * distanceToDomain) / distanceBetweenPoints;
+            heights[midPointIndex][midPointIndex] = averageHeight + (Math.random() * heightMultiplier);
         }
     }
 
@@ -64,78 +90,9 @@ public class ProceduralGen extends Canvas implements KeyListener
         }
     }
 
-    // TODO Lets generate pixels based off the surrounding four not the top and left pixels
-    private void generateTerrainArray() {
-        // Start with two heights
-        heights[0][0] = Math.random();
-        heights[0][heights[0].length - 1] = Math.random();
-
-        // Generate the top and bottom edges
-        for(int i = 1; i < heights.length; i++) {
-            for(int j = 0; j < heights[0].length; j += heights[0].length - 1) {
-                heights[i][j] = generateNewHeight(heights[i - i][j]);
-            }
-        }
-        
-        // Generate the right and left edges
-        for(int i = 0; i < heights.length; i += heights.length - 1) {
-            for(int j = 1; j < heights[0].length - 1; j++) {
-                heights[i][j] = generateNewHeight(heights[i][j - 1]);
-            }
-        }
-        // Generate the middle
-        for(int i = 1; i < heights.length - 1; i++) {
-            for(int j = 1; j < heights[0].length - 1; j++) {
-                heights[i][j] = generateNewHeight(heights[i + 1][j], heights[i - 1][j], heights[i][j + 1], heights[i][j - 1]);
-            }
-        }
-    }
-    /*
-    // Moves array up and to the left and generates new values in bottom and right edges
-    private void scroll() {
-        // Move array up and to the left
-        for (int i = 0; i < heights.length - 1; i++) {
-            for (int j = 0; j < heights[0].length - 1; j++) {
-                heights[i][j] = heights[i + 1][j + 1];
-            }
-        }
-        // Generate the bottom left and top right corners
-        heights[0][heights[0].length - 1] = generateNewHeight(heights[0][heights[0].length - 2]);
-        heights[heights.length - 1][0] = generateNewHeight(heights[heights.length - 2][0]);
-
-        // Generate the right edge and bottom right corner
-        for (int i = 1; i < heights.length; i++) {
-            double heightAbove = heights[i - 1][heights[0].length - 1];
-            double heightToLeft = heights[i][heights[0].length - 2];
-            heights[i][heights[0].length - 1] = generateNewHeight(heightAbove, heightToLeft);
-        }
-        // Generate the bottom edge
-        for (int i = 1; i < heights[0].length - 1; i++) {
-            double heightAbove = heights[heights.length - 2][i];
-            double heightToLeft = heights[heights.length - 1][i - 1];
-            heights[heights.length - 1][i] = generateNewHeight(heightAbove, heightToLeft);
-        }
-    }
-    */
-
-    private double generateNewHeight(double referenceHeight) {
-        double deltaHeight = Math.random() - 0.5;
-        if (((referenceHeight - 0.5) * deltaHeight) > 0) {
-            return referenceHeight + deltaHeight * ((referenceHeight - 1) * (referenceHeight));
-        }
-        return referenceHeight + 2 * (deltaHeight * ((referenceHeight - 1) * (referenceHeight)));
-    }
-
-    private double generateNewHeight(double heightOne, double heightTwo, double heightThree, double heightFour) {
-        double avgerageHeight = (heightOne + heightTwo + heightThree + heightFour) / 4;
-        double deltaHeight = Math.random() - 0.5;
-        return avgerageHeight + deltaHeight * ((avgerageHeight - 1) * (avgerageHeight));
-    }
-
     public void keyTyped(KeyEvent e) { }
     public void keyReleased(KeyEvent e) { }
     public void keyPressed(KeyEvent e) { 
-        //TODO Make a button for scrolling, refreshing, and killing the program
         repaint();
     }
 
@@ -145,9 +102,4 @@ public class ProceduralGen extends Canvas implements KeyListener
     }   
 }
 
-/**
- * ARRAY STUFF
- * 
- * 
- * 
- */
+
