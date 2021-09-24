@@ -12,7 +12,7 @@ public class ProceduralGen extends Canvas implements KeyListener
     // with the general idea
     // TODO Also NUM_PIXELS is confusing. Is it total or..?
     private final int PIXEL_SIZE = 5;
-    private final int NUM_PIXELS = 65; // Must be in the form 2^n + 1
+    private final int NUM_PIXELS = 129; // Must be in the form 2^n + 1
     private final int SIZE = PIXEL_SIZE * NUM_PIXELS;
 
     private double[][] heights = new double[SIZE / PIXEL_SIZE][SIZE / PIXEL_SIZE];
@@ -43,41 +43,44 @@ public class ProceduralGen extends Canvas implements KeyListener
         }
     }
 
-    
     private void generateTerrainArray() {
-        // Generate the four corners
+        // Generate four corners
         heights[0][0] = Math.random();
         heights[heights.length - 1][0] = Math.random();
         heights[0][heights.length - 1] = Math.random();
         heights[heights.length - 1][heights.length - 1] = Math.random();
-
-        for(int i = 0; i < 0; i++) {
-            int id = (int) (NUM_PIXELS / Math.pow(2, i));
-            // Subtract one from id on first iteration to stay in bounds
-            id = i == 0 ? id - 1 : id;
-            generateRandomMidpoint(0, 0, 0, id);
-        }
-        int id = NUM_PIXELS - 1;
-        splitChunk(0, 0, id, 0, 0, id, id, id);
+        int size = NUM_PIXELS - 1;
+        splitChunks(0, 0, size);
     }
     
     /**
-     * @param i1 col index of top left point
-     * @param j1 row index of top left point
-     * @param i2 col index of top right point
-     * @param j2 row index of top right point
-     * @param i3 col index of bottom left point
-     * @param j3 row index of bottom left point
-     * @param i4 col index of bottom right point
-     * @param j4 row index of bottom right point
+     * Recursively generates the heights of a square of a given sideLength
+     * at a given rowId and colId by taking midpoints until completed
      */
-    private void splitChunk (int i1, int j1, int i2, int j2, int i3, int j3, int i4, int j4) {
+    private void splitChunks (int colId, int rowId, int sideLength) {
+        // Stop at the pixel level
+        if(sideLength == 1) { return; }
+
+        // Points at the corners of the chunk
+        // Top right, top left, bottom left, and bottom right
+        int[] tLIds = {colId, rowId};
+        int[] tRIds = {colId + sideLength, rowId};
+        int[] bLIds = {colId, rowId + sideLength};
+        int[] bRIds = {colId + sideLength, rowId + sideLength};
+
         // Make midpoints of the given points and a diagonal midpoint
-        generateRandomMidpoint(i1, j1, i2, j2);
-        generateRandomMidpoint(i1, j1, i3, j3);
-        generateRandomMidpoint(i4, j4, i2, j2);
-        generateRandomMidpoint(i4, j4, i3, j3);
-        generateRandomMidpoint(i1, j1, i4, j4);
+        generateRandomMidpoint(tRIds[0], tRIds[1], tLIds[0], tLIds[1]);
+        generateRandomMidpoint(bRIds[0], bRIds[1], bLIds[0], bLIds[1]);
+        generateRandomMidpoint(tRIds[0], tRIds[1], bRIds[0], bRIds[1]);
+        generateRandomMidpoint(tLIds[0], tLIds[1], bLIds[0], bLIds[1]);
+        generateRandomMidpoint(tRIds[0], tRIds[1], bLIds[0], bLIds[1]);
+
+        // Make chunks within this chunk
+        int halfLength = sideLength / 2;
+        splitChunks(0, 0, halfLength);
+        splitChunks(halfLength, 0, halfLength);
+        splitChunks(0, halfLength, halfLength);
+        splitChunks(halfLength, halfLength, halfLength);
     }
 
     private void generateRandomMidpoint(int i1, int j1, int i2, int j2) {
@@ -125,5 +128,3 @@ public class ProceduralGen extends Canvas implements KeyListener
         new ProceduralGen();    
     }   
 }
-
-
