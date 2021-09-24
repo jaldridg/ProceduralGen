@@ -77,10 +77,10 @@ public class ProceduralGen extends Canvas implements KeyListener
 
         // Make chunks within this chunk
         int halfLength = sideLength / 2;
-        splitChunks(0, 0, halfLength);
-        splitChunks(halfLength, 0, halfLength);
-        splitChunks(0, halfLength, halfLength);
-        splitChunks(halfLength, halfLength, halfLength);
+        splitChunks(colId, rowId, halfLength);
+        splitChunks(halfLength + colId, rowId, halfLength);
+        splitChunks(colId, halfLength + rowId, halfLength);
+        splitChunks(halfLength + colId, halfLength + rowId, halfLength);
     }
 
     private void generateRandomMidpoint(int i1, int j1, int i2, int j2) {
