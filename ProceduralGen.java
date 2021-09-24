@@ -15,7 +15,9 @@ public class ProceduralGen extends Canvas implements KeyListener
     private final int NUM_PIXELS = 129; // Must be in the form 2^n + 1
     private final int SIZE = PIXEL_SIZE * NUM_PIXELS;
 
-    private double[][] heights = new double[SIZE / PIXEL_SIZE][SIZE / PIXEL_SIZE];
+    //private final int NOISE_CONSTANT = 2;
+
+    private double[][] heights = new double[NUM_PIXELS][NUM_PIXELS];
 
     public ProceduralGen()    
     {    
@@ -40,6 +42,9 @@ public class ProceduralGen extends Canvas implements KeyListener
                 g.setColor(generateColor(heights[i][j]));
                 g.fillRect(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
             }
+        }
+        for(int i = 0; i < heights.length; i++) {
+            System.out.println(heights[heights.length / 2][i]);
         }
     }
 
@@ -84,15 +89,14 @@ public class ProceduralGen extends Canvas implements KeyListener
     }
 
     private void generateRandomMidpoint(int i1, int j1, int i2, int j2) {
-        double avgHeight = (heights[i1][j1] + heights[i2][j2]) / 2;
-        double minDistToEdge = Math.abs(avgHeight - 1) > avgHeight ? avgHeight : Math.abs(avgHeight - 1);
         // Calculates the distance between the points and counts diagonal squares as one
         // If the points are diagonal, i or j is the diagonal squares
         // If they're not diagonal, use the sum of differences because one difference is 0
         int pixelDistanceToPoint = (i1 - i2) == (j1 - j2) ? Math.abs(i1 - i2) : Math.abs((i1 - i2) + (j1 - j2));
-        double scalingFactor = pixelDistanceToPoint / NUM_PIXELS;
-        double randomDelta = Math.random() * minDistToEdge;
-        heights[(i1 + i2) / 2][(j1 + j2) / 2] = avgHeight + (randomDelta * scalingFactor);
+        double avgHeight = (heights[i1][j1] + heights[i2][j2]) / 2;
+        double minDistToEdge = Math.abs(avgHeight - 1) > avgHeight ? avgHeight : Math.abs(avgHeight - 1);
+        double randomDelta = 2 * (Math.random() - 0.5) * minDistToEdge; 
+        heights[(i1 + i2) / 2][(j1 + j2) / 2] = avgHeight + randomDelta;
     }
 
     private Color generateColor(double height) {
@@ -123,8 +127,8 @@ public class ProceduralGen extends Canvas implements KeyListener
         repaint();
     }
 
-    public static void main(String args[])    
-    {    
-        new ProceduralGen();    
-    }   
+    public static void main(String args[])
+    {
+        new ProceduralGen();
+    }
 }
