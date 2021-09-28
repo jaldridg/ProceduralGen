@@ -41,9 +41,6 @@ public class ProceduralGen extends Canvas implements KeyListener
                 g.fillRect(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
             }
         }
-        for(int i = 0; i < heights.length; i++) {
-            System.out.println(heights[heights.length / 2][i]);
-        }
     }
 
     private void generateTerrainArray() {
@@ -53,16 +50,20 @@ public class ProceduralGen extends Canvas implements KeyListener
         startVelocities[0] = (2 * (Math.random() - 0.5)) * MAX_NOISE_CHANGE;
         for(int i = 1; i < heights.length - 1; i++) {
             startVelocities[i] = generateNextVelocity(heights[i - 1][0], startVelocities[i - 1]);
-            heights[i][0] += startVelocities[i - 1];
+            heights[i][0] += heights[i - 1][0] + startVelocities[i - 1];
+            System.out.println("heights[" + (i - 1) + "]: \t\t" + heights[i - 1][0]);
+            System.out.println("startVelocities[" + (i - 1) + "]: \t" + startVelocities[i - 1]);
         }
     }
 
     private double generateNextVelocity(double currentHeight, double currentVel) {
         // The smallest distance from being too big or too small
-        double minDistToMax = Math.abs(currentHeight - 1) > currentHeight ? currentHeight  : Math.abs(currentHeight - 1);
-        double randomDelta = (2 * (Math.random() - 0.5)) * minDistToMax * MAX_NOISE_CHANGE;
-        return currentHeight + randomDelta;
-
+        //double minHeightToDomain = Math.abs(currentHeight - 1) > currentHeight ? currentHeight  : Math.abs(currentHeight - 1);
+        // The smallest distance from being too fast or too slow
+        //double minVelToDomain = Math.abs(currentVel - 0.2) > currentVel ? currentVel : Math.abs(currentVel - 0.2);
+        //double randomDelta = (2 * (Math.random() - 0.5)) * minHeightToDomain * minVelToDomain * MAX_NOISE_CHANGE;
+        double randomDelta = (2 * (Math.random() - 0.5)) / 10;
+        return currentVel + randomDelta;
     }
 
     private Color generateColor(double height) {
