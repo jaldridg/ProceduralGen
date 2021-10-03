@@ -2,18 +2,14 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.JFrame;
 
-// TODO Implement algorithm that takes midpoints of corners with added randomness until every pixel is colored
-// or make a velocity that changes which is for changing points rather than adding/subtracting random values
-
 public class ProceduralGen extends Canvas implements KeyListener
 {        
     private final int PIXEL_SIZE = 5;
     private final int WIDTH = 1000;
     private final int HEIGHT = 600;
 
-    private final double MAX_NOISE_CHANGE = 0.2;
-
-    //private final int NOISE_CONSTANT = 2;
+    private final double MAX_VELOCITY = 0.2;
+    private final double MAX_ACCELERATION = 0.05;
 
     private double[][] heights = new double[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
 
@@ -47,8 +43,8 @@ public class ProceduralGen extends Canvas implements KeyListener
         // Generate four corners
         heights[0][0] = Math.random();
         double[] startVelocities = new double[heights.length];
-        startVelocities[0] = (2 * (Math.random() - 0.5)) * MAX_NOISE_CHANGE;
-        for(int i = 1; i < heights.length - 1; i++) {
+        startVelocities[0] = (2 * (Math.random() - 0.5)) * MAX_VELOCITY;
+        for (int i = 1; i < heights.length - 1; i++) {
             startVelocities[i] = generateNextVelocity(heights[i - 1][0], startVelocities[i - 1]);
             heights[i][0] += heights[i - 1][0] + startVelocities[i - 1];
             System.out.println("heights[" + (i - 1) + "]: \t\t" + heights[i - 1][0]);
@@ -57,13 +53,19 @@ public class ProceduralGen extends Canvas implements KeyListener
     }
 
     private double generateNextVelocity(double currentHeight, double currentVel) {
-        // The smallest distance from being too big or too small
-        //double minHeightToDomain = Math.abs(currentHeight - 1) > currentHeight ? currentHeight  : Math.abs(currentHeight - 1);
-        // The smallest distance from being too fast or too slow
-        //double minVelToDomain = Math.abs(currentVel - 0.2) > currentVel ? currentVel : Math.abs(currentVel - 0.2);
-        //double randomDelta = (2 * (Math.random() - 0.5)) * minHeightToDomain * minVelToDomain * MAX_NOISE_CHANGE;
-        double randomDelta = (2 * (Math.random() - 0.5)) / 10;
-        return currentVel + randomDelta;
+        double smallestDistanceToMaxVel = Math.abs(currentVel - MAX_VELOCITY) > currentVel ? Math.abs(currentVel - MAX_VELOCITY) : currentVel;
+        double acceleration = MAX_ACCELERATION * (Math.random() - 0.5);
+        // If near the max vel, cuts off one side of the generated acceleration to stay within range
+        if (smallestDistanceToMaxVel < MAX_ACCELERATION) {
+            // The side of the acceleration range that is closest to zero doesn't need snipped
+            double wholeAcceleration = Math.copySign(Math.random() * MAX_ACCELERATION, -currentVel);
+            // The side that is withing the cuttoff needs to be rescaled
+            double cuttoffAcceleration = Math.copySign(Math.random() * smallestDistanceToMaxVel, -currentVel);
+            // What percentage of the acceptable range is the cuttoffAcceleration
+            double cuttoffVsWholeRatio = cuttoffAcceleration / (wholeAcceleration + MAX_ACCELERATION);
+            acceleration = (Math.random() > cuttoffVsWholeRatio) ? wholeAcceleration : cuttoffAcceleration;
+        }
+        return currentVel + acceleration;
     }
 
     private Color generateColor(double height) {
@@ -76,10 +78,10 @@ public class ProceduralGen extends Canvas implements KeyListener
         } else if (height < 0.5) {
             // Sand
             return new Color(255, 255, 100);
-        } else if(height < 0.7) {
+        } else if (height < 0.7) {
             // Light grass
             return new Color(40, 150, 0);
-        } else if(height < 0.80) {
+        } else if (height < 0.80) {
             // Dark grass
             return new Color(25, 100, 0);
         } else {
