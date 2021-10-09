@@ -43,28 +43,30 @@ public class ProceduralGen extends Canvas implements KeyListener
         // Generate four corners
         heights[0][0] = Math.random();
         double[] startVelocities = new double[heights.length];
-        startVelocities[0] = (2 * (Math.random() - 0.5)) * MAX_VELOCITY;
+        // startVelocities[0] = (2 * (Math.random() - 0.5)) * MAX_VELOCITY;
+        startVelocities[0] = 0.19;
+        // Generate the top row of pixels
         for (int i = 1; i < heights.length - 1; i++) {
             startVelocities[i] = generateNextVelocity(heights[i - 1][0], startVelocities[i - 1]);
-            heights[i][0] += heights[i - 1][0] + startVelocities[i - 1];
-            System.out.println("heights[" + (i - 1) + "]: \t\t" + heights[i - 1][0]);
+            heights[i][0] = heights[i - 1][0] + startVelocities[i - 1];
+            //System.out.println("heights[" + (i - 1) + "]: \t\t" + heights[i - 1][0]);
             System.out.println("startVelocities[" + (i - 1) + "]: \t" + startVelocities[i - 1]);
         }
     }
 
     private double generateNextVelocity(double currentHeight, double currentVel) {
-        double smallestDistanceToMaxVel = Math.abs(currentVel - MAX_VELOCITY) > currentVel ? Math.abs(currentVel - MAX_VELOCITY) : currentVel;
-        double acceleration = MAX_ACCELERATION * (Math.random() - 0.5);
-        // If near the max vel, cuts off one side of the generated acceleration to stay within range
-        if (smallestDistanceToMaxVel < MAX_ACCELERATION) {
-            // The side of the acceleration range that is closest to zero doesn't need snipped
-            double wholeAcceleration = Math.copySign(Math.random() * MAX_ACCELERATION, -currentVel);
-            // The side that is withing the cuttoff needs to be rescaled
-            double cuttoffAcceleration = Math.copySign(Math.random() * smallestDistanceToMaxVel, -currentVel);
-            // What percentage of the acceptable range is the cuttoffAcceleration
-            double cuttoffVsWholeRatio = cuttoffAcceleration / (wholeAcceleration + MAX_ACCELERATION);
-            acceleration = (Math.random() > cuttoffVsWholeRatio) ? wholeAcceleration : cuttoffAcceleration;
-        }
+        // Used for determining if we're close to our max values
+        double smallestDistanceToMaxVel = Math.abs(currentVel - MAX_VELOCITY) < currentVel ? Math.abs(currentVel - MAX_VELOCITY) : MAX_VELOCITY - currentVel;
+        // If values are close to the maxes, we can't make an interval that goes over
+        double rightInterval = currentVel > MAX_VELOCITY - MAX_ACCELERATION ? smallestDistanceToMaxVel : MAX_ACCELERATION;
+        double leftInterval = -currentVel > MAX_VELOCITY - MAX_ACCELERATION ? smallestDistanceToMaxVel : MAX_ACCELERATION;
+        double interval = leftInterval + rightInterval;
+        double maxAccelerationVeloctiyRatio = MAX_ACCELERATION / MAX_VELOCITY;
+        // Generates a value from -1 to 1 with: 2 * (Math.random() - 0.5)
+        // Multiplies it by interval / 2 so that the values are the range we want
+        // Also multiplies it by maxAccelerationVeloctiyRatio because we need an acceleration given the velocity interval
+        // Shift the values to the middle of the interval by adding interval / 2
+        double acceleration = maxAccelerationVeloctiyRatio * (2 * (Math.random() - 0.5)) * (interval / 2) + (interval / 2);
         return currentVel + acceleration;
     }
 
