@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.JFrame;
 
+import java.util.Random;
+
 public class ProceduralGen extends Canvas implements KeyListener
 {        
     private final int PIXEL_SIZE = 5;
@@ -12,6 +14,9 @@ public class ProceduralGen extends Canvas implements KeyListener
     private final double MAX_ACCELERATION = 0.05;
 
     private double[][] heights = new double[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
+
+    private int seed = 1;
+    private Random rng = new Random(seed);
 
     public ProceduralGen()    
     {    
@@ -41,9 +46,9 @@ public class ProceduralGen extends Canvas implements KeyListener
 
     private void generateTerrainArray() {
         // Generate four corners
-        heights[0][0] = Math.random();
+        heights[0][0] = rng.nextDouble();
         double[] startVelocities = new double[heights.length];
-        // startVelocities[0] = (2 * (Math.random() - 0.5)) * MAX_VELOCITY;
+        // startVelocities[0] = (2 * (rng.nextDouble() - 0.5)) * MAX_VELOCITY;
         startVelocities[0] = 0.19;
         // Generate the top row of pixels
         for (int i = 1; i < heights.length - 1; i++) {
@@ -61,12 +66,12 @@ public class ProceduralGen extends Canvas implements KeyListener
         double rightInterval = currentVel > MAX_VELOCITY - MAX_ACCELERATION ? smallestDistanceToMaxVel : MAX_ACCELERATION;
         double leftInterval = -currentVel > MAX_VELOCITY - MAX_ACCELERATION ? smallestDistanceToMaxVel : MAX_ACCELERATION;
         double interval = leftInterval + rightInterval;
-        double maxAccelerationVeloctiyRatio = MAX_ACCELERATION / MAX_VELOCITY;
-        // Generates a value from -1 to 1 with: 2 * (Math.random() - 0.5)
+        double maxAccelerationToIntervalRatio = MAX_ACCELERATION / interval;
+        // Generates a value from -1 to 1 with: 2 * (rng.nextDouble() - 0.5)
         // Multiplies it by interval / 2 so that the values are the range we want
-        // Also multiplies it by maxAccelerationVeloctiyRatio because we need an acceleration given the velocity interval
+        // Also multiplies it by maxAccelerationToIntervalRatio because our 
         // Shift the values to the middle of the interval by adding interval / 2
-        double acceleration = maxAccelerationVeloctiyRatio * (2 * (Math.random() - 0.5)) * (interval / 2) + (interval / 2);
+        double acceleration = maxAccelerationToIntervalRatio * (2 * (rng.nextDouble() - 0.5)) * (interval / 2) + (interval / 2);
         return currentVel + acceleration;
     }
 
