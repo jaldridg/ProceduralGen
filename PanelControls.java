@@ -4,7 +4,9 @@ import java.awt.*;
 
 public class PanelControls extends JPanel {
 
-    public PanelControls() {
+    private int seed = 1;
+
+    public PanelControls(CanvasMap map) {
         JButton regenButton = new JButton("Regenerate");
         this.add(regenButton);
         regenButton.setVisible(true);
@@ -12,7 +14,7 @@ public class PanelControls extends JPanel {
         regenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                
+                map.generate();
             }
         });
 
