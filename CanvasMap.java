@@ -7,13 +7,13 @@ public class CanvasMap extends Canvas {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
 
-    private static final int PIXEL_SIZE = 5;
+    private int pixelSize = 5;
 
     private int seed;
     private Random rng;
 
-    private double[][] heights = new double[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
-    private Color[][] colors = new Color[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
+    private double[][] heights;
+    private Color[][] colors;
 
     private Image mapImage = null;
     private Graphics2D g2d;
@@ -35,8 +35,9 @@ public class CanvasMap extends Canvas {
     } 
 
     private void generateHeightArray() {
+        heights = new double[WIDTH / pixelSize][HEIGHT / pixelSize];
         // Generate first pixel
-        heights[0][0] = 0.5;
+        heights[0][0] = rng.nextGaussian();
         // Generate top
         for (int i = 1; i < heights.length; i++) {
             heights[i][0] = heights[i - 1][0] + rng.nextGaussian();
@@ -77,6 +78,7 @@ public class CanvasMap extends Canvas {
     }
 
     private void generateColorArray() {
+        colors = new Color[WIDTH / pixelSize][HEIGHT / pixelSize];
         if (heights == null) {
             generateHeightArray();
         }
@@ -97,14 +99,10 @@ public class CanvasMap extends Canvas {
         for (int i = 0; i < colors.length; i++) {
             for (int j = 0; j < colors[i].length; j++) {
                 g2d.setColor(colors[i][j]);
-                g2d.fillRect(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+                g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
             }
         }
         g.drawImage(mapImage, 0, 0, null);        
-    }
-
-    public int getSeed() {
-        return seed;
     }
     
     private Color generateColor(double height) {
@@ -128,4 +126,16 @@ public class CanvasMap extends Canvas {
             return new Color(80, 40, 0);
         }
     }
+
+    public int getSeed() {
+        return seed;
+    }
+
+    public int getPixelSize() {
+        return pixelSize;
+    }
+
+    public void setPixelSize(int pixelSize) {
+        this.pixelSize = pixelSize;
+    } 
 }
