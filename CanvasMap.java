@@ -4,10 +4,9 @@ import java.util.Random;
 
 public class CanvasMap extends Canvas {
 
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
-
-    private int pixelSize = 5;
+    private static final int WIDTH = 645;
+    private static final int HEIGHT = 645;
+    private static final int PIXEL_SIZE = 5;
 
     private int seed;
     private Random rng;
@@ -35,7 +34,7 @@ public class CanvasMap extends Canvas {
     } 
 
     private void generateHeightArray() {
-        heights = new double[WIDTH / pixelSize][HEIGHT / pixelSize];
+        heights = new double[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
         // Generate first pixel
         heights[0][0] = rng.nextGaussian();
         // Generate top
@@ -78,7 +77,7 @@ public class CanvasMap extends Canvas {
     }
 
     private void generateColorArray() {
-        colors = new Color[WIDTH / pixelSize][HEIGHT / pixelSize];
+        colors = new Color[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
         if (heights == null) {
             generateHeightArray();
         }
@@ -99,7 +98,7 @@ public class CanvasMap extends Canvas {
         for (int i = 0; i < colors.length; i++) {
             for (int j = 0; j < colors[i].length; j++) {
                 g2d.setColor(colors[i][j]);
-                g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+                g2d.fillRect(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
             }
         }
         g.drawImage(mapImage, 0, 0, null);        
@@ -130,12 +129,4 @@ public class CanvasMap extends Canvas {
     public int getSeed() {
         return seed;
     }
-
-    public int getPixelSize() {
-        return pixelSize;
-    }
-
-    public void setPixelSize(int pixelSize) {
-        this.pixelSize = pixelSize;
-    } 
 }

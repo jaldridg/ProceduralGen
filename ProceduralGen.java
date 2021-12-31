@@ -4,7 +4,7 @@ import java.awt.*;
 public class ProceduralGen extends JComponent implements Runnable {
 
     CanvasMap map;
-    PanelControls controls;
+    ControlPanel controls;
     
     public static void main(String args[]) {
         SwingUtilities.invokeLater(new ProceduralGen());
@@ -13,14 +13,14 @@ public class ProceduralGen extends JComponent implements Runnable {
     public void run() {
         JFrame frame = new JFrame("Procedural Gen");
         map = new CanvasMap();
-        controls = new PanelControls(map);
+        controls = new ControlPanel(map);
 
         frame.setLayout(new BorderLayout());
 
         frame.add(map, BorderLayout.CENTER);
         frame.add(controls, BorderLayout.WEST);
         
-        frame.setSize(1000, 600);  
+        frame.setSize(835, 635);  
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);  
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
