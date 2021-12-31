@@ -4,8 +4,7 @@ import java.util.Random;
 
 public class CanvasMap extends Canvas {
 
-    private static final int WIDTH = 645;
-    private static final int HEIGHT = 645;
+    private static final int SIDE_LENGTH = 129; // Measured in pixels
     private static final int PIXEL_SIZE = 5;
 
     private int seed;
@@ -20,7 +19,7 @@ public class CanvasMap extends Canvas {
     public CanvasMap() {
         generate();        
 
-        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        this.setPreferredSize(new Dimension(SIDE_LENGTH * PIXEL_SIZE, SIDE_LENGTH * PIXEL_SIZE));
         this.setVisible(true);
     }
 
@@ -34,25 +33,77 @@ public class CanvasMap extends Canvas {
     } 
 
     private void generateHeightArray() {
-        heights = new double[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
-        // Generate first pixel
-        heights[0][0] = rng.nextGaussian();
-        // Generate top
-        for (int i = 1; i < heights.length; i++) {
-            heights[i][0] = heights[i - 1][0] + rng.nextGaussian();
+        // Initialize the array and variables
+        heights = new double[SIDE_LENGTH][SIDE_LENGTH];
+        int chunkSize = SIDE_LENGTH - 1;
+        double randomFactor = 5.0;
+
+        // Generate four corners
+        heights[0][0] = rng.nextDouble();
+        heights[0][chunkSize] = rng.nextDouble();
+        heights[chunkSize][0] = rng.nextDouble();
+        heights[chunkSize][chunkSize] = rng.nextDouble();
+        
+        while (chunkSize > 1) {
+            generateSquareChunk(chunkSize, randomFactor);
+            generateDiamondChunk(chunkSize, randomFactor);
+            chunkSize /= 2;
+            randomFactor /= 2;
         }
-        // Generate left
-        for (int i = 1; i < heights[0].length; i++) {
-            heights[0][i] = heights[0][i - 1] + rng.nextGaussian();
-        }
-        // Generate middle
-        for (int i = 1; i < heights.length; i++) {
-            for (int j = 1; j < heights[i].length; j++) {
-                double average = (heights[i - 1][j] + heights[i][j - 1]) / 2;
-                heights[i][j] = average + rng.nextGaussian();
+        
+        normalizeHeightArray();
+    }
+
+    private void generateDiamondChunk(int chunkSize, double randomFactor) {
+        int halfChunk = chunkSize / 2;
+        for (int i = 0; i <= SIDE_LENGTH - 1; i += halfChunk) {
+            for (int j = ((i + halfChunk) % chunkSize); j <= SIDE_LENGTH - 1; j += chunkSize) {
+                double averageValue;
+                // Top edge
+                if (i == 0) {
+                    averageValue = (heights[i + halfChunk][j]
+                                  + heights[i][j - halfChunk]
+                                  + heights[i][j + halfChunk]) / 3;
+                // Bottom edge
+                } else if (i == SIDE_LENGTH - 1) {
+                    averageValue = (heights[i - halfChunk][j]
+                                  + heights[i][j - halfChunk]
+                                  + heights[i][j + halfChunk]) / 3;
+
+                // Left edge
+                } else if (j == 0) {
+                    averageValue = (heights[i - halfChunk][j]
+                                  + heights[i + halfChunk][j]
+                                  + heights[i][j + halfChunk]) / 3;
+
+                // Right edge
+                } else if (j == SIDE_LENGTH - 1) {
+                    averageValue = (heights[i - halfChunk][j]
+                                  + heights[i + halfChunk][j]
+                                  + heights[i][j - halfChunk]) / 3;
+                // No edge
+                } else {
+                    averageValue = (heights[i - halfChunk][j]
+                                  + heights[i + halfChunk][j]
+                                  + heights[i][j - halfChunk]
+                                  + heights[i][j + halfChunk]) / 4;
+                }
+                heights[i][j] = averageValue + (rng.nextDouble() - 0.5) * randomFactor;
             }
         }
-        normalizeHeightArray();
+    }
+
+    private void generateSquareChunk(int chunkSize, double randomFactor) {
+        int halfChunk = chunkSize / 2;
+        for (int i = 0; i < SIDE_LENGTH - 1; i += chunkSize) {
+            for (int j = 0; j < SIDE_LENGTH - 1; j += chunkSize) {
+                double average = (heights[i][j] 
+                                + heights[i][chunkSize] 
+                                + heights[chunkSize][j] 
+                                + heights[chunkSize][chunkSize]) / 4;
+                heights[i + halfChunk][j + halfChunk] = average + (rng.nextDouble() - 0.5) * randomFactor;
+            }
+        }
     }
 
     private void normalizeHeightArray() {
@@ -77,7 +128,7 @@ public class CanvasMap extends Canvas {
     }
 
     private void generateColorArray() {
-        colors = new Color[WIDTH / PIXEL_SIZE][HEIGHT / PIXEL_SIZE];
+        colors = new Color[SIDE_LENGTH][SIDE_LENGTH];
         if (heights == null) {
             generateHeightArray();
         }
@@ -92,7 +143,7 @@ public class CanvasMap extends Canvas {
         if (colors == null) {
             generateColorArray();
         }
-        mapImage = createImage(WIDTH, HEIGHT);
+        mapImage = createImage(SIDE_LENGTH * PIXEL_SIZE, SIDE_LENGTH * PIXEL_SIZE);
         g2d = (Graphics2D) mapImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (int i = 0; i < colors.length; i++) {
@@ -105,7 +156,10 @@ public class CanvasMap extends Canvas {
     }
     
     private Color generateColor(double height) {
-        if (height < 0.2) {
+        if (height == 0.0) {
+            // Undefined value
+            return new Color(255, 255, 255);
+        } else if (height < 0.2) {
             // Dark blue
             return new Color(0, 0, 150);
         } else if (height < 0.3) {
