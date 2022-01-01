@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class CanvasMap extends Canvas {
 
-    private static final int SIDE_LENGTH = 129; // Measured in pixels
-    private static final int PIXEL_SIZE = 5;
+    private static final int SIDE_LENGTH = 257; // Measured in pixels
+    private static final int PIXEL_SIZE = 2;
 
     private int seed;
     private Random rng;
@@ -36,7 +36,7 @@ public class CanvasMap extends Canvas {
         // Initialize the array and variables
         heights = new double[SIDE_LENGTH][SIDE_LENGTH];
         int chunkSize = SIDE_LENGTH - 1;
-        double randomFactor = 5.0;
+        double randomFactor = 10.0;
 
         // Generate four corners
         heights[0][0] = rng.nextDouble();
@@ -98,9 +98,9 @@ public class CanvasMap extends Canvas {
         for (int i = 0; i < SIDE_LENGTH - 1; i += chunkSize) {
             for (int j = 0; j < SIDE_LENGTH - 1; j += chunkSize) {
                 double average = (heights[i][j] 
-                                + heights[i][chunkSize] 
-                                + heights[chunkSize][j] 
-                                + heights[chunkSize][chunkSize]) / 4;
+                                + heights[i][j + chunkSize] 
+                                + heights[i + chunkSize][j] 
+                                + heights[i + chunkSize][j + chunkSize]) / 4;
                 heights[i + halfChunk][j + halfChunk] = average + (rng.nextDouble() - 0.5) * randomFactor;
             }
         }
@@ -156,26 +156,28 @@ public class CanvasMap extends Canvas {
     }
     
     private Color generateColor(double height) {
-        if (height == 0.0) {
-            // Undefined value
-            return new Color(255, 255, 255);
-        } else if (height < 0.2) {
-            // Dark blue
+        // Dark blue
+        if (height < 0.2) {
             return new Color(0, 0, 150);
+
+        // Light blue
         } else if (height < 0.3) {
-            // Light blue
             return new Color(0, 100, 150);
-        } else if (height < 0.5) {
-            // Sand
+
+        // Sand
+        } else if (height < 0.45) {
             return new Color(255, 255, 100);
-        } else if (height < 0.7) {
-            // Light grass
+
+        // Light grass
+        } else if (height < 0.6) {
             return new Color(40, 150, 0);
+
+        // Dark grass
         } else if (height < 0.80) {
-            // Dark grass
             return new Color(25, 100, 0);
+
+        // Mountain
         } else {
-            // Mountain
             return new Color(80, 40, 0);
         }
     }
