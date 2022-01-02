@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class CanvasMap extends Canvas {
 
-    private static final int SIDE_LENGTH = 257; // Measured in pixels
-    private static final int PIXEL_SIZE = 2;
+    private int mapSize = 129; // In pixels
+    private int pixelSize = 5;
 
     private int seed;
     private Random rng;
@@ -19,7 +19,7 @@ public class CanvasMap extends Canvas {
     public CanvasMap() {
         generate();        
 
-        this.setPreferredSize(new Dimension(SIDE_LENGTH * PIXEL_SIZE, SIDE_LENGTH * PIXEL_SIZE));
+        this.setPreferredSize(new Dimension(mapSize * pixelSize, mapSize * pixelSize));
         this.setVisible(true);
     }
 
@@ -34,8 +34,8 @@ public class CanvasMap extends Canvas {
 
     private void generateHeightArray() {
         // Initialize the array and variables
-        heights = new double[SIDE_LENGTH][SIDE_LENGTH];
-        int chunkSize = SIDE_LENGTH - 1;
+        heights = new double[mapSize][mapSize];
+        int chunkSize = mapSize - 1;
         double randomFactor = 10.0;
 
         // Generate four corners
@@ -56,8 +56,8 @@ public class CanvasMap extends Canvas {
 
     private void generateDiamondChunk(int chunkSize, double randomFactor) {
         int halfChunk = chunkSize / 2;
-        for (int i = 0; i <= SIDE_LENGTH - 1; i += halfChunk) {
-            for (int j = ((i + halfChunk) % chunkSize); j <= SIDE_LENGTH - 1; j += chunkSize) {
+        for (int i = 0; i <= mapSize - 1; i += halfChunk) {
+            for (int j = ((i + halfChunk) % chunkSize); j <= mapSize - 1; j += chunkSize) {
                 double averageValue;
                 // Top edge
                 if (i == 0) {
@@ -65,7 +65,7 @@ public class CanvasMap extends Canvas {
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
                 // Bottom edge
-                } else if (i == SIDE_LENGTH - 1) {
+                } else if (i == mapSize - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
@@ -77,7 +77,7 @@ public class CanvasMap extends Canvas {
                                   + heights[i][j + halfChunk]) / 3;
 
                 // Right edge
-                } else if (j == SIDE_LENGTH - 1) {
+                } else if (j == mapSize - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i + halfChunk][j]
                                   + heights[i][j - halfChunk]) / 3;
@@ -95,8 +95,8 @@ public class CanvasMap extends Canvas {
 
     private void generateSquareChunk(int chunkSize, double randomFactor) {
         int halfChunk = chunkSize / 2;
-        for (int i = 0; i < SIDE_LENGTH - 1; i += chunkSize) {
-            for (int j = 0; j < SIDE_LENGTH - 1; j += chunkSize) {
+        for (int i = 0; i < mapSize - 1; i += chunkSize) {
+            for (int j = 0; j < mapSize - 1; j += chunkSize) {
                 double average = (heights[i][j] 
                                 + heights[i][j + chunkSize] 
                                 + heights[i + chunkSize][j] 
@@ -128,7 +128,7 @@ public class CanvasMap extends Canvas {
     }
 
     private void generateColorArray() {
-        colors = new Color[SIDE_LENGTH][SIDE_LENGTH];
+        colors = new Color[mapSize][mapSize];
         if (heights == null) {
             generateHeightArray();
         }
@@ -143,13 +143,13 @@ public class CanvasMap extends Canvas {
         if (colors == null) {
             generateColorArray();
         }
-        mapImage = createImage(SIDE_LENGTH * PIXEL_SIZE, SIDE_LENGTH * PIXEL_SIZE);
+        mapImage = createImage(mapSize * pixelSize, mapSize * pixelSize);
         g2d = (Graphics2D) mapImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (int i = 0; i < colors.length; i++) {
             for (int j = 0; j < colors[i].length; j++) {
                 g2d.setColor(colors[i][j]);
-                g2d.fillRect(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+                g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
             }
         }
         g.drawImage(mapImage, 0, 0, null);        
@@ -184,5 +184,21 @@ public class CanvasMap extends Canvas {
 
     public int getSeed() {
         return seed;
+    }
+
+    public int getMapSize() {
+        return mapSize;
+    }
+
+    public void setMapSize(int mapSize) {
+        this.mapSize = mapSize;
+    }
+
+    public int getPixelSize() {
+        return pixelSize;
+    }
+
+    public void setPixelSize(int pixelSize) {
+        this.pixelSize = pixelSize;
     }
 }

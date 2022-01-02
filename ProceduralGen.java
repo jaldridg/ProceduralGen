@@ -20,7 +20,7 @@ public class ProceduralGen extends JComponent implements Runnable {
         frame.add(map, BorderLayout.CENTER);
         frame.add(controls, BorderLayout.WEST);
         
-        frame.setSize(835, 635);  
+        frame.setSize(800, 600);  
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);  
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
