@@ -49,8 +49,7 @@ public class CanvasMap extends Canvas {
             generateDiamondChunk(chunkSize, randomFactor);
             chunkSize /= 2;
             randomFactor /= 2;
-        }
-        
+        }   
         normalizeHeightArray();
     }
 
@@ -59,29 +58,29 @@ public class CanvasMap extends Canvas {
         for (int i = 0; i <= mapSize - 1; i += halfChunk) {
             for (int j = ((i + halfChunk) % chunkSize); j <= mapSize - 1; j += chunkSize) {
                 double averageValue;
-                // Top edge
+                // Top edge case
                 if (i == 0) {
                     averageValue = (heights[i + halfChunk][j]
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
-                // Bottom edge
+                // Bottom edge case
                 } else if (i == mapSize - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
 
-                // Left edge
+                // Left edge case
                 } else if (j == 0) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i + halfChunk][j]
                                   + heights[i][j + halfChunk]) / 3;
 
-                // Right edge
+                // Right edge case
                 } else if (j == mapSize - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i + halfChunk][j]
                                   + heights[i][j - halfChunk]) / 3;
-                // No edge
+                // Center (normal generation)
                 } else {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i + halfChunk][j]

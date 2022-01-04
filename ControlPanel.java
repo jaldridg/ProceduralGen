@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
 import java.awt.event.*;
 import java.awt.*;
 
@@ -10,7 +12,8 @@ public class ControlPanel extends JPanel {
         // Regenerate panel
         JPanel regenPanel = new JPanel(new FlowLayout());
         JButton quickRegenButton = new JButton("Quick Regenerate");
-        JButton regenButton = new JButton("Regenerate");
+        JButton customRegenButton = new JButton("Custom Regenerate");
+
 
         // Pixel panel and its components
         JPanel pixelSizePanel = new JPanel(new FlowLayout());
@@ -36,10 +39,13 @@ public class ControlPanel extends JPanel {
 
         // Panel with pixel and size panel
         JPanel pixelNSizePanel = new JPanel(new GridLayout());
+        
+        // Settings panle which holds most panels
+        JPanel settingsPanel = new JPanel(new FlowLayout());
 
         // Add components to other components
         regenPanel.add(quickRegenButton);
-        regenPanel.add(regenButton);
+        regenPanel.add(customRegenButton);
         pixelSizePanel.add(pixelSizeLabel);
         pixelSizePanel.add(pixelSizeTextField);
         mapSizePanel.add(mapSizeLabel);
@@ -48,9 +54,10 @@ public class ControlPanel extends JPanel {
         pixelNSizePanel.add(mapSizePanel);
         seedPanel.add(seedLabel);
         seedPanel.add(seedTextField);
+        settingsPanel.add(pixelNSizePanel);
+        settingsPanel.add(seedPanel);
         this.add(regenPanel);
-        this.add(pixelNSizePanel);
-        this.add(seedPanel);
+        this.add(settingsPanel);
 
         // Configure panels
         regenPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 70));
@@ -62,12 +69,18 @@ public class ControlPanel extends JPanel {
         pixelNSizePanel.setPreferredSize(new Dimension(PANEL_WIDTH, 60));
         seedPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
         seedPanel.setBackground(Color.LIGHT_GRAY);
+        settingsPanel.setBackground(Color.WHITE);
+        TitledBorder settingsPanelBorder = BorderFactory.createTitledBorder("Settings");
+        settingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
+        settingsPanel.setBorder(BorderFactory.createTitledBorder(
+            new TitledBorder(settingsPanelBorder)));
+        settingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 130));
         this.setPreferredSize(new Dimension(PANEL_WIDTH, 635));
         this.setBackground(Color.WHITE);
         
         // Set everything to visible
         quickRegenButton.setVisible(true);
-        regenButton.setVisible(true);
+        customRegenButton.setVisible(true);
         regenPanel.setVisible(true);
         pixelSizeLabel.setVisible(true);
         pixelSizeTextField.setVisible(true);
@@ -79,10 +92,11 @@ public class ControlPanel extends JPanel {
         seedLabel.setVisible(true);
         seedTextField.setVisible(true);
         seedPanel.setVisible(true);
+        settingsPanel.setVisible(true);
         this.setVisible(true);
 
-        // Regenerate button
-        regenButton.addMouseListener(new MouseAdapter() {
+        // Custom regenerate button
+        customRegenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int pixelSize = validatePixelSize(pixelSizeTextField.getText());
