@@ -1,6 +1,9 @@
 import java.awt.*;
+import java.util.ResourceBundle.Control;
 
 public class CanvasMap extends Canvas {
+
+    public static final int MAP_SIZE = 512;
 
     private int pixelSize = 4;
 
@@ -12,7 +15,7 @@ public class CanvasMap extends Canvas {
     public CanvasMap(Map map) {
         this.map = map;
 
-        this.setPreferredSize(new Dimension(map.getSize() * pixelSize, map.getSize() * pixelSize));
+        this.setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
         this.setVisible(true);
     }
 

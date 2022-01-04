@@ -3,6 +3,10 @@ import java.awt.*;
 
 public class ProceduralGen extends JComponent implements Runnable {
 
+    // Extra size constants since the map is cut off without them
+    private final static int EXTRA_WIDTH = 10;
+    private final static int EXTRA_HEIGHT = 10;
+
     Map map;
     CanvasMap canvasMap;
     ControlPanel controls;
@@ -22,7 +26,8 @@ public class ProceduralGen extends JComponent implements Runnable {
         frame.add(canvasMap, BorderLayout.CENTER);
         frame.add(controls, BorderLayout.WEST);
         
-        frame.setSize(800, 600);  
+        frame.setSize(ControlPanel.PANEL_WIDTH + CanvasMap.MAP_SIZE + EXTRA_WIDTH, 
+            CanvasMap.MAP_SIZE + EXTRA_WIDTH);  
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);  
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

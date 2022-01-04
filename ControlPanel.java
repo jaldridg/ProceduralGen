@@ -6,9 +6,10 @@ import java.awt.*;
 
 public class ControlPanel extends JPanel {
 
-    private static final int PANEL_WIDTH = 200;
+    public static final int PANEL_WIDTH = 200;
 
-    private static final int MAX_RESOLUTION = 512;
+    private static final int MIN_RESOLUTION = 32;
+    public static final int MAX_RESOLUTION = 512;
 
     private int resolution = 128;
 
@@ -70,7 +71,7 @@ public class ControlPanel extends JPanel {
             new TitledBorder(displaySettingsPanelBorder)));
         displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 75));
 
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, 635));
+        this.setPreferredSize(new Dimension(PANEL_WIDTH, CanvasMap.MAP_SIZE));
         this.setBackground(Color.WHITE);
         
         // Set everything to visible
@@ -92,7 +93,7 @@ public class ControlPanel extends JPanel {
         decResolutionButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (resolution != 32) {
+                if (resolution != MIN_RESOLUTION) {
                     resolution /= 2;
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
                     map.setSize(resolution + 1);
