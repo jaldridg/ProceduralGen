@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-
 import java.awt.event.*;
 import java.awt.*;
 
@@ -89,6 +88,27 @@ public class ControlPanel extends JPanel {
         displaySettingsPanel.setVisible(true);
         this.setVisible(true);
 
+        // Quick regenerate button
+        quickRegenButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                int seed = (int) (Math.random() * Integer.MAX_VALUE);
+                seedTextField.setText(String.valueOf(seed));
+                map.generate(seed);
+                canvasMap.repaint();
+            }
+        });
+
+        // Custom regenerate button
+        customRegenButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                int seed = validateSeed(seedTextField.getText());
+                map.generate(seed);
+                canvasMap.repaint();
+            }
+        });
+
         // Decrease resolution
         decResolutionButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -116,5 +136,18 @@ public class ControlPanel extends JPanel {
                 }
             }
         });
+    }
+
+    private int validateSeed(String input) {
+        int seed = -1;
+        try {
+            if (input.length() != 0) {
+                seed = Integer.parseInt(input);
+            }
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(null, 
+                "The seed must be a number or is too long!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return seed;
     }
 }
