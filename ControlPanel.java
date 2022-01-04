@@ -94,6 +94,7 @@ public class ControlPanel extends JPanel {
             public void mousePressed(MouseEvent e) {
                 int seed = (int) (Math.random() * Integer.MAX_VALUE);
                 seedTextField.setText(String.valueOf(seed));
+                map.setSeed(seed);
                 map.generate(seed);
                 canvasMap.repaint();
             }
@@ -104,6 +105,7 @@ public class ControlPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 int seed = validateSeed(seedTextField.getText());
+                map.setSeed(seed);
                 map.generate(seed);
                 canvasMap.repaint();
             }

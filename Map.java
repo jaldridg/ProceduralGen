@@ -160,6 +160,10 @@ public abstract class Map {
         }
     }
 
+    public void setSeed(int seed) {
+        this.seed = seed;
+    }
+
     public int getSeed() {
         return seed;
     }

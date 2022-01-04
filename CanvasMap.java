@@ -3,7 +3,7 @@ import java.util.ResourceBundle.Control;
 
 public class CanvasMap extends Canvas {
 
-    public static final int MAP_SIZE = 512;
+    public static final int MAP_SIZE = 513;
 
     private int pixelSize = 4;
 

@@ -3,9 +3,9 @@ import java.awt.*;
 
 public class ProceduralGen extends JComponent implements Runnable {
 
-    // Extra size constants since the map is cut off without them
-    private final static int EXTRA_WIDTH = 10;
-    private final static int EXTRA_HEIGHT = 10;
+    // Extra size constants since the map is cut off without them somehow
+    private final static int EXTRA_WIDTH = 16;
+    private final static int EXTRA_HEIGHT = 39;
 
     Map map;
     CanvasMap canvasMap;
@@ -17,7 +17,7 @@ public class ProceduralGen extends JComponent implements Runnable {
 
     public void run() {
         JFrame frame = new JFrame("Procedural Gen");
-        map = new DefaultMap();
+        map = new IslandMap();
         canvasMap = new CanvasMap(map);
         controls = new ControlPanel(map, canvasMap);
 
