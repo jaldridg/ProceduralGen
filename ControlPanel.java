@@ -8,6 +8,10 @@ public class ControlPanel extends JPanel {
 
     private static final int PANEL_WIDTH = 200;
 
+    private static final int MAX_RESOLUTION = 512;
+
+    private int resolution = 128;
+
     public ControlPanel(Map map, CanvasMap canvasMap) {
         // Regenerate panel
         JPanel regenPanel = new JPanel(new FlowLayout());
@@ -17,7 +21,7 @@ public class ControlPanel extends JPanel {
         // Resolution panel
         JPanel resolutionPanel = new JPanel(new FlowLayout());
         JButton decResolutionButton = new JButton("-");
-        JLabel resoultionLabel = new JLabel("Resolution");
+        JLabel resoltionLabel = new JLabel("Resolution");
         JButton incResolutionButton = new JButton("+");
 
         // Seed panel
@@ -34,7 +38,7 @@ public class ControlPanel extends JPanel {
         regenPanel.add(quickRegenButton);
         regenPanel.add(customRegenButton);
         resolutionPanel.add(decResolutionButton);
-        resolutionPanel.add(resoultionLabel);
+        resolutionPanel.add(resoltionLabel);
         resolutionPanel.add(incResolutionButton);
         seedPanel.add(seedLabel);
         seedPanel.add(seedTextField);
@@ -73,57 +77,43 @@ public class ControlPanel extends JPanel {
         quickRegenButton.setVisible(true);
         customRegenButton.setVisible(true);
         regenPanel.setVisible(true);
+        decResolutionButton.setVisible(true);
+        resoltionLabel.setVisible(true);
+        incResolutionButton.setVisible(true);
+        resolutionPanel.setVisible(true);
         seedLabel.setVisible(true);
         seedTextField.setVisible(true);
         seedPanel.setVisible(true);
         genSettingsPanel.setVisible(true);
+        displaySettingsPanel.setVisible(true);
         this.setVisible(true);
 
-        // Custom regenerate button
-        customRegenButton.addMouseListener(new MouseAdapter() {
+        // Decrease resolution
+        decResolutionButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                
-
+                if (resolution != 32) {
+                    resolution /= 2;
+                    canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
+                    map.setSize(resolution + 1);
+                    map.generate(map.getSeed());
+                    canvasMap.repaint();
+                }
             }
         });
 
-        // Quick regnerate button
-        quickRegenButton.addMouseListener(new MouseAdapter() {
+        // Increase resolution
+        incResolutionButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                  
+                if (resolution != MAX_RESOLUTION) {
+                    resolution *= 2;
+                    canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
+                    map.setSize(resolution + 1);
+                    map.generate(map.getSeed());
+                    canvasMap.repaint();
+                }
             }
         });
-    }
-
-    private int validatePixelSize(String input) {
-        int pixelSize = 0;
-        try {
-            pixelSize = Integer.parseInt(input);
-            if (pixelSize < 1) {
-                throw new IllegalArgumentException();
-            }
-        } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(null, 
-                "Pixel size must be a number!", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException iae) {
-            JOptionPane.showMessageDialog(null, 
-                "Pixel size must be a positive number!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return pixelSize;
-    }
-
-    private int validateSeed(String input) {
-        int seed = -1;
-        try {
-            if (input.length() != 0) {
-                seed = Integer.parseInt(input);
-            }
-        } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(null, 
-                "The seed must be a number or is too long!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return seed;
     }
 }

@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class CanvasMap extends Canvas {
 
-    private int pixelSize = 5;
+    private int pixelSize = 4;
 
     private Image mapImage = null;
     private Graphics2D g2d;
