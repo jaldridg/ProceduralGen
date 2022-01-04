@@ -17,7 +17,7 @@ public class ProceduralGen extends JComponent implements Runnable {
 
     public void run() {
         JFrame frame = new JFrame("Procedural Gen");
-        map = new IslandMap();
+        map = new RealisticMap();
         canvasMap = new CanvasMap(map);
         controls = new ControlPanel(map, canvasMap);
 
