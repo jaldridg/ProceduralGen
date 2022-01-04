@@ -17,20 +17,20 @@ public class CanvasMap extends Canvas {
     private Graphics2D g2d;
 
     public CanvasMap() {
-        generate();        
+        seed = (int) (Math.random() * Integer.MAX_VALUE);
+        generate(seed);        
 
         this.setPreferredSize(new Dimension(mapSize * pixelSize, mapSize * pixelSize));
         this.setVisible(true);
     }
 
-    public void generate() {
-        seed = (int) (Math.random() * 1000);
+    public void generate(int seed) {
         rng = new Random(seed);
 
         generateHeightArray();
         generateColorArray();
         repaint(); 
-    } 
+    }
 
     private void generateHeightArray() {
         // Initialize the array and variables
