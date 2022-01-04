@@ -14,22 +14,11 @@ public class ControlPanel extends JPanel {
         JButton quickRegenButton = new JButton("Quick Regenerate");
         JButton customRegenButton = new JButton("Custom Regenerate");
 
-
-        // Pixel panel and its components
-        JPanel pixelSizePanel = new JPanel(new FlowLayout());
-        JLabel pixelSizeLabel = new JLabel("Pixel Size");
-        JTextField pixelSizeTextField = new JTextField(5);
-        pixelSizeTextField.setText("5");
-
-        // Size panel and its components
-        JPanel mapSizePanel = new JPanel(new FlowLayout());
-        JLabel mapSizeLabel = new JLabel("Map Size");
-        JComboBox<String> mapSizeComboBox = new JComboBox<>();
-        for (int i = 1; i < 10; i++) {
-            int size = (int) Math.pow(2, i) + 1;
-            mapSizeComboBox.addItem("" + size);
-        }
-        mapSizeComboBox.setSelectedIndex(6);
+        // Resolution panel
+        JPanel resolutionPanel = new JPanel(new FlowLayout());
+        JButton decResolutionButton = new JButton("-");
+        JLabel resoultionLabel = new JLabel("Resolution");
+        JButton incResolutionButton = new JButton("+");
 
         // Seed panel
         JPanel seedPanel  = new JPanel(new FlowLayout());
@@ -37,44 +26,46 @@ public class ControlPanel extends JPanel {
         JTextField seedTextField = new JTextField(8);
         seedTextField.setText("" + map.getSeed());
 
-        // Panel with pixel and size panel
-        JPanel pixelNSizePanel = new JPanel(new GridLayout());
-        
-        // Settings panle which holds most panels
-        JPanel settingsPanel = new JPanel(new FlowLayout());
+        // Larger settings panels
+        JPanel genSettingsPanel = new JPanel(new FlowLayout());
+        JPanel displaySettingsPanel = new JPanel(new FlowLayout());
 
         // Add components to other components
         regenPanel.add(quickRegenButton);
         regenPanel.add(customRegenButton);
-        pixelSizePanel.add(pixelSizeLabel);
-        pixelSizePanel.add(pixelSizeTextField);
-        mapSizePanel.add(mapSizeLabel);
-        mapSizePanel.add(mapSizeComboBox);
-        pixelNSizePanel.add(pixelSizePanel);
-        pixelNSizePanel.add(mapSizePanel);
+        resolutionPanel.add(decResolutionButton);
+        resolutionPanel.add(resoultionLabel);
+        resolutionPanel.add(incResolutionButton);
         seedPanel.add(seedLabel);
         seedPanel.add(seedTextField);
-        settingsPanel.add(pixelNSizePanel);
-        settingsPanel.add(seedPanel);
+        genSettingsPanel.add(seedPanel);
+        displaySettingsPanel.add(resolutionPanel);
         this.add(regenPanel);
-        this.add(settingsPanel);
+        this.add(genSettingsPanel);
+        this.add(displaySettingsPanel);
 
         // Configure panels
         regenPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 70));
         regenPanel.setBackground(Color.LIGHT_GRAY);
-        pixelSizePanel.setPreferredSize(new Dimension(PANEL_WIDTH / 2, 60));
-        pixelSizePanel.setBackground(Color.LIGHT_GRAY);
-        mapSizePanel.setPreferredSize(new Dimension(PANEL_WIDTH / 2, 60));
-        mapSizePanel.setBackground(Color.LIGHT_GRAY);
-        pixelNSizePanel.setPreferredSize(new Dimension(PANEL_WIDTH, 60));
+        resolutionPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 40));
+        resolutionPanel.setBackground(Color.LIGHT_GRAY);
         seedPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
         seedPanel.setBackground(Color.LIGHT_GRAY);
-        settingsPanel.setBackground(Color.WHITE);
-        TitledBorder settingsPanelBorder = BorderFactory.createTitledBorder("Settings");
-        settingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
-        settingsPanel.setBorder(BorderFactory.createTitledBorder(
-            new TitledBorder(settingsPanelBorder)));
-        settingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 130));
+        genSettingsPanel.setBackground(Color.WHITE);
+
+        TitledBorder genSettingsPanelBorder = BorderFactory.createTitledBorder("Generation Settings");
+        genSettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
+        genSettingsPanel.setBorder(BorderFactory.createTitledBorder(
+            new TitledBorder(genSettingsPanelBorder)));
+        genSettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 65));
+        displaySettingsPanel.setBackground(Color.WHITE);
+
+        TitledBorder displaySettingsPanelBorder = BorderFactory.createTitledBorder("Display Settings");
+        displaySettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
+        displaySettingsPanel.setBorder(BorderFactory.createTitledBorder(
+            new TitledBorder(displaySettingsPanelBorder)));
+        displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 75));
+
         this.setPreferredSize(new Dimension(PANEL_WIDTH, 635));
         this.setBackground(Color.WHITE);
         
@@ -82,37 +73,18 @@ public class ControlPanel extends JPanel {
         quickRegenButton.setVisible(true);
         customRegenButton.setVisible(true);
         regenPanel.setVisible(true);
-        pixelSizeLabel.setVisible(true);
-        pixelSizeTextField.setVisible(true);
-        pixelSizePanel.setVisible(true);
-        mapSizeLabel.setVisible(true);
-        mapSizeComboBox.setVisible(true);
-        mapSizePanel.setVisible(true);
-        pixelNSizePanel.setVisible(true);
         seedLabel.setVisible(true);
         seedTextField.setVisible(true);
         seedPanel.setVisible(true);
-        settingsPanel.setVisible(true);
+        genSettingsPanel.setVisible(true);
         this.setVisible(true);
 
         // Custom regenerate button
         customRegenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                int pixelSize = validatePixelSize(pixelSizeTextField.getText());
-                int seed = validateSeed(seedTextField.getText());
+                
 
-                if (pixelSize != 0) {
-                    canvasMap.setPixelSize(pixelSize);
-                    map.setSize(Integer.parseInt((String) mapSizeComboBox.getSelectedItem()));
-                    
-                    if (seed == -1) {
-                        seed = (int) (Math.random() * Integer.MAX_VALUE);
-                        seedTextField.setText(String.valueOf(seed));
-                    }
-                    map.generate(seed);
-                    canvasMap.repaint();
-                }    
             }
         });
 
@@ -120,16 +92,7 @@ public class ControlPanel extends JPanel {
         quickRegenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                int pixelSize = validatePixelSize(pixelSizeTextField.getText());
-
-                if (pixelSize != 0) {
-                    canvasMap.setPixelSize(pixelSize);
-                    map.setSize(Integer.parseInt((String) mapSizeComboBox.getSelectedItem()));
-                    int seed = (int) (Math.random() * Integer.MAX_VALUE);
-                    seedTextField.setText(String.valueOf(seed));
-                    map.generate(seed);
-                    canvasMap.repaint();
-                }    
+                  
             }
         });
     }

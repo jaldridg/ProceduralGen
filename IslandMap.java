@@ -1,17 +1,8 @@
-import java.util.Random;
 
 public class IslandMap extends Map {
 
     public IslandMap() {
         super();
-    }
-    
-    public void generate(int seed) {
-        rng = new Random(seed);
-
-        generateHeightArray();
-        normalizeHeightArray();
-        generateColorArray();
     }
     
     protected void normalizeHeightArray() {

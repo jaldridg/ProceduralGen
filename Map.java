@@ -20,12 +20,11 @@ public abstract class Map {
         generate(seed);
     }
 
-    public abstract void generate(int seed);
-
-    public void generateRaw(int seed) {
+    public void generate(int seed) {
         rng = new Random(seed);
 
         generateHeightArray();
+        normalizeHeightArray();
         generateColorArray();
     }
 
