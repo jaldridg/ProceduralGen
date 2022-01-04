@@ -1,10 +1,8 @@
 import java.awt.*;
-import java.util.Random;
 
 public class CanvasMap extends Canvas {
 
-    private int mapSize;
-    private int pixelSize;
+    private int pixelSize = 5;
 
     private Image mapImage = null;
     private Graphics2D g2d;
@@ -14,10 +12,7 @@ public class CanvasMap extends Canvas {
     public CanvasMap(Map map) {
         this.map = map;
 
-        mapSize = map.getMapSize();
-        pixelSize = map.getPixelSize();
-
-        this.setPreferredSize(new Dimension(mapSize * pixelSize, mapSize * pixelSize));
+        this.setPreferredSize(new Dimension(map.getSize() * pixelSize, map.getSize() * pixelSize));
         this.setVisible(true);
     }
 
@@ -26,7 +21,7 @@ public class CanvasMap extends Canvas {
         if (colors == null) {
             map.generateColorArray();
         }
-        mapImage = createImage(mapSize * pixelSize, mapSize * pixelSize);
+        mapImage = createImage(map.getSize() * pixelSize, map.getSize() * pixelSize);
         g2d = (Graphics2D) mapImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (int i = 0; i < colors.length; i++) {
@@ -36,5 +31,13 @@ public class CanvasMap extends Canvas {
             }
         }
         g.drawImage(mapImage, 0, 0, null);        
+    }
+
+    public int getPixelSize() {
+        return pixelSize;
+    }
+
+    public void setPixelSize(int pixelSize) {
+        this.pixelSize = pixelSize;
     }
 }

@@ -3,8 +3,7 @@ import java.util.Random;
 
 public abstract class Map {
     
-    protected int mapSize = 129; // In pixels
-    protected int pixelSize = 5;
+    protected int size; // In pixels
 
     protected int seed;
     protected Random rng;
@@ -16,17 +15,12 @@ public abstract class Map {
     protected Graphics2D g2d;
 
     public Map() {
+        this.size = 129;
         seed = (int) (Math.random() * Integer.MAX_VALUE);
         generate(seed);
     }
 
-    public void generate(int seed) {
-        rng = new Random(seed);
-
-        generateHeightArray();
-        normalizeHeightArray();
-        generateColorArray();
-    }
+    public abstract void generate(int seed);
 
     public void generateRaw(int seed) {
         rng = new Random(seed);
@@ -37,8 +31,8 @@ public abstract class Map {
 
     protected void generateHeightArray() {
         // Initialize the array and variables
-        heights = new double[mapSize][mapSize];
-        int chunkSize = mapSize - 1;
+        heights = new double[size][size];
+        int chunkSize = size - 1;
         double randomFactor = 10.0;
 
         // Generate four corners
@@ -57,8 +51,8 @@ public abstract class Map {
 
     protected void generateDiamondChunk(int chunkSize, double randomFactor) {
         int halfChunk = chunkSize / 2;
-        for (int i = 0; i <= mapSize - 1; i += halfChunk) {
-            for (int j = ((i + halfChunk) % chunkSize); j <= mapSize - 1; j += chunkSize) {
+        for (int i = 0; i <= size - 1; i += halfChunk) {
+            for (int j = ((i + halfChunk) % chunkSize); j <= size - 1; j += chunkSize) {
                 double averageValue;
                 // Top edge case
                 if (i == 0) {
@@ -66,7 +60,7 @@ public abstract class Map {
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
                 // Bottom edge case
-                } else if (i == mapSize - 1) {
+                } else if (i == size - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
@@ -78,7 +72,7 @@ public abstract class Map {
                                   + heights[i][j + halfChunk]) / 3;
 
                 // Right edge case
-                } else if (j == mapSize - 1) {
+                } else if (j == size - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i + halfChunk][j]
                                   + heights[i][j - halfChunk]) / 3;
@@ -96,8 +90,8 @@ public abstract class Map {
 
     protected void generateSquareChunk(int chunkSize, double randomFactor) {
         int halfChunk = chunkSize / 2;
-        for (int i = 0; i < mapSize - 1; i += chunkSize) {
-            for (int j = 0; j < mapSize - 1; j += chunkSize) {
+        for (int i = 0; i < size - 1; i += chunkSize) {
+            for (int j = 0; j < size - 1; j += chunkSize) {
                 double average = (heights[i][j] 
                                 + heights[i][j + chunkSize] 
                                 + heights[i + chunkSize][j] 
@@ -129,7 +123,7 @@ public abstract class Map {
     }
 
     protected void generateColorArray() {
-        colors = new Color[mapSize][mapSize];
+        colors = new Color[size][size];
         if (heights == null) {
             generateHeightArray();
         }
@@ -171,20 +165,12 @@ public abstract class Map {
         return seed;
     }
 
-    public int getMapSize() {
-        return mapSize;
+    public int getSize() {
+        return size;
     }
 
-    public void setMapSize(int mapSize) {
-        this.mapSize = mapSize;
-    }
-
-    public int getPixelSize() {
-        return pixelSize;
-    }
-
-    public void setPixelSize(int pixelSize) {
-        this.pixelSize = pixelSize;
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public Color[][] getColorArray() {

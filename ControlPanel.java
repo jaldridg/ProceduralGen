@@ -103,8 +103,8 @@ public class ControlPanel extends JPanel {
                 int seed = validateSeed(seedTextField.getText());
 
                 if (pixelSize != 0) {
-                    map.setPixelSize(pixelSize);
-                    map.setMapSize(Integer.parseInt((String) mapSizeComboBox.getSelectedItem()));
+                    canvasMap.setPixelSize(pixelSize);
+                    map.setSize(Integer.parseInt((String) mapSizeComboBox.getSelectedItem()));
                     
                     if (seed == -1) {
                         seed = (int) (Math.random() * Integer.MAX_VALUE);
@@ -123,8 +123,8 @@ public class ControlPanel extends JPanel {
                 int pixelSize = validatePixelSize(pixelSizeTextField.getText());
 
                 if (pixelSize != 0) {
-                    map.setPixelSize(pixelSize);
-                    map.setMapSize(Integer.parseInt((String) mapSizeComboBox.getSelectedItem()));
+                    canvasMap.setPixelSize(pixelSize);
+                    map.setSize(Integer.parseInt((String) mapSizeComboBox.getSelectedItem()));
                     int seed = (int) (Math.random() * Integer.MAX_VALUE);
                     seedTextField.setText(String.valueOf(seed));
                     map.generate(seed);
