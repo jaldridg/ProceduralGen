@@ -8,7 +8,7 @@ public class ControlPanel extends JPanel {
 
     private static final int PANEL_WIDTH = 200;
 
-    public ControlPanel(CanvasMap map) {
+    public ControlPanel(Map map, CanvasMap canvasMap) {
         // Regenerate panel
         JPanel regenPanel = new JPanel(new FlowLayout());
         JButton quickRegenButton = new JButton("Quick Regenerate");
@@ -111,6 +111,7 @@ public class ControlPanel extends JPanel {
                         seedTextField.setText(String.valueOf(seed));
                     }
                     map.generate(seed);
+                    canvasMap.repaint();
                 }    
             }
         });
@@ -127,6 +128,7 @@ public class ControlPanel extends JPanel {
                     int seed = (int) (Math.random() * Integer.MAX_VALUE);
                     seedTextField.setText(String.valueOf(seed));
                     map.generate(seed);
+                    canvasMap.repaint();
                 }    
             }
         });
