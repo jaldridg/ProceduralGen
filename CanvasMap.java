@@ -33,7 +33,7 @@ public class CanvasMap extends Canvas {
                 g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
             }
         }
-        g.drawImage(mapImage, 0, 0, null);        
+        g.drawImage(mapImage, -pixelSize / 2, -pixelSize / 2, null);        
     }
 
     public int getPixelSize() {
