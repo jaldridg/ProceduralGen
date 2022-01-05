@@ -1,5 +1,7 @@
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.border.TitledBorder;
+
 import java.awt.event.*;
 import java.awt.*;
 
@@ -18,17 +20,22 @@ public class ControlPanel extends JPanel {
         JButton quickRegenButton = new JButton("Quick Regenerate");
         JButton customRegenButton = new JButton("Custom Regenerate");
 
-        // Resolution panel
-        JPanel resolutionPanel = new JPanel(new FlowLayout());
-        JButton decResolutionButton = new JButton("-");
-        JLabel resoltionLabel = new JLabel("Resolution");
-        JButton incResolutionButton = new JButton("+");
-
         // Seed panel
         JPanel seedPanel  = new JPanel(new FlowLayout());
         JLabel seedLabel = new JLabel("Seed");
         JTextField seedTextField = new JTextField(8);
         seedTextField.setText("" + map.getSeed());
+
+        // Resolution panel
+        JPanel resolutionPanel = new JPanel(new FlowLayout());
+        JButton decResolutionButton = new JButton("-");
+        JLabel resoltionLabel = new JLabel("Resolution");
+        JButton incResolutionButton = new JButton("+");
+        
+        // Realistic panel
+        JPanel realisticPanel = new JPanel(new FlowLayout());
+        JLabel realisticLabel = new JLabel("Realistic Map");
+        JCheckBox realisticCheckBox = new JCheckBox();
 
         // Larger settings panels
         JPanel genSettingsPanel = new JPanel(new FlowLayout());
@@ -37,13 +44,16 @@ public class ControlPanel extends JPanel {
         // Add components to other components
         regenPanel.add(quickRegenButton);
         regenPanel.add(customRegenButton);
+        seedPanel.add(seedLabel);
+        seedPanel.add(seedTextField);
         resolutionPanel.add(decResolutionButton);
         resolutionPanel.add(resoltionLabel);
         resolutionPanel.add(incResolutionButton);
-        seedPanel.add(seedLabel);
-        seedPanel.add(seedTextField);
+        realisticPanel.add(realisticLabel);
+        realisticPanel.add(realisticCheckBox);
         genSettingsPanel.add(seedPanel);
         displaySettingsPanel.add(resolutionPanel);
+        displaySettingsPanel.add(realisticPanel);
         this.add(regenPanel);
         this.add(genSettingsPanel);
         this.add(displaySettingsPanel);
@@ -51,24 +61,26 @@ public class ControlPanel extends JPanel {
         // Configure panels
         regenPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 70));
         regenPanel.setBackground(Color.LIGHT_GRAY);
-        resolutionPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 40));
-        resolutionPanel.setBackground(Color.LIGHT_GRAY);
         seedPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
         seedPanel.setBackground(Color.LIGHT_GRAY);
-        genSettingsPanel.setBackground(Color.WHITE);
-
+        resolutionPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 40));
+        resolutionPanel.setBackground(Color.LIGHT_GRAY);
+        realisticPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
+        realisticPanel.setBackground(Color.LIGHT_GRAY);
+        
         TitledBorder genSettingsPanelBorder = BorderFactory.createTitledBorder("Generation Settings");
         genSettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         genSettingsPanel.setBorder(BorderFactory.createTitledBorder(
             new TitledBorder(genSettingsPanelBorder)));
         genSettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 65));
-        displaySettingsPanel.setBackground(Color.WHITE);
-
+        genSettingsPanel.setBackground(Color.WHITE);
+        
         TitledBorder displaySettingsPanelBorder = BorderFactory.createTitledBorder("Display Settings");
         displaySettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         displaySettingsPanel.setBorder(BorderFactory.createTitledBorder(
             new TitledBorder(displaySettingsPanelBorder)));
-        displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 75));
+        displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 105));
+        displaySettingsPanel.setBackground(Color.WHITE);
 
         this.setPreferredSize(new Dimension(PANEL_WIDTH, CanvasMap.MAP_SIZE));
         this.setBackground(Color.WHITE);
@@ -77,14 +89,17 @@ public class ControlPanel extends JPanel {
         quickRegenButton.setVisible(true);
         customRegenButton.setVisible(true);
         regenPanel.setVisible(true);
-        decResolutionButton.setVisible(true);
-        resoltionLabel.setVisible(true);
-        incResolutionButton.setVisible(true);
-        resolutionPanel.setVisible(true);
         seedLabel.setVisible(true);
         seedTextField.setVisible(true);
         seedPanel.setVisible(true);
         genSettingsPanel.setVisible(true);
+        decResolutionButton.setVisible(true);
+        resoltionLabel.setVisible(true);
+        incResolutionButton.setVisible(true);
+        resolutionPanel.setVisible(true);
+        realisticLabel.setVisible(true);
+        realisticCheckBox.setVisible(true);
+        realisticPanel.setVisible(true);
         displaySettingsPanel.setVisible(true);
         this.setVisible(true);
 
@@ -134,6 +149,17 @@ public class ControlPanel extends JPanel {
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
                     map.setSize(resolution + 1);
                     map.generate(map.getSeed());
+                    canvasMap.repaint();
+                }
+            }
+        });
+
+        // Realistic check box
+        realisticCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (realisticCheckBox.isSelected() != canvasMap.isRealistic()) {
+                    canvasMap.setRealistic(realisticCheckBox.isSelected());
                     canvasMap.repaint();
                 }
             }

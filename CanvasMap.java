@@ -120,6 +120,10 @@ public class CanvasMap extends Canvas {
         return (int) (colorOne + ((height - minHeight) * ratio));
     }
 
+    public boolean isRealistic() {
+        return isRealistic;
+    }
+
     public void setRealistic(boolean isRealistic) {
         this.isRealistic = isRealistic;
     }
