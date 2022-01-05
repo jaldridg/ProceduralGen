@@ -19,7 +19,7 @@ public class RealisticMap extends Map{
         } else if (height < 0.45) {
             int rValue = lerp(0.3, 0.45, 255, 40, height);
             int gValue = lerp(0.3, 0.45, 255, 150, height);
-            int bValue = lerp(0.3, 0.45, 100, 0, height);
+            int bValue = lerp(0.3, 0.45, 150, 0, height);
             return new Color(rValue, gValue, bValue);
 
         // Light grass to dark grass
@@ -34,11 +34,11 @@ public class RealisticMap extends Map{
             int gValue = lerp(0.6, 0.8, 100, 40, height);
             return new Color(rValue, gValue, 0);
 
-        // Mountain to snow
+        // Mountain to rocky/snowy mountain
         } else {
-            int rValue = lerp(0.8, 1.0, 80, 255, height);
-            int gValue = lerp(0.8, 1.0, 40, 255, height);
-            int bValue = lerp(0.8, 1.0, 0, 255, height);
+            int rValue = lerp(0.8, 1.0, 80, 125, height);
+            int gValue = lerp(0.8, 1.0, 40, 125, height);
+            int bValue = lerp(0.8, 1.0, 0, 125, height);
             return new Color(rValue, gValue, bValue);
         }
     }
@@ -46,12 +46,5 @@ public class RealisticMap extends Map{
     private int lerp(double minHeight, double maxHeight, double colorOne, double colorTwo, double height) {
         double ratio = (colorOne - colorTwo) / (minHeight - maxHeight);
         return (int) (colorOne + ((height - minHeight) * ratio));
-    }
-
-    // A slower version where the transition happens faster at the end
-    private int lerpSquare(double minHeight, double maxHeight, double colorOne, double colorTwo, double height) {
-        double ratio = (colorOne - colorTwo) / (minHeight - maxHeight);
-        double scaledHeight = height - minHeight;
-        return (int) (colorOne + (scaledHeight * scaledHeight * ratio));
     }
 }

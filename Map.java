@@ -9,7 +9,6 @@ public abstract class Map {
     protected Random rng;
 
     protected double[][] heights;
-    protected Color[][] colors;
 
     protected Image mapImage = null;
     protected Graphics2D g2d;
@@ -25,7 +24,6 @@ public abstract class Map {
 
         generateHeightArray();
         normalizeHeightArray();
-        generateColorArray();
     }
 
     protected void generateHeightArray() {
@@ -121,44 +119,7 @@ public abstract class Map {
         }
     }
 
-    protected void generateColorArray() {
-        colors = new Color[size][size];
-        if (heights == null) {
-            generateHeightArray();
-        }
-        for (int i = 0; i < colors.length; i++) {
-            for (int j = 0; j < colors[i].length; j++) {
-                colors[i][j] = generateColor(heights[i][j]);
-            }
-        }
-    }
-    
-    protected Color generateColor(double height) {
-        // Dark blue
-        if (height < 0.2) {
-            return new Color(0, 0, 150);
 
-        // Light blue
-        } else if (height < 0.3) {
-            return new Color(0, 100, 150);
-
-        // Sand
-        } else if (height < 0.45) {
-            return new Color(255, 255, 100);
-
-        // Light grass
-        } else if (height < 0.6) {
-            return new Color(40, 150, 0);
-
-        // Dark grass
-        } else if (height < 0.80) {
-            return new Color(25, 100, 0);
-
-        // Mountain
-        } else {
-            return new Color(80, 40, 0);
-        }
-    }
 
     public void setSeed(int seed) {
         this.seed = seed;
@@ -176,7 +137,7 @@ public abstract class Map {
         this.size = size;
     }
 
-    public Color[][] getColorArray() {
-        return colors;
+    public double[][] getHeightArray() {
+        return heights;
     }
 }

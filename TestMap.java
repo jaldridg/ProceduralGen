@@ -7,7 +7,6 @@ public class TestMap extends Map {
 
     public void generate(int seed) {
         generateHeightArray();
-        generateColorArray();
     }
 
     protected void generateHeightArray() {
