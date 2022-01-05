@@ -7,8 +7,9 @@ public class ProceduralGen extends JComponent implements Runnable {
     private final static int EXTRA_WIDTH = 16;
     private final static int EXTRA_HEIGHT = 39;
 
-    Map map;
-    CanvasMap canvasMap;
+    IslandMap islandMap;
+    StandardMap standardMap;
+    MapCanvas mapCanvas;
     ControlPanel controls;
     
     public static void main(String args[]) {
@@ -17,17 +18,18 @@ public class ProceduralGen extends JComponent implements Runnable {
 
     public void run() {
         JFrame frame = new JFrame("Procedural Gen");
-        map = new DefaultMap();
-        canvasMap = new CanvasMap(map);
-        controls = new ControlPanel(map, canvasMap);
+        islandMap = new IslandMap();
+        standardMap = new StandardMap();
+        mapCanvas = new MapCanvas(islandMap, standardMap);
+        controls = new ControlPanel(mapCanvas);
 
         frame.setLayout(new BorderLayout());
 
-        frame.add(canvasMap, BorderLayout.CENTER);
+        frame.add(mapCanvas, BorderLayout.CENTER);
         frame.add(controls, BorderLayout.WEST);
         
-        frame.setSize(ControlPanel.PANEL_WIDTH + CanvasMap.MAP_SIZE + EXTRA_WIDTH, 
-            CanvasMap.MAP_SIZE + EXTRA_HEIGHT); 
+        frame.setSize(ControlPanel.PANEL_WIDTH + MapCanvas.MAP_SIZE + EXTRA_WIDTH, 
+            MapCanvas.MAP_SIZE + EXTRA_HEIGHT); 
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);  
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

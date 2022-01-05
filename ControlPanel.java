@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.event.*;
+
 import javax.swing.border.TitledBorder;
 
 import java.awt.event.*;
@@ -14,17 +15,23 @@ public class ControlPanel extends JPanel {
 
     private int resolution = 128;
 
-    public ControlPanel(Map map, CanvasMap canvasMap) {
-        // Regenerate panel
-        JPanel regenPanel = new JPanel(new FlowLayout());
-        JButton quickRegenButton = new JButton("Quick Regenerate");
-        JButton customRegenButton = new JButton("Custom Regenerate");
+    public ControlPanel(MapCanvas canvasMap) {
+        // Generation panel
+        JPanel genPanel = new JPanel(new FlowLayout());
+        JButton randomGenButton = new JButton("Generate Random");
+        JButton customGenButton = new JButton("Generate Custom");
 
         // Seed panel
         JPanel seedPanel  = new JPanel(new FlowLayout());
         JLabel seedLabel = new JLabel("Seed");
         JTextField seedTextField = new JTextField(8);
-        seedTextField.setText("" + map.getSeed());
+        seedTextField.setText("" + canvasMap.getCurrentMap().getSeed());
+
+        // Island panel
+        JPanel islandPanel = new JPanel(new FlowLayout());
+        JLabel islandLabel = new JLabel("Generate islands");
+        JCheckBox islandCheckBox = new JCheckBox();
+        islandCheckBox.setBackground(Color.LIGHT_GRAY);
 
         // Resolution panel
         JPanel resolutionPanel = new JPanel(new FlowLayout());
@@ -34,35 +41,41 @@ public class ControlPanel extends JPanel {
         
         // Realistic panel
         JPanel realisticPanel = new JPanel(new FlowLayout());
-        JLabel realisticLabel = new JLabel("Realistic Map");
+        JLabel realisticLabel = new JLabel("Realistic terrain");
         JCheckBox realisticCheckBox = new JCheckBox();
+        realisticCheckBox.setBackground(Color.LIGHT_GRAY);
 
         // Larger settings panels
         JPanel genSettingsPanel = new JPanel(new FlowLayout());
         JPanel displaySettingsPanel = new JPanel(new FlowLayout());
 
         // Add components to other components
-        regenPanel.add(quickRegenButton);
-        regenPanel.add(customRegenButton);
+        genPanel.add(randomGenButton);
+        genPanel.add(customGenButton);
         seedPanel.add(seedLabel);
         seedPanel.add(seedTextField);
+        islandPanel.add(islandLabel);
+        islandPanel.add(islandCheckBox);
         resolutionPanel.add(decResolutionButton);
         resolutionPanel.add(resoltionLabel);
         resolutionPanel.add(incResolutionButton);
         realisticPanel.add(realisticLabel);
         realisticPanel.add(realisticCheckBox);
         genSettingsPanel.add(seedPanel);
+        genSettingsPanel.add(islandPanel);
         displaySettingsPanel.add(resolutionPanel);
         displaySettingsPanel.add(realisticPanel);
-        this.add(regenPanel);
+        this.add(genPanel);
         this.add(genSettingsPanel);
         this.add(displaySettingsPanel);
 
         // Configure panels
-        regenPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 70));
-        regenPanel.setBackground(Color.LIGHT_GRAY);
+        genPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 70));
+        genPanel.setBackground(Color.LIGHT_GRAY);
         seedPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
         seedPanel.setBackground(Color.LIGHT_GRAY);
+        islandPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
+        islandPanel.setBackground(Color.LIGHT_GRAY);
         resolutionPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 40));
         resolutionPanel.setBackground(Color.LIGHT_GRAY);
         realisticPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
@@ -72,26 +85,29 @@ public class ControlPanel extends JPanel {
         genSettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         genSettingsPanel.setBorder(BorderFactory.createTitledBorder(
             new TitledBorder(genSettingsPanelBorder)));
-        genSettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 65));
+        genSettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 100));
         genSettingsPanel.setBackground(Color.WHITE);
         
         TitledBorder displaySettingsPanelBorder = BorderFactory.createTitledBorder("Display Settings");
         displaySettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         displaySettingsPanel.setBorder(BorderFactory.createTitledBorder(
             new TitledBorder(displaySettingsPanelBorder)));
-        displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 105));
+        displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 110));
         displaySettingsPanel.setBackground(Color.WHITE);
 
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, CanvasMap.MAP_SIZE));
+        this.setPreferredSize(new Dimension(PANEL_WIDTH, MapCanvas.MAP_SIZE));
         this.setBackground(Color.WHITE);
         
         // Set everything to visible
-        quickRegenButton.setVisible(true);
-        customRegenButton.setVisible(true);
-        regenPanel.setVisible(true);
+        randomGenButton.setVisible(true);
+        customGenButton.setVisible(true);
+        genPanel.setVisible(true);
         seedLabel.setVisible(true);
         seedTextField.setVisible(true);
         seedPanel.setVisible(true);
+        islandLabel.setVisible(true);
+        islandCheckBox.setVisible(true);
+        islandLabel.setVisible(true);
         genSettingsPanel.setVisible(true);
         decResolutionButton.setVisible(true);
         resoltionLabel.setVisible(true);
@@ -103,28 +119,30 @@ public class ControlPanel extends JPanel {
         displaySettingsPanel.setVisible(true);
         this.setVisible(true);
 
-        // Quick regenerate button
-        quickRegenButton.addMouseListener(new MouseAdapter() {
+        // Random generation button
+        randomGenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int seed = (int) (Math.random() * Integer.MAX_VALUE);
                 seedTextField.setText(String.valueOf(seed));
-                map.setSeed(seed);
-                map.generate(seed);
+                canvasMap.setCurrentMap(!islandCheckBox.isSelected());
+                canvasMap.getCurrentMap().setSeed(seed);
+                canvasMap.getCurrentMap().generate(seed);
                 canvasMap.repaint();
             }
         });
 
-        // Custom regenerate button
-        customRegenButton.addMouseListener(new MouseAdapter() {
+        // Custom generation button
+        customGenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int seed = validateSeed(seedTextField.getText());
-                map.setSeed(seed);
-                map.generate(seed);
+                canvasMap.setCurrentMap(!islandCheckBox.isSelected());
+                canvasMap.getCurrentMap().setSeed(seed);
+                canvasMap.getCurrentMap().generate(seed);
                 canvasMap.repaint();
             }
-        });
+        });        
 
         // Decrease resolution
         decResolutionButton.addMouseListener(new MouseAdapter() {
@@ -133,8 +151,8 @@ public class ControlPanel extends JPanel {
                 if (resolution != MIN_RESOLUTION) {
                     resolution /= 2;
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
-                    map.setSize(resolution + 1);
-                    map.generate(map.getSeed());
+                    canvasMap.getCurrentMap().setSize(resolution + 1);
+                    canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }
             }
@@ -147,23 +165,20 @@ public class ControlPanel extends JPanel {
                 if (resolution != MAX_RESOLUTION) {
                     resolution *= 2;
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
-                    map.setSize(resolution + 1);
-                    map.generate(map.getSeed());
+                    canvasMap.getCurrentMap().setSize(resolution + 1);
+                    canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }
             }
         });
 
         // Realistic check box
-        realisticCheckBox.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (realisticCheckBox.isSelected() != canvasMap.isRealistic()) {
-                    canvasMap.setRealistic(realisticCheckBox.isSelected());
-                    canvasMap.repaint();
-                }
+        realisticCheckBox.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                canvasMap.setRealistic(e.getStateChange() == 1);
+                canvasMap.repaint();
             }
-        });
+         });
     }
 
     private int validateSeed(String input) {

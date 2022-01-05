@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class CanvasMap extends Canvas {
+public class MapCanvas extends Canvas {
 
     public static final int MAP_SIZE = 513;
 
@@ -13,10 +13,14 @@ public class CanvasMap extends Canvas {
     private Image mapImage = null;
     private Graphics2D g2d;
 
-    private Map map;
+    private Map currentMap;
+    private IslandMap islandMap;
+    private StandardMap standardMap;
 
-    public CanvasMap(Map map) {
-        this.map = map;
+    public MapCanvas(IslandMap islandMap, StandardMap standardMap) {
+        this.islandMap = islandMap;
+        this.standardMap = standardMap;
+        currentMap = standardMap;
 
         this.setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
         this.setVisible(true);
@@ -24,7 +28,7 @@ public class CanvasMap extends Canvas {
 
     public void paint(Graphics g) {
         generateColorArray(isRealistic);
-        mapImage = createImage(map.getSize() * pixelSize, map.getSize() * pixelSize);
+        mapImage = createImage(currentMap.getSize() * pixelSize, currentMap.getSize() * pixelSize);
         g2d = (Graphics2D) mapImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (int i = 0; i < colorArray.length; i++) {
@@ -37,7 +41,7 @@ public class CanvasMap extends Canvas {
     }
 
     protected void generateColorArray(boolean realistic) {
-        double[][] heights = map.getHeightArray();
+        double[][] heights = currentMap.getHeightArray();
         colorArray = new Color[heights.length][heights.length];
         if (realistic) {
             for (int i = 0; i < colorArray.length; i++) {
@@ -118,6 +122,14 @@ public class CanvasMap extends Canvas {
     private int lerp(double minHeight, double maxHeight, double colorOne, double colorTwo, double height) {
         double ratio = (colorOne - colorTwo) / (minHeight - maxHeight);
         return (int) (colorOne + ((height - minHeight) * ratio));
+    }
+
+    public Map getCurrentMap() {
+        return currentMap;
+    }
+
+    public void setCurrentMap(boolean isStandardMap) {
+        currentMap = isStandardMap ? standardMap : islandMap;
     }
 
     public boolean isRealistic() {
