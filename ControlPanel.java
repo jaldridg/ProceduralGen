@@ -151,7 +151,7 @@ public class ControlPanel extends JPanel {
                 if (resolution != MIN_RESOLUTION) {
                     resolution /= 2;
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
-                    canvasMap.getCurrentMap().setSize(resolution + 1);
+                    canvasMap.setAllMapSizes(resolution + 1);
                     canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }
@@ -165,7 +165,7 @@ public class ControlPanel extends JPanel {
                 if (resolution != MAX_RESOLUTION) {
                     resolution *= 2;
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
-                    canvasMap.getCurrentMap().setSize(resolution + 1);
+                    canvasMap.setAllMapSizes(resolution + 1);
                     canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }

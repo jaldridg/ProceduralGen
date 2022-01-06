@@ -14,12 +14,13 @@ public class MapCanvas extends Canvas {
     private Graphics2D g2d;
 
     private Map currentMap;
-    private IslandMap islandMap;
     private StandardMap standardMap;
+    private IslandMap islandMap;
+    
 
-    public MapCanvas(IslandMap islandMap, StandardMap standardMap) {
-        this.islandMap = islandMap;
+    public MapCanvas(StandardMap standardMap, IslandMap islandMap) {
         this.standardMap = standardMap;
+        this.islandMap = islandMap;
         currentMap = standardMap;
 
         this.setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
@@ -122,6 +123,12 @@ public class MapCanvas extends Canvas {
     private int lerp(double minHeight, double maxHeight, double colorOne, double colorTwo, double height) {
         double ratio = (colorOne - colorTwo) / (minHeight - maxHeight);
         return (int) (colorOne + ((height - minHeight) * ratio));
+    }
+
+    public void setAllMapSizes(int mapSize) {
+        standardMap.setSize(mapSize);
+
+        islandMap.setSize(mapSize);
     }
 
     public Map getCurrentMap() {
