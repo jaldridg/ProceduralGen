@@ -13,33 +13,35 @@ public class ControlPanel extends JPanel {
     private static final int MIN_RESOLUTION = 32;
     public static final int MAX_RESOLUTION = 512;
 
+    // Controls the pixel size and map size
     private int resolution = 128;
 
     public ControlPanel(MapCanvas canvasMap) {
-        // Generation panel
+
+        // Generation panel components
         JPanel genPanel = new JPanel(new FlowLayout());
         JButton randomGenButton = new JButton("Generate Random");
         JButton customGenButton = new JButton("Generate Custom");
 
-        // Seed panel
+        // Seed panel components
         JPanel seedPanel  = new JPanel(new FlowLayout());
         JLabel seedLabel = new JLabel("Seed");
         JTextField seedTextField = new JTextField(8);
         seedTextField.setText("" + canvasMap.getCurrentMap().getSeed());
 
-        // Island panel
+        // Island panel components
         JPanel islandPanel = new JPanel(new FlowLayout());
         JLabel islandLabel = new JLabel("Generate islands");
         JCheckBox islandCheckBox = new JCheckBox();
         islandCheckBox.setBackground(Color.LIGHT_GRAY);
 
-        // Resolution panel
+        // Resolution panel components
         JPanel resolutionPanel = new JPanel(new FlowLayout());
         JButton decResolutionButton = new JButton("-");
         JLabel resoltionLabel = new JLabel("Resolution");
         JButton incResolutionButton = new JButton("+");
         
-        // Realistic panel
+        // Realistic panel components
         JPanel realisticPanel = new JPanel(new FlowLayout());
         JLabel realisticLabel = new JLabel("Realistic terrain");
         JCheckBox realisticCheckBox = new JCheckBox();
@@ -69,7 +71,7 @@ public class ControlPanel extends JPanel {
         this.add(genSettingsPanel);
         this.add(displaySettingsPanel);
 
-        // Configure panels
+        // Configure lower level panels
         genPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 70));
         genPanel.setBackground(Color.LIGHT_GRAY);
         seedPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
@@ -81,6 +83,7 @@ public class ControlPanel extends JPanel {
         realisticPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
         realisticPanel.setBackground(Color.LIGHT_GRAY);
         
+        // Configuration and custom border for generation settings panel
         TitledBorder genSettingsPanelBorder = BorderFactory.createTitledBorder("Generation Settings");
         genSettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         genSettingsPanel.setBorder(BorderFactory.createTitledBorder(
@@ -88,6 +91,7 @@ public class ControlPanel extends JPanel {
         genSettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 100));
         genSettingsPanel.setBackground(Color.WHITE);
         
+        // Configuration and custom border for display settings panel
         TitledBorder displaySettingsPanelBorder = BorderFactory.createTitledBorder("Display Settings");
         displaySettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         displaySettingsPanel.setBorder(BorderFactory.createTitledBorder(
@@ -95,10 +99,11 @@ public class ControlPanel extends JPanel {
         displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 110));
         displaySettingsPanel.setBackground(Color.WHITE);
 
+        // Configure control panel
         this.setPreferredSize(new Dimension(PANEL_WIDTH, MapCanvas.MAP_SIZE));
         this.setBackground(Color.WHITE);
         
-        // Set everything to visible
+        // Set every component to visible
         randomGenButton.setVisible(true);
         customGenButton.setVisible(true);
         genPanel.setVisible(true);
@@ -119,28 +124,46 @@ public class ControlPanel extends JPanel {
         displaySettingsPanel.setVisible(true);
         this.setVisible(true);
 
-        // Random generation button
+        /**
+         * Generates a new map with given settings and a 
+         * new auto-generated seed
+         */
         randomGenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                // Set new random seed
                 int seed = (int) (Math.random() * Integer.MAX_VALUE);
                 seedTextField.setText(String.valueOf(seed));
+
+                // Change current map (if applicable) and regenerate with new settings
                 canvasMap.setCurrentMap(!islandCheckBox.isSelected());
                 canvasMap.getCurrentMap().setSeed(seed);
                 canvasMap.getCurrentMap().generate(seed);
+
+                // Draw the new map
                 canvasMap.repaint();
             }
         });
 
-        // Custom generation button
+        /**
+         * Generates a new map with given settings using the
+         * seed in the seed text field
+         */
         customGenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int seed = validateSeed(seedTextField.getText());
-                canvasMap.setCurrentMap(!islandCheckBox.isSelected());
-                canvasMap.getCurrentMap().setSeed(seed);
-                canvasMap.getCurrentMap().generate(seed);
-                canvasMap.repaint();
+
+                // If the seed is -1, validateSeed() failed, so the map should not regenerate
+                if (seed != -1) {
+                    // Change current map (if applicable) and regenerate with new settings
+                    canvasMap.setCurrentMap(!islandCheckBox.isSelected());
+                    canvasMap.getCurrentMap().setSeed(seed);
+                    canvasMap.getCurrentMap().generate(seed);
+
+                    // Draw the new map
+                    canvasMap.repaint();
+                } 
             }
         });        
 

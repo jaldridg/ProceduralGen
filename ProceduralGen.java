@@ -7,15 +7,23 @@ public class ProceduralGen extends JComponent implements Runnable {
     private final static int EXTRA_WIDTH = 16;
     private final static int EXTRA_HEIGHT = 39;
 
+    // Both availible maps
     IslandMap islandMap;
     StandardMap standardMap;
+
+    // The canvas the maps are drawn onto
     MapCanvas mapCanvas;
+    
     ControlPanel controls;
     
     public static void main(String args[]) {
         SwingUtilities.invokeLater(new ProceduralGen());
     }
 
+    /**
+     * Sets up the Prodedural Gen window, adding the control panel and 
+     * the map Canvas. 
+     */
     public void run() {
         JFrame frame = new JFrame("Procedural Gen");
         islandMap = new IslandMap();
