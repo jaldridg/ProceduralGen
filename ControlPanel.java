@@ -1,6 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.*;
-
 import javax.swing.border.TitledBorder;
 
 import java.awt.event.*;
@@ -167,35 +165,61 @@ public class ControlPanel extends JPanel {
             }
         });        
 
-        // Decrease resolution
+        /**
+         * Decreases resolution by generating the same map with less
+         * pixels but a larger pixel size. This makes the map appear
+         * less defined since a smaller map was generated but drawn
+         * larger to fit in the canvas.
+         */
         decResolutionButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (resolution != MIN_RESOLUTION) {
                     resolution /= 2;
+
+                    // The pixel size is 1 at highest resolution and doubles
+                    // when resoultion is halved to preserve the size of the map
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
+
+                    // Size is set to 2^n + 1 for the diamond-square generation to work
                     canvasMap.setAllMapSizes(resolution + 1);
+
+                    // Rengerate the lower resolution map and draw it on the canvas
                     canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }
             }
         });
 
-        // Increase resolution
+        /**
+         * Increases resolution by generating the same map with more
+         * pixels but a smaller pixel size. This makes the map appear
+         * more defined since a larger map was generated but drawn
+         * smaller to fit in the canvas.
+         */
         incResolutionButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (resolution != MAX_RESOLUTION) {
                     resolution *= 2;
+
+                    // The pixel size is 1 at highest resolution and doubles
+                    // when resoultion is halved to preserve the size of the map
                     canvasMap.setPixelSize(MAX_RESOLUTION / resolution);
+
+                    // Size is set to 2^n + 1 for the diamond-square generation to work
                     canvasMap.setAllMapSizes(resolution + 1);
+
+                    // Rengerate the higher resolution map and draw it on the canvas
                     canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }
             }
         });
 
-        // Realistic check box
+        /**
+         * Tells the canvas to draw maps realistically or not
+         */
         realisticCheckBox.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 canvasMap.setRealistic(e.getStateChange() == 1);
@@ -204,8 +228,15 @@ public class ControlPanel extends JPanel {
          });
     }
 
+    /**
+     * @param input The text input to turn into a seed
+     * @return A seed taken from the input. If the seed was too long
+     * or contained something other than digits, returns -1
+     */
     private int validateSeed(String input) {
+        // The default seed if tests fail
         int seed = -1;
+
         try {
             if (input.length() != 0) {
                 seed = Integer.parseInt(input);
