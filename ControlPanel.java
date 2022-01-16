@@ -175,7 +175,7 @@ public class ControlPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (resolution != MIN_RESOLUTION) {
-                    resolution /= 2;
+                    resolution >>= 1;
 
                     // The pixel size is 1 at highest resolution and doubles
                     // when resoultion is halved to preserve the size of the map
@@ -201,7 +201,7 @@ public class ControlPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (resolution != MAX_RESOLUTION) {
-                    resolution *= 2;
+                    resolution <<= 1;
 
                     // The pixel size is 1 at highest resolution and doubles
                     // when resoultion is halved to preserve the size of the map

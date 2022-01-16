@@ -26,6 +26,9 @@ public abstract class Map {
         normalizeHeightArray();
     }
 
+    /**
+     * Generates height array using the diamond-square algorithm
+     */
     protected void generateHeightArray() {
         // Initialize the array and variables
         heights = new double[size][size];
@@ -38,41 +41,44 @@ public abstract class Map {
         heights[chunkSize][0] = rng.nextDouble();
         heights[chunkSize][chunkSize] = rng.nextDouble();
         
+        // Generate chunks, then generate chunks in the chunks, and so on
         while (chunkSize > 1) {
             generateSquareChunk(chunkSize, randomFactor);
             generateDiamondChunk(chunkSize, randomFactor);
-            chunkSize /= 2;
+            chunkSize >>= 1;
             randomFactor /= 2;
         }   
     }
 
     protected void generateDiamondChunk(int chunkSize, double randomFactor) {
-        int halfChunk = chunkSize / 2;
+        int halfChunk = chunkSize >> 1;
         for (int i = 0; i <= size - 1; i += halfChunk) {
             for (int j = ((i + halfChunk) % chunkSize); j <= size - 1; j += chunkSize) {
                 double averageValue;
-                // Top edge case
+                // Top edge case (ommit value above current point when calculating average)
                 if (i == 0) {
                     averageValue = (heights[i + halfChunk][j]
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
-                // Bottom edge case
+
+                // Bottom edge case (ommit value under current point calculating average)
                 } else if (i == size - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 3;
 
-                // Left edge case
+                // Left edge case (ommit value left of current point when calculating average)
                 } else if (j == 0) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i + halfChunk][j]
                                   + heights[i][j + halfChunk]) / 3;
 
-                // Right edge case
+                // Right edge case (ommit value right of current point when calculating average)
                 } else if (j == size - 1) {
                     averageValue = (heights[i - halfChunk][j]
                                   + heights[i + halfChunk][j]
                                   + heights[i][j - halfChunk]) / 3;
+
                 // Center (normal generation)
                 } else {
                     averageValue = (heights[i - halfChunk][j]
@@ -86,7 +92,7 @@ public abstract class Map {
     }
 
     protected void generateSquareChunk(int chunkSize, double randomFactor) {
-        int halfChunk = chunkSize / 2;
+        int halfChunk = chunkSize >> 1;
         for (int i = 0; i < size - 1; i += chunkSize) {
             for (int j = 0; j < size - 1; j += chunkSize) {
                 double average = (heights[i][j] 
@@ -98,6 +104,11 @@ public abstract class Map {
         }
     }
 
+    /**
+     * Normalizes the height array by first finding the min and max,
+     * then making the heights positive by subtracting the min.
+     * Finally, the heights become 0 to 1 after dividing by the range
+     */
     protected void normalizeHeightArray() {
         // Find max and min
         double max = heights[0][0];
@@ -118,8 +129,6 @@ public abstract class Map {
             }
         }
     }
-
-
 
     public void setSeed(int seed) {
         this.seed = seed;
