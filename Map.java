@@ -3,7 +3,7 @@ import java.util.Random;
 
 public abstract class Map {
     
-    protected int size; // In pixels
+    protected int size; // In pixels; must be 2^n + 1
 
     protected int seed;
     protected Random rng;
@@ -35,7 +35,7 @@ public abstract class Map {
         int chunkSize = size - 1;
         double randomFactor = 10.0;
 
-        // Generate four corners
+        // Generate the four corners for the first square chunk
         heights[0][0] = rng.nextDouble();
         heights[0][chunkSize] = rng.nextDouble();
         heights[chunkSize][0] = rng.nextDouble();
@@ -50,9 +50,22 @@ public abstract class Map {
         }   
     }
 
+    /**
+     * Generates new heights by averaging a point's surrounding heights in a 
+     * diamond shape around the point. Then, it adds randomness to the averaged 
+     * height to generate new height values on the new point. When a new height 
+     * is too close to the edge of the Map to sample all four surrounding points, 
+     * it uses only the three valid surrounding heights.
+     * 
+     * @param chunkSize The number of pixels from opposite corners of the diamond.
+     * A smaller chunkSize means the sampled heights lie closer to the new height.
+     * @param randomFactor The amount of randomness added onto the averaged heights.
+     * It's proportional to chunkSize
+     */
     protected void generateDiamondChunk(int chunkSize, double randomFactor) {
         int halfChunk = chunkSize >> 1;
         for (int i = 0; i <= size - 1; i += halfChunk) {
+            // Offsets the height in every other row by halfChunk
             for (int j = ((i + halfChunk) % chunkSize); j <= size - 1; j += chunkSize) {
                 double averageValue;
                 // Top edge case (ommit value above current point when calculating average)
@@ -91,6 +104,16 @@ public abstract class Map {
         }
     }
 
+    /**
+     * Generates new heights by averaging a point's surrounding heights in a 
+     * square shape around the point. Then, it adds randomness to the averaged 
+     * height to generate new height values on the new point. 
+     * 
+     * @param chunkSize The number of pixels measuring the side of the square.
+     * A smaller chunkSize means the sampled heights lie closer to the new height.
+     * @param randomFactor The amount of randomness added onto the averaged heights.
+     * It's proportional to chunkSize
+     */
     protected void generateSquareChunk(int chunkSize, double randomFactor) {
         int halfChunk = chunkSize >> 1;
         for (int i = 0; i < size - 1; i += chunkSize) {

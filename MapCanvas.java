@@ -8,11 +8,14 @@ public class MapCanvas extends Canvas {
 
     private int pixelSize = 4;
 
+    // Whether or not a realistic map should be drawn
     private boolean isRealistic;
 
     private Image mapImage = null;
     private Graphics2D g2d;
 
+    // The two maps that could be generated. The canvas will draw
+    // the currentMap which could be set to either of the two maps
     private Map currentMap;
     private StandardMap standardMap;
     private IslandMap islandMap;
@@ -27,6 +30,9 @@ public class MapCanvas extends Canvas {
         this.setVisible(true);
     }
 
+    /**
+     * Generates the colors and displays them on an image
+     */
     public void paint(Graphics g) {
         generateColorArray(isRealistic);
         mapImage = createImage(currentMap.getSize() * pixelSize, currentMap.getSize() * pixelSize);
@@ -38,9 +44,16 @@ public class MapCanvas extends Canvas {
                 g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
             }
         }
+        // Offsets the image slightly since our mapsize is not exactly cut in half
+        // when we change the resolution since our size is some power of two PLUS ONE
         g.drawImage(mapImage, -pixelSize / 2, -pixelSize / 2, null);        
     }
 
+    /**
+     * Generates the color array using the currentMap's height array
+     * 
+     * @param realistic If {@code true}, the generated colors will be realistic
+     */
     protected void generateColorArray(boolean realistic) {
         double[][] heights = currentMap.getHeightArray();
         colorArray = new Color[heights.length][heights.length];
@@ -59,6 +72,12 @@ public class MapCanvas extends Canvas {
         } 
     }
     
+    /**
+     * Uses a handful of colors and height cutoffs to generate a color
+     * 
+     * @param height The height value from 0 to 1
+     * @return The {@code Color} of the terrain at the given height
+     */
     protected Color generateColor(double height) {
         // Dark blue
         if (height < 0.2) {
@@ -86,6 +105,14 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Uses linear interpolation to generate custom colors from
+     * a given height. Colors should be similar to {@code generateColor(double height)}
+     * 
+     * @param height The height value from 0 to 1
+     * @return The {@code Color} of the terrain at the given height
+     * @see {@code generateColor(double height)}
+     */
     protected Color generateRealisticColor(double height) {
         // Deep to shallow ocean
         if (height < 0.3) {
@@ -120,6 +147,17 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Produces a linear interporlated color value
+     * 
+     * @param minHeight The lowest possible height input
+     * @param maxHeight The highest possible height input
+     * @param colorOne The red, green, or blue color value of the terrain at the {@code minHeight}
+     * @param colorTwo The red, green, or blue color value of the terrain at the {@code maxHeight}
+     * @param height The height value, which should be in between {@code minHeight} and {@code maxHeight}
+     * @return A linear interporlated color value in between {@code colorOne} and {@code colorTwo}
+     * based on the {@code height}'s distance between {@code minHeight} and {@code maxHeight}
+     */
     private int lerp(double minHeight, double maxHeight, double colorOne, double colorTwo, double height) {
         double ratio = (colorOne - colorTwo) / (minHeight - maxHeight);
         return (int) (colorOne + ((height - minHeight) * ratio));
@@ -127,7 +165,6 @@ public class MapCanvas extends Canvas {
 
     public void setAllMapSizes(int mapSize) {
         standardMap.setSize(mapSize);
-
         islandMap.setSize(mapSize);
     }
 

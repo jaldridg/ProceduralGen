@@ -1,4 +1,5 @@
 
+// An un-used map for testing generation algorithms
 public class TestMap extends Map {
     
     public TestMap() {

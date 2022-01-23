@@ -5,14 +5,18 @@ public class IslandMap extends Map {
         super();
     }
 
+    // Generates normal map then applies islandDistortion()
     public void generate(int seed) {
         super.generate(seed);
 
         islandDistortion();
     }
 
+    /**
+     * Reduces the heights around the edge of the map by subtracting the square
+     * of the distance from the center of the map.
+     */
     private void islandDistortion() {
-        // Reduce heights around the edge of the map
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 double distI = Math.pow((((double) i) / size - 0.5), 2);
