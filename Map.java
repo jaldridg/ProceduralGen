@@ -33,7 +33,7 @@ public abstract class Map {
         // Initialize the array and variables
         heights = new float[size][size];
         int chunkSize = size - 1;
-        float randomFactor = 10.0f;
+        float randomFactor = Constants.RANDOM_FACTOR;
 
         // Generate the four corners for the first square chunk
         heights[0][0] = rng.nextFloat();
@@ -44,7 +44,7 @@ public abstract class Map {
         // Generate chunks, then generate chunks in the chunks, and so on
         while (chunkSize > 1) {
             generateSquareChunk(chunkSize, randomFactor);
-            generateDiamondChunk(chunkSize, randomFactor);
+            generateDiamondChunk(chunkSize,randomFactor);
             chunkSize >>= 1;
             randomFactor /= 2;
         }   
@@ -119,9 +119,9 @@ public abstract class Map {
         for (int i = 0; i < size - 1; i += chunkSize) {
             for (int j = 0; j < size - 1; j += chunkSize) {
                 float average = (heights[i][j] 
-                                + heights[i][j + chunkSize] 
-                                + heights[i + chunkSize][j] 
-                                + heights[i + chunkSize][j + chunkSize]) / 4;
+                               + heights[i][j + chunkSize] 
+                               + heights[i + chunkSize][j] 
+                               + heights[i + chunkSize][j + chunkSize]) / 4;
                 heights[i + halfChunk][j + halfChunk] = average + (rng.nextFloat() - 0.5f) * randomFactor;
             }
         }
@@ -145,10 +145,13 @@ public abstract class Map {
                 }
             }
         }
+        // Calculate values before the loop for speed
+        float range = Math.abs(min) + Math.abs(max);
+        float rangeInv = 1 / range;
         //Normalize
         for (int i = 0; i < heights.length; i++) {
             for (int j = 0; j < heights[i].length; j++) {
-                heights[i][j] = (heights[i][j] - min) / (Math.abs(min) + Math.abs(max));
+                heights[i][j] = (heights[i][j] - min) * rangeInv;
             }
         }
     }

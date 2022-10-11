@@ -22,6 +22,8 @@ public class MapCanvas extends Canvas {
     
 
     public MapCanvas(StandardMap standardMap, IslandMap islandMap) {
+        isRealistic = true;
+
         this.standardMap = standardMap;
         this.islandMap = islandMap;
         currentMap = standardMap;
@@ -131,7 +133,7 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Produces a linearly interporlated color value
+     * Produces a linearly interporlated color value from a range of heights
      * 
      * @param minHeight The lowest possible height input
      * @param maxHeight The highest possible height input

@@ -44,6 +44,7 @@ public class ControlPanel extends JPanel {
         JLabel realisticLabel = new JLabel("Realistic terrain");
         JCheckBox realisticCheckBox = new JCheckBox();
         realisticCheckBox.setBackground(Color.LIGHT_GRAY);
+        realisticCheckBox.setSelected(true);
 
         // Larger settings panels
         JPanel genSettingsPanel = new JPanel(new FlowLayout());
