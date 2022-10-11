@@ -19,8 +19,8 @@ public class IslandMap extends Map {
     private void islandDistortion() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                double distI = Math.pow((((double) i) / size - 0.5), 2);
-                double distJ = Math.pow((((double) j) / size - 0.5), 2);
+                float distI = (float) Math.pow((((double) i) / size - 0.5), 2);
+                float distJ = (float) Math.pow((((double) j) / size - 0.5), 2);
                 heights[i][j] = Math.max(0, heights[i][j] - (distI + distJ) * 2);
             }
         }

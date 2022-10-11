@@ -8,7 +8,7 @@ public abstract class Map {
     protected int seed;
     protected Random rng;
 
-    protected double[][] heights;
+    protected float[][] heights;
 
     protected Image mapImage = null;
     protected Graphics2D g2d;
@@ -31,15 +31,15 @@ public abstract class Map {
      */
     protected void generateHeightArray() {
         // Initialize the array and variables
-        heights = new double[size][size];
+        heights = new float[size][size];
         int chunkSize = size - 1;
-        double randomFactor = 10.0;
+        float randomFactor = 10.0f;
 
         // Generate the four corners for the first square chunk
-        heights[0][0] = rng.nextDouble();
-        heights[0][chunkSize] = rng.nextDouble();
-        heights[chunkSize][0] = rng.nextDouble();
-        heights[chunkSize][chunkSize] = rng.nextDouble();
+        heights[0][0] = rng.nextFloat();
+        heights[0][chunkSize] = rng.nextFloat();
+        heights[chunkSize][0] = rng.nextFloat();
+        heights[chunkSize][chunkSize] = rng.nextFloat();
         
         // Generate chunks, then generate chunks in the chunks, and so on
         while (chunkSize > 1) {
@@ -62,12 +62,12 @@ public abstract class Map {
      * @param randomFactor The amount of randomness added onto the averaged heights.
      * It's proportional to chunkSize
      */
-    protected void generateDiamondChunk(int chunkSize, double randomFactor) {
+    protected void generateDiamondChunk(int chunkSize, float randomFactor) {
         int halfChunk = chunkSize >> 1;
         for (int i = 0; i <= size - 1; i += halfChunk) {
             // Offsets the height in every other row by halfChunk
             for (int j = ((i + halfChunk) % chunkSize); j <= size - 1; j += chunkSize) {
-                double averageValue;
+                float averageValue;
                 // Top edge case (ommit value above current point when calculating average)
                 if (i == 0) {
                     averageValue = (heights[i + halfChunk][j]
@@ -99,7 +99,7 @@ public abstract class Map {
                                   + heights[i][j - halfChunk]
                                   + heights[i][j + halfChunk]) / 4;
                 }
-                heights[i][j] = averageValue + (rng.nextDouble() - 0.5) * randomFactor;
+                heights[i][j] = averageValue + (rng.nextFloat() - 0.5f) * randomFactor;
             }
         }
     }
@@ -114,15 +114,15 @@ public abstract class Map {
      * @param randomFactor The amount of randomness added onto the averaged heights.
      * It's proportional to chunkSize
      */
-    protected void generateSquareChunk(int chunkSize, double randomFactor) {
+    protected void generateSquareChunk(int chunkSize, float randomFactor) {
         int halfChunk = chunkSize >> 1;
         for (int i = 0; i < size - 1; i += chunkSize) {
             for (int j = 0; j < size - 1; j += chunkSize) {
-                double average = (heights[i][j] 
+                float average = (heights[i][j] 
                                 + heights[i][j + chunkSize] 
                                 + heights[i + chunkSize][j] 
                                 + heights[i + chunkSize][j + chunkSize]) / 4;
-                heights[i + halfChunk][j + halfChunk] = average + (rng.nextDouble() - 0.5) * randomFactor;
+                heights[i + halfChunk][j + halfChunk] = average + (rng.nextFloat() - 0.5f) * randomFactor;
             }
         }
     }
@@ -134,8 +134,8 @@ public abstract class Map {
      */
     protected void normalizeHeightArray() {
         // Find max and min
-        double max = heights[0][0];
-        double min = heights[0][0];
+        float max = heights[0][0];
+        float min = heights[0][0];
         for (int i = 0; i < heights.length; i++) {
             for (int j = 0; j < heights[i].length; j++) {
                 if (heights[i][j] > max) {
@@ -169,7 +169,7 @@ public abstract class Map {
         this.size = size;
     }
 
-    public double[][] getHeightArray() {
+    public float[][] getHeightArray() {
         return heights;
     }
 }

@@ -55,7 +55,7 @@ public class MapCanvas extends Canvas {
      * @param realistic If {@code true}, the generated colors will be realistic
      */
     protected void generateColorArray(boolean realistic) {
-        double[][] heights = currentMap.getHeightArray();
+        float[][] heights = currentMap.getHeightArray();
         colorArray = new Color[heights.length][heights.length];
         if (realistic) {
             for (int i = 0; i < colorArray.length; i++) {
@@ -78,7 +78,7 @@ public class MapCanvas extends Canvas {
      * @param height The height value from 0 to 1
      * @return The {@code Color} of the terrain at the given height
      */
-    protected Color generateColor(double height) {
+    protected Color generateColor(float height) {
         // Dark blue
         if (height < 0.2) {
             return new Color(0, 0, 150);
@@ -113,7 +113,7 @@ public class MapCanvas extends Canvas {
      * @return The {@code Color} of the terrain at the given height
      * @see {@code generateColor(double height)}
      */
-    protected Color generateRealisticColor(double height) {
+    protected Color generateRealisticColor(float height) {
         // Deep to shallow ocean
         if (height < 0.3) {
             int gValue = lerp(0.0, 0.3, 0, 150, height);
