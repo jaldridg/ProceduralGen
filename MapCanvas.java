@@ -54,7 +54,7 @@ public class MapCanvas extends Canvas {
      * 
      * @param realistic If {@code true}, the generated colors will be realistic
      */
-    protected void generateColorArray(boolean realistic) {
+    private void generateColorArray(boolean realistic) {
         float[][] heights = currentMap.getHeightArray();
         colorArray = new Color[heights.length][heights.length];
         if (realistic) {
@@ -78,89 +78,72 @@ public class MapCanvas extends Canvas {
      * @param height The height value from 0 to 1
      * @return The {@code Color} of the terrain at the given height
      */
-    protected Color generateColor(float height) {
-        // Dark blue
-        if (height < 0.2) {
-            return new Color(0, 0, 150);
-
-        // Light blue
-        } else if (height < 0.3) {
-            return new Color(0, 100, 150);
-
-        // Sand
-        } else if (height < 0.45) {
-            return new Color(255, 255, 100);
-
-        // Light grass
-        } else if (height < 0.6) {
-            return new Color(40, 150, 0);
-
-        // Dark grass
-        } else if (height < 0.80) {
-            return new Color(25, 100, 0);
-
-        // Mountain
-        } else {
-            return new Color(80, 40, 0);
-        }
+    private Color generateColor(float height) {
+        if      (height > Constants.MOUNTAIN_HEIGHT)      { return Constants.MOUNTAIN_COLOR; }
+        else if (height > Constants.FOREST_HEIGHT)        { return Constants.FOREST_COLOR; } 
+        else if (height > Constants.GRASS_HEIGHT)         { return Constants.GRASS_COLOR; }
+        else if (height > Constants.SAND_HEIGHT)          { return Constants.SAND_COLOR; }
+        else if (height > Constants.SHALLOW_WATER_HEIGHT) { return Constants.SHALLOW_WATER_COLOR; }
+        else                                              { return Constants.DEEP_WATER_COLOR; }
     }
 
     /**
      * Uses linear interpolation to generate custom colors from
-     * a given height. Colors should be similar to {@code generateColor(double height)}
+     * a given height. Colors should be similar to {@code generateColor(float height)}
      * 
      * @param height The height value from 0 to 1
      * @return The {@code Color} of the terrain at the given height
-     * @see {@code generateColor(double height)}
+     * @see {@code generateColor(float height)}
      */
-    protected Color generateRealisticColor(float height) {
-        // Deep to shallow ocean
-        if (height < 0.3) {
-            int gValue = lerp(0.0, 0.3, 0, 150, height);
+    private Color generateRealisticColor(float height) {
+
+        // Mountain to snowy/rocky mountain
+        if (height > Constants.MOUNTAIN_HEIGHT) {
+            int rValue = lerp(Constants.MOUNTAIN_HEIGHT, Constants.SNOW_HEIGHT, 80, 125, height);
+            int gValue = lerp(Constants.MOUNTAIN_HEIGHT, Constants.SNOW_HEIGHT, 40, 125, height);
+            int bValue = lerp(Constants.MOUNTAIN_HEIGHT, Constants.SNOW_HEIGHT, 0, 125, height);
+            return new Color(rValue, gValue, bValue);
+
+        // Forest to mountain
+        } else if (height > Constants.FOREST_HEIGHT) {
+            int rValue = lerp(Constants.FOREST_HEIGHT, Constants.MOUNTAIN_HEIGHT, 25, 80, height);
+            int gValue = lerp(Constants.FOREST_HEIGHT, Constants.MOUNTAIN_HEIGHT, 100, 40, height);
+            return new Color(rValue, gValue, 0);
+
+        // Grass to forest
+        } else if (height > Constants.GRASS_HEIGHT) {
+            int rValue = lerp(Constants.GRASS_HEIGHT, Constants.FOREST_HEIGHT, 40, 25, height);
+            int gValue = lerp(Constants.GRASS_HEIGHT, Constants.FOREST_HEIGHT, 150, 100, height);
+            return new Color(rValue, gValue, 0);
+
+        // Sand to grass
+        } else if (height > Constants.SAND_HEIGHT) {
+            int rValue = lerp(Constants.SAND_HEIGHT, Constants.GRASS_HEIGHT, 255, 40, height);
+            int gValue = lerp(Constants.SAND_HEIGHT, Constants.GRASS_HEIGHT, 255, 150, height);
+            int bValue = lerp(Constants.SAND_HEIGHT, Constants.GRASS_HEIGHT, 150, 0, height);
+            return new Color(rValue, gValue, bValue);
+
+        // Deep water to shallow, sand level water
+        } else { 
+            int gValue = lerp(Constants.DEEP_WATER_HEIGHT, Constants.SAND_HEIGHT, 0, 150, height);
             return new Color(0, gValue, 150);
-
-        // Sand to light grass
-        } else if (height < 0.45) {
-            int rValue = lerp(0.3, 0.45, 255, 40, height);
-            int gValue = lerp(0.3, 0.45, 255, 150, height);
-            int bValue = lerp(0.3, 0.45, 150, 0, height);
-            return new Color(rValue, gValue, bValue);
-
-        // Light grass to dark grass
-        } else if (height < 0.6) {
-            int rValue = lerp(0.45, 0.6, 40, 25, height);
-            int gValue = lerp(0.45, 0.6, 150, 100, height);
-            return new Color(rValue, gValue, 0);
-
-        // Dark grass to mountain
-        } else if (height < 0.80) {
-            int rValue = lerp(0.6, 0.8, 25, 80, height);
-            int gValue = lerp(0.6, 0.8, 100, 40, height);
-            return new Color(rValue, gValue, 0);
-
-        // Mountain to rocky/snowy mountain
-        } else {
-            int rValue = lerp(0.8, 1.0, 80, 125, height);
-            int gValue = lerp(0.8, 1.0, 40, 125, height);
-            int bValue = lerp(0.8, 1.0, 0, 125, height);
-            return new Color(rValue, gValue, bValue);
         }
     }
 
     /**
-     * Produces a linear interporlated color value
+     * Produces a linearly interporlated color value
      * 
      * @param minHeight The lowest possible height input
      * @param maxHeight The highest possible height input
-     * @param colorOne The red, green, or blue color value of the terrain at the {@code minHeight}
-     * @param colorTwo The red, green, or blue color value of the terrain at the {@code maxHeight}
+     * @param minColor The red, green, or blue color value of the terrain at the {@code minHeight}
+     * @param maxColor The red, green, or blue color value of the terrain at the {@code maxHeight}
      * @param height The height value, which should be in between {@code minHeight} and {@code maxHeight}
      * @return A linear interporlated color value in between {@code colorOne} and {@code colorTwo}
      * based on the {@code height}'s distance between {@code minHeight} and {@code maxHeight}
      */
-    private int lerp(double minHeight, double maxHeight, double colorOne, double colorTwo, double height) {
-        double ratio = (colorOne - colorTwo) / (minHeight - maxHeight);
-        return (int) (colorOne + ((height - minHeight) * ratio));
+    private int lerp(float minHeight, float maxHeight, int minColor, int maxColor, float height) {
+        float ratio = (minColor - maxColor) / (minHeight - maxHeight);
+        return (int) (minColor + ((height - minHeight) * ratio));
     }
 
     public void setAllMapSizes(int mapSize) {
