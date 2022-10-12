@@ -5,13 +5,15 @@ public abstract class Map {
     
     protected int size; // In pixels; must be 2^n + 1
 
+    protected float[][] heights;
+
     protected int seed;
     protected Random rng;
 
-    protected float[][] heights;
-
     protected Image mapImage = null;
     protected Graphics2D g2d;
+
+    protected AfterEffectsGenerator aeg;
 
     public Map() {
         this.size = 129;
@@ -24,6 +26,8 @@ public abstract class Map {
 
         generateHeightArray();
         normalizeHeightArray();
+
+        aeg = new AfterEffectsGenerator(size, heights, rng);
     }
 
     /**
@@ -44,7 +48,7 @@ public abstract class Map {
         // Generate chunks, then generate chunks in the chunks, and so on
         while (chunkSize > 1) {
             generateSquareChunk(chunkSize, randomFactor);
-            generateDiamondChunk(chunkSize,randomFactor);
+            generateDiamondChunk(chunkSize, randomFactor);
             chunkSize >>= 1;
             randomFactor /= 2;
         }   
@@ -154,6 +158,10 @@ public abstract class Map {
                 heights[i][j] = (heights[i][j] - min) * rangeInv;
             }
         }
+    }
+
+    protected void generateAfterEffects() {
+        aeg.generateAfterEffects();
     }
 
     public void setSeed(int seed) {

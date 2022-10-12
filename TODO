@@ -1,0 +1,11 @@
+
+LAST TIME
+- Using LinkedLists for the river but its complaining about type
+- Writing the algo to find the lowest point when generating a river
+
+IN PROGRESS
+- Rivers using the AfterEffectsGenerator
+
+TODO
+- Remove the normalization of height by simpily generating heights within range
+- Use shorts for height to reduce memory and open up bitwise operations
