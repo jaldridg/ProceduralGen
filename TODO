@@ -7,5 +7,9 @@ IN PROGRESS
 - Rivers using the AfterEffectsGenerator
 
 TODO
+- Clear the //TODOs in code
 - Remove the normalization of height by simpily generating heights within range
 - Use shorts for height to reduce memory and open up bitwise operations
+- Sort the heights using some nlogn algo
+    > Then, we can only generate rivers if there's a mountain in the first place since a lot of islands aren't very tall
+- When rivers are stuck in a valley, generate a lake

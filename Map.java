@@ -183,4 +183,8 @@ public abstract class Map {
     public float[][] getHeightArray() {
         return heights;
     }
+
+    public int[][][] getRiverArrays() {
+        return aeg.getRiverArrays();
+    }
 }

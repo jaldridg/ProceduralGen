@@ -40,10 +40,21 @@ public class MapCanvas extends Canvas {
         mapImage = createImage(currentMap.getSize() * pixelSize, currentMap.getSize() * pixelSize);
         g2d = (Graphics2D) mapImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        // Generate the map
         for (int i = 0; i < colorArray.length; i++) {
             for (int j = 0; j < colorArray[i].length; j++) {
                 g2d.setColor(colorArray[i][j]);
                 g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+            }
+        }
+        // If realistic, generate the rivers on top
+        if (isRealistic) {
+            g2d.setColor(Constants.SHALLOW_WATER_COLOR);
+            int[][][] riverArrays = currentMap.getRiverArrays();
+            for (int i = 0; i < riverArrays.length; i++) {
+                for (int j = 0; j < riverArrays[i].length; j++) {
+                    g2d.fillRect(riverArrays[i][j][0] * pixelSize, riverArrays[i][j][1] * pixelSize, pixelSize, pixelSize);
+                }
             }
         }
         // Offsets the image slightly since our mapsize is not exactly cut in half
