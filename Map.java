@@ -13,8 +13,6 @@ public abstract class Map {
     protected Image mapImage = null;
     protected Graphics2D g2d;
 
-    protected AfterEffectsGenerator aeg;
-
     public Map() {
         this.size = 129;
         seed = (int) (Math.random() * Integer.MAX_VALUE);
@@ -26,8 +24,6 @@ public abstract class Map {
 
         generateHeightArray();
         normalizeHeightArray();
-
-        aeg = new AfterEffectsGenerator(size, heights, rng);
     }
 
     /**
@@ -160,8 +156,8 @@ public abstract class Map {
         }
     }
 
-    protected void generateAfterEffects() {
-        aeg.generateAfterEffects();
+    public Random getRNG() {
+        return rng;
     }
 
     public void setSeed(int seed) {
@@ -180,11 +176,11 @@ public abstract class Map {
         this.size = size;
     }
 
-    public float[][] getHeightArray() {
-        return heights;
+    public float getHeight(int x, int y) {
+        return heights[x][y];
     }
 
-    public int[][][] getRiverArrays() {
-        return aeg.getRiverArrays();
+    public float getHeight(Point<Integer> point) {
+        return heights[point.getX()][point.getY()];
     }
 }

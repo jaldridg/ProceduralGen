@@ -139,6 +139,10 @@ public class ControlPanel extends JPanel {
                 canvasMap.getCurrentMap().setSeed(seed);
                 canvasMap.getCurrentMap().generate(seed);
 
+                if (realisticCheckBox.isSelected()) {
+                    canvasMap.getAEG().generateAfterEffects();
+                }
+
                 // Draw the new map
                 canvasMap.repaint();
             }
@@ -159,6 +163,11 @@ public class ControlPanel extends JPanel {
                     canvasMap.setCurrentMap(!islandCheckBox.isSelected());
                     canvasMap.getCurrentMap().setSeed(seed);
                     canvasMap.getCurrentMap().generate(seed);
+
+                    if (realisticCheckBox.isSelected()) {
+                        canvasMap.getAEG().generateAfterEffects();
+                    }
+    
 
                     // Draw the new map
                     canvasMap.repaint();
@@ -186,6 +195,9 @@ public class ControlPanel extends JPanel {
                     canvasMap.setAllMapSizes(resolution + 1);
 
                     // Rengerate the lower resolution map and draw it on the canvas
+                    if (realisticCheckBox.isSelected()) {
+                        canvasMap.getAEG().generateAfterEffects();
+                    }    
                     canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }
@@ -212,6 +224,9 @@ public class ControlPanel extends JPanel {
                     canvasMap.setAllMapSizes(resolution + 1);
 
                     // Rengerate the higher resolution map and draw it on the canvas
+                    if (realisticCheckBox.isSelected()) {
+                        canvasMap.getAEG().generateAfterEffects();
+                    }    
                     canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }

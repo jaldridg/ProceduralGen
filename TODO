@@ -1,15 +1,22 @@
 
 LAST TIME
-- Using LinkedLists for the river but its complaining about type
-- Writing the algo to find the lowest point when generating a river
+- Rivers work, however:
+    > It crashes when generating a river on the edge
+    > Most rivers don't flow to the ocean, which is not how rivers work
+    > The code is a mess
 
 IN PROGRESS
 - Rivers using the AfterEffectsGenerator
+    > When changing the resolution, the river locations change, but the seed is the same so they shouldn't
+    > When rivers are stuck in a valley, generate a lake - recursive solution?
 
 TODO
 - Clear the //TODOs in code
+- Make folders for the classes and structure the project instead of throwing everything in the same folder
 - Remove the normalization of height by simpily generating heights within range
 - Use shorts for height to reduce memory and open up bitwise operations
 - Sort the heights using some nlogn algo
     > Then, we can only generate rivers if there's a mountain in the first place since a lot of islands aren't very tall
-- When rivers are stuck in a valley, generate a lake
+- More types of maps like a mountain map 
+- Scrollable terrain, or maps too big to fit on the screen that can be dragged around
+- Biomes by procedurally generating temperature and moisture

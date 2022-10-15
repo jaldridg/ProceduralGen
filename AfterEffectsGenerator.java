@@ -6,15 +6,15 @@ public class AfterEffectsGenerator {
 
     private int size;
 
-    private float[][] heights;
-
-    private int[][][] rivers;
+    private River[] rivers;
 
     private Random rng;
 
-    public AfterEffectsGenerator(int size, float[][] heights, Random rng) {
+    private Map map;
+
+    public AfterEffectsGenerator(int size, Map map, Random rng) {
         this.size = size;
-        this.heights = heights;
+        this.map = map;
         this.rng = rng;
 
         generateAfterEffects();
@@ -27,74 +27,70 @@ public class AfterEffectsGenerator {
     private void generateRivers() {
         // int numRivers = Math.abs((int) rng.nextGaussian());
         int numRivers = 25;
-        rivers = new int[numRivers][][];
+        rivers = new River[numRivers];
         for (int i = 0; i < numRivers; i++) {
             // TODO: Get a point on a mountain that isn't frozen from being too high
             // Randomly generate it for now
-            int x = (int) (rng.nextFloat() * size);
-            int y = (int) (rng.nextFloat() * size);
+            int x, y;
+            do {
+                x = (int) (rng.nextFloat() * size);
+                y = (int) (rng.nextFloat() * size);
+            } while(map.getHeight(x, y) < Constants.SAND_HEIGHT);
             rivers[i] = generateRiver(x, y);
         }
     }
 
-    private int[][] generateRiver(int originX, int originY) {
-        LinkedList<int[]> riverList = new LinkedList<int[]>();
+    private River generateRiver(int originX, int originY) {
+        LinkedList<Point<Integer>> riverList = new LinkedList<Point<Integer>>();
 
-        int riverLength = 0;
-        int currX = originX;
-        int currY = originY;
+        Point<Integer> currentPoint = new Point<Integer>(originX, originY);
+        riverList.add(currentPoint);
         // Descend the terrain
-        do {
-            riverLength++;
-            riverList.add(new int[] {currX, currY});
+        while (map.getHeight(currentPoint) > Constants.SAND_HEIGHT) {
             // Stop if river is on the edge of the screen
-            if (currX == 0 || currX == size || currY == 0 || currY == size) {
+            if ((currentPoint.getX() == 0) || (currentPoint.getX() == size - 1) ||
+                (currentPoint.getY() == 0) || (currentPoint.getY() == size - 1)) {
                 break;
             }
 
-            int minX = currX;
-            int minY = currY;
-            float minHeight = heights[minX][minY];
+            Point<Integer> minPoint = new Point<Integer>(currentPoint);
             int[] pointOffsets = {0, 0, -1, 1};
             // Find the min height of the adjacent pixels
             for (int i = 0; i < pointOffsets.length; i++) {
-                float height = heights[currX + pointOffsets[i]][currY + pointOffsets[pointOffsets.length - i - 1]];
-                if (minHeight > height) {
-                    // Make sure we're not considering a river point already
-                    if (riverLength > 1) {
-                        int[] pastRiverPoint = riverList.get(riverLength - 1);
-                        if (pastRiverPoint[0] == currY && pastRiverPoint[1] == currX) {
-                            continue;
-                        }
+                int x = currentPoint.getX() + pointOffsets[i];
+                int y = currentPoint.getY() + (pointOffsets.length - i - 1);
+                Point<Integer> surroundingPoint = new Point<Integer>(x, y);
+                if (map.getHeight(minPoint) > map.getHeight(surroundingPoint)) {
+                    // Skip if lowest point is already the river
+                    if (riverList.getLast().equals(currentPoint)) {
+                        continue;       
                     }
                     
-                    minHeight = height;
-                    minX = currX + pointOffsets[i];
-                    minY = currY + pointOffsets[pointOffsets.length - i - 1];
+                    minPoint = surroundingPoint;
                 }
             }
 
+            currentPoint = minPoint;
+
             // If there are no more lower adjacent pixels, stop
-            if (minX == currX && minY == currY) {
+            // TODO: In this case, the water should actually pool up into a lake until it can flow downhill more
+            if (currentPoint.equals(minPoint)) {
                 break;
-            } 
+            }
 
-            currX = minX;
-            currY = minY;
-
-            System.out.println("In da woop: " + riverLength + " (" + currX + ", " + currY + ")");
-        } while (heights[currX][currY] > Constants.SHALLOW_WATER_HEIGHT);
+            riverList.add(currentPoint);
+        }
 
         // Now populate new array
-        int[][] riverArray = new int[riverLength][2];
-        for (int i = 0; i < riverLength; i++) {
-            riverArray[i][0] = riverList.get(i)[0];
-            riverArray[i][1] = riverList.get(i)[1];
+        // TODO: Handle this warning somehow
+        Point<Integer>[] riverArray = (Point<Integer>[]) new Point<?>[riverList.size()];
+        for (int i = 0; i < riverList.size(); i++) {
+            riverArray[i] = riverList.get(i);
         }
-        return riverArray;
+        return new River(riverArray);
     }
 
-    public int[][][] getRiverArrays() {
+    public River[] getRivers() {
         return rivers;
     }
 }

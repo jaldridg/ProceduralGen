@@ -19,6 +19,8 @@ public class MapCanvas extends Canvas {
     private Map currentMap;
     private StandardMap standardMap;
     private IslandMap islandMap;
+
+    private AfterEffectsGenerator aeg;
     
 
     public MapCanvas(StandardMap standardMap, IslandMap islandMap) {
@@ -27,6 +29,8 @@ public class MapCanvas extends Canvas {
         this.standardMap = standardMap;
         this.islandMap = islandMap;
         currentMap = standardMap;
+
+        aeg = new AfterEffectsGenerator(getPixelCount(), currentMap, currentMap.getRNG());
 
         this.setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
         this.setVisible(true);
@@ -50,10 +54,11 @@ public class MapCanvas extends Canvas {
         // If realistic, generate the rivers on top
         if (isRealistic) {
             g2d.setColor(Constants.SHALLOW_WATER_COLOR);
-            int[][][] riverArrays = currentMap.getRiverArrays();
-            for (int i = 0; i < riverArrays.length; i++) {
-                for (int j = 0; j < riverArrays[i].length; j++) {
-                    g2d.fillRect(riverArrays[i][j][0] * pixelSize, riverArrays[i][j][1] * pixelSize, pixelSize, pixelSize);
+            River[] rivers = aeg.getRivers();
+            for (int i = 0; i < rivers.length; i++) {
+                Point<Integer>[] riverPoints = rivers[i].getPoints();
+                for (int j = 0; j < riverPoints.length; j++) {
+                    g2d.fillRect(riverPoints[j].getX() * pixelSize, riverPoints[j].getY() * pixelSize, pixelSize, pixelSize);
                 }
             }
         }
@@ -68,18 +73,17 @@ public class MapCanvas extends Canvas {
      * @param realistic If {@code true}, the generated colors will be realistic
      */
     private void generateColorArray(boolean realistic) {
-        float[][] heights = currentMap.getHeightArray();
-        colorArray = new Color[heights.length][heights.length];
+        colorArray = new Color[getPixelCount()][getPixelCount()];
         if (realistic) {
             for (int i = 0; i < colorArray.length; i++) {
                 for (int j = 0; j < colorArray[i].length; j++) {
-                    colorArray[i][j] = generateRealisticColor(heights[i][j]);
+                    colorArray[i][j] = generateRealisticColor(currentMap.getHeight(i, j));
                 }
             }
         } else {
             for (int i = 0; i < colorArray.length; i++) {
                 for (int j = 0; j < colorArray[i].length; j++) {
-                    colorArray[i][j] = generateColor(heights[i][j]);
+                    colorArray[i][j] = generateColor(currentMap.getHeight(i, j));
                 }
             }
         } 
@@ -186,5 +190,13 @@ public class MapCanvas extends Canvas {
 
     public void setPixelSize(int pixelSize) {
         this.pixelSize = pixelSize;
+    }
+
+    private int getPixelCount() {
+        return ((MAP_SIZE - 1) / pixelSize) + 1;
+    }
+
+    public AfterEffectsGenerator getAEG() {
+        return aeg;
     }
 }
