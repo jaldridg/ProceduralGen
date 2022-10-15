@@ -58,11 +58,11 @@ public class AfterEffectsGenerator {
             // Find the min height of the adjacent pixels
             for (int i = 0; i < pointOffsets.length; i++) {
                 int x = currentPoint.getX() + pointOffsets[i];
-                int y = currentPoint.getY() + (pointOffsets.length - i - 1);
+                int y = currentPoint.getY() + pointOffsets[pointOffsets.length - i - 1];
                 Point<Integer> surroundingPoint = new Point<Integer>(x, y);
                 if (map.getHeight(minPoint) > map.getHeight(surroundingPoint)) {
                     // Skip if lowest point is already the river
-                    if (riverList.getLast().equals(currentPoint)) {
+                    if (riverList.getLast().equals(surroundingPoint)) {
                         continue;       
                     }
                     
@@ -70,14 +70,13 @@ public class AfterEffectsGenerator {
                 }
             }
 
-            currentPoint = minPoint;
-
             // If there are no more lower adjacent pixels, stop
             // TODO: In this case, the water should actually pool up into a lake until it can flow downhill more
             if (currentPoint.equals(minPoint)) {
                 break;
             }
 
+            currentPoint = minPoint;
             riverList.add(currentPoint);
         }
 

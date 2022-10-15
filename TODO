@@ -7,6 +7,7 @@ LAST TIME
 
 IN PROGRESS
 - Rivers using the AfterEffectsGenerator
+    > The program dies a horibble death when generating rivers with different resolutions (mostly smaller I think)
     > When changing the resolution, the river locations change, but the seed is the same so they shouldn't
     > When rivers are stuck in a valley, generate a lake - recursive solution?
 
