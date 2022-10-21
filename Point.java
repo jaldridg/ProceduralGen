@@ -21,7 +21,13 @@ public class Point <E> {
         return y;
     }
 
-    public boolean equals(Point<E> point) {
-        return (this.x == point.getX()) && (this.y == point.getY());
+    public boolean equals(Object e) {
+        if (e == null) { return false; }
+        if (e instanceof Point<?>) { 
+            Point<?> point = (Point<?>) e; 
+            return (this.x == point.getX()) && (this.y == point.getY());
+        } else {
+            return false;
+        }
     }
 }

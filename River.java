@@ -1,9 +1,9 @@
 import java.util.LinkedList;
 
 public class River {
-    Point<Integer>[] points;
+    private Point<Integer>[] points;
 
-    Point<Integer> origin;
+    private Point<Integer> origin;
     
     public River(Point<Integer> origin) {
         this.origin = origin;
@@ -46,11 +46,25 @@ public class River {
             // If there are no more lower adjacent pixels, stop
             // TODO: In this case, the water should actually pool up into a lake until it can flow downhill more
             if (currentPoint.equals(minPoint)) {
-                break;
-            }
+                LinkedList<Point<Integer>> lakeList = new LinkedList<Point<Integer>>();
+                lakeList.add(currentPoint);
+                // Add previous river point if applicable
+                if (riverList.size() > 1) {
+                    lakeList.add(riverList.get(riverList.size() - 2));
+                }
+                System.out.println("Lake time!");
+                Point<Integer>[] lakePoints = generateLake(lakeList, map);
+                for(Point<Integer> p : lakePoints) {
+                    riverList.add(p);
+                }
 
-            currentPoint = minPoint;
-            riverList.add(currentPoint);
+                // Update the next point to be the last lake point
+                currentPoint = riverList.getLast();
+                
+            } else {
+                currentPoint = minPoint;
+                riverList.add(currentPoint);
+            }
         }
 
         // Now populate new array
@@ -60,7 +74,59 @@ public class River {
             points[i] = riverList.get(i);
         }
     }
-    // private Point<Integer>[] generateLake(Point<Integer>[] lakePoints, Point<) {
 
-    // }
+    private Point<Integer>[] generateLake(LinkedList<Point<Integer>> lakePoints, Map map) {
+        Point<Integer> minHeightPoint = null;
+        // Find minHeightPoint by looking at all point in the lake
+        // Yes very brute force
+        int[] pointOffsets = {0, 0, -1, 1};
+        // Loop over all lake points
+        for (int i = 0; i < lakePoints.size(); i++) {
+            Point<Integer> lakePoint = lakePoints.get(i);
+            // Search each surrounding point
+            for (int j = 0; j < pointOffsets.length; j++) {
+                int x = lakePoint.getX() + pointOffsets[j];
+                int y = lakePoint.getY() + pointOffsets[pointOffsets.length - j - 1];
+                Point<Integer> surroundingPoint = new Point<Integer>(x, y);
+                // Skip if point is already in the lake
+                if (lakePoints.contains(surroundingPoint)) {
+                    continue;
+    
+                // Sees if this surrounding land is the next lowest point
+                } else if ((minHeightPoint == null) || (map.getHeight(surroundingPoint) < map.getHeight(minHeightPoint))) {
+                    minHeightPoint = surroundingPoint;
+                }
+            }
+        }
+        lakePoints.add(minHeightPoint);
+        
+        // TODO: we really need a getter for the surronding points and maybe whether or not a point is a valley because this is FAT
+        int x = minHeightPoint.getX();
+        int y = minHeightPoint.getY();
+        float minHeight = map.getHeight(minHeightPoint);
+        Point<Integer> northPoint = new Point<Integer>(x - 1, y);
+        Point<Integer> southPoint = new Point<Integer>(x + 1, y);
+        Point<Integer> eastPoint = new Point<Integer>(x, y + 1);
+        Point<Integer> westPoint = new Point<Integer>(x, y - 1);
+        float northHeight = map.getHeight(northPoint);
+        float southHeight = map.getHeight(southPoint);
+        float eastHeight = map.getHeight(eastPoint);
+        float westHeight = map.getHeight(westPoint);
+        boolean isNorthLower = (minHeight > northHeight) && !lakePoints.contains(northPoint);
+        boolean isSouthLower = (minHeight > southHeight) && !lakePoints.contains(southPoint);
+        boolean isEastLower = (minHeight > eastHeight) && !lakePoints.contains(eastPoint);
+        boolean isWestLower = (minHeight > westHeight) && !lakePoints.contains(westPoint);
+        // If the new point leads to lower terrain, stop
+        if (isNorthLower || isSouthLower || isEastLower || isWestLower) {
+            // TODO: fix this warning somehow
+            Point<Integer>[] lakeArray = (Point<Integer>[]) new Point<?>[lakePoints.size()];
+            for (int i = 0; i < lakeArray.length; i++) {
+                lakeArray[i] = lakePoints.get(i);
+            }
+            return lakeArray;
+        } else {
+            System.out.println("Recurse" + lakePoints.size());
+            return generateLake(lakePoints, map);
+        }
+    }
 }
