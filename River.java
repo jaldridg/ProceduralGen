@@ -35,7 +35,7 @@ public class River {
                 Point<Integer> surroundingPoint = new Point<Integer>(x, y);
                 if (map.getHeight(minPoint) > map.getHeight(surroundingPoint)) {
                     // Skip if lowest point is already the river
-                    if (riverList.getLast().equals(surroundingPoint)) {
+                    if (riverList.contains(surroundingPoint)) {
                         continue;       
                     }
                     
@@ -54,6 +54,16 @@ public class River {
                 }
                 System.out.println("Lake time!");
                 Point<Integer>[] lakePoints = generateLake(lakeList, map);
+                for (int i = 0; i < lakePoints.length; i++) {
+                    // Remove the duplicate points used to generate the lake
+                    if (i < 2) {
+                        if (!riverList.contains(lakePoints[i])) {
+                            riverList.add(lakePoints[i]);
+                        }
+                    } else {
+                        riverList.add(lakePoints[i]);
+                    }
+                }
                 for(Point<Integer> p : lakePoints) {
                     riverList.add(p);
                 }
@@ -130,3 +140,18 @@ public class River {
         }
     }
 }
+
+/*
+  * Can you go downhill from the current river point or current lake points?
+  *     Yes: End lake (if applicable) and make the current river point the lowest surrounding point
+  *     No: Begin the lake by adding this trapped points to lakePoints
+  *         No matter what, the water will build up and flow to lowest point
+  *         Count the surrounding min point as part of the lake
+  *             But if surrounding point is part of a lake, this trapped point should be added to the preexisting lake
+  *         The water level is now at that height
+  *         Then, test the surrounding points to each point in the lake, ignoring lake points (river points are okay though)
+  *         
+  * Finish lake by adding the lake pgoints which were not already water
+  */
+
+  // Possible edge case above: We need to look at the water level and not the height of the lakes
