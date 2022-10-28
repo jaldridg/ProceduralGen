@@ -12,6 +12,7 @@ IN PROGRESS: RIVERS
 
 TODO
 - Clear the //TODOs in code
+- Instead of a height array we have a "block" array which holds height, water level, etc.
 - Make folders for the classes and structure the project instead of throwing everything in the same folder
 - Remove the normalization of height by simpily generating heights within range
 - Use shorts for height to reduce memory and open up bitwise operations

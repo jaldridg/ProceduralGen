@@ -46,30 +46,7 @@ public class River {
             // If there are no more lower adjacent pixels, stop
             // TODO: In this case, the water should actually pool up into a lake until it can flow downhill more
             if (currentPoint.equals(minPoint)) {
-                LinkedList<Point<Integer>> lakeList = new LinkedList<Point<Integer>>();
-                lakeList.add(currentPoint);
-                // Add previous river point if applicable
-                if (riverList.size() > 1) {
-                    lakeList.add(riverList.get(riverList.size() - 2));
-                }
-                System.out.println("Lake time!");
-                Point<Integer>[] lakePoints = generateLake(lakeList, map);
-                for (int i = 0; i < lakePoints.length; i++) {
-                    // Remove the duplicate points used to generate the lake
-                    if (i < 2) {
-                        if (!riverList.contains(lakePoints[i])) {
-                            riverList.add(lakePoints[i]);
-                        }
-                    } else {
-                        riverList.add(lakePoints[i]);
-                    }
-                }
-                for(Point<Integer> p : lakePoints) {
-                    riverList.add(p);
-                }
-
-                // Update the next point to be the last lake point
-                currentPoint = riverList.getLast();
+                break;
                 
             } else {
                 currentPoint = minPoint;
@@ -139,9 +116,7 @@ public class River {
             return generateLake(lakePoints, map);
         }
     }
-}
-
-/*
+    /*
   * Can you go downhill from the current river point or current lake points?
   *     Yes: End lake (if applicable) and make the current river point the lowest surrounding point
   *     No: Begin the lake by adding this trapped points to lakePoints
@@ -155,3 +130,4 @@ public class River {
   */
 
   // Possible edge case above: We need to look at the water level and not the height of the lakes
+}
