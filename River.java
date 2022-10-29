@@ -19,12 +19,21 @@ public class River {
         Tile currentTile = origin;
         riverList.add(currentTile);
 
+        LinkedList<Tile> currentLake;
         // Descend the terrain
         while (currentTile.getHeight() > Constants.SAND_HEIGHT) {
             // We're stuck
             if (map.isValley(currentTile)) {
-                
+                // Start building the lake
+                currentLake = new LinkedList<Tile>();
+                currentLake.add(currentTile);
+                // The lake will have to rise to this water level and include this point
+                Tile minTile = map.getMinSurroundingTile(currentTile);
+                // But if the point is already a lake, add the current point to the preexisting lake
+                if (minTile.isLake()) {
 
+                }
+                float fillHeight = map.getMinSurroundingTile(currentTile).getHeight();
             // Keep flowing
             } else {
 

@@ -229,13 +229,4 @@ public abstract class Map {
     public boolean isValley(Tile tile) {
         return getMinSurroundingTile(tile).getHeight() > tile.getHeight();
     }
-
-    public ArrayList<Tile> getLake(Tile tile) {
-        ArrayList<Tile> surroundingLakeTiles = new ArrayList<Tile>();
-        for (Tile t : surroundingLakeTiles) {
-            // TODO: Implement this recursive method
-        }
-        return surroundingLakeTiles;
-    }
-
 }

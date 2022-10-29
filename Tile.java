@@ -5,14 +5,15 @@ public class Tile {
     private float height;
     private Color color;
 
-    private boolean isLake;
+    // The lake data structure the tile may be a part of
+    private Lake lake;
 
     private int x;
     private int y;
     
     public Tile(float height) {
         this.height = height;
-        isLake = false;
+        lake = null;
     }
 
     public Color getColor() { return color; }
@@ -27,7 +28,7 @@ public class Tile {
     public int getY() { return y; }
     public void setY(int y) { this.y = y; }
 
-    public boolean isLake() { return isLake; }
-    public void setLake(boolean isLake) { this.isLake = isLake; }
+    public boolean isLake() { return lake == null; }
+    public void addToLake(Lake lake) { this.lake = lake; }
 }
 
