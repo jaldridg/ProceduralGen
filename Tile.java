@@ -28,7 +28,10 @@ public class Tile {
     public int getY() { return y; }
     public void setY(int y) { this.y = y; }
 
+    public Lake getLake() { return lake; }
     public boolean isLake() { return lake == null; }
     public void addToLake(Lake lake) { this.lake = lake; }
+
+    public boolean isHigherThan(Tile tile) { return height > tile.getHeight(); }
 }
 

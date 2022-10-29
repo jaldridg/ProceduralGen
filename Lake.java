@@ -48,6 +48,23 @@ public class Lake {
         borderTiles = newBorder;
     }
 
+    public Tile getMinSurroundingTile() {
+        Tile minTile = map.getSurroundingTiles(borderTiles.get(0))[0];
+        for (Tile bTile : borderTiles) {
+            Tile[] surroundingTiles = map.getSurroundingTiles(bTile);
+            for (Tile sTile : surroundingTiles) {
+                if (minTile.isHigherThan(sTile)) {
+                    minTile = sTile;
+                }
+            }
+        }
+        return minTile;
+    }
+
+    public ArrayList<Tile> getTiles() {
+        return tiles;
+    }
+
     public ArrayList<Tile> getBorderTiles() {
         return borderTiles;
     }
@@ -55,5 +72,21 @@ public class Lake {
     public void addTile(Tile tile) {
         borderTiles.add(tile);
         recalculateBorder();
+    }
+
+    public int getSize() {
+        return tiles.size();
+    }
+
+    /*
+     * Takes a lake and sets the tiles to be the larger lake (to merge them)
+     */
+    public void mergeLake(Lake lake) {
+        if (this == lake) { return; }
+        Lake greaterLake = lake.getSize() > this.getSize() ? lake : this;
+        Lake lesserLake = greaterLake == lake ? this : lake;
+        for (Tile tile : lesserLake.getTiles()) {
+            tile.addToLake(greaterLake);
+        }
     }
 }
