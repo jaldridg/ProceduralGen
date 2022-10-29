@@ -1,7 +1,5 @@
 
 LAST TIME
-- Moved river generation to River class
-- About to start recursive Lake solution
 
 IN PROGRESS: RIVERS
 - Problems
@@ -10,9 +8,11 @@ IN PROGRESS: RIVERS
 - Next up
     > Most rivers don't flow to the ocean, which is not how rivers work - recursive solution?
 
+TANGENT
+- Tiles instead of a height array which holds height, water level, etc.
+
 TODO
 - Clear the //TODOs in code
-- Instead of a height array we have a "block" array which holds height, water level, etc.
 - Make folders for the classes and structure the project instead of throwing everything in the same folder
 - Remove the normalization of height by simpily generating heights within range
 - Use shorts for height to reduce memory and open up bitwise operations

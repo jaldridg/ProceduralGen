@@ -11,10 +11,10 @@ public class TestMap extends Map {
     }
 
     protected void generateHeightArray() {
-        heights = new float[size][size];
+        tiles = new Tile[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                heights[i][j] = (float) (i * j) / (size * size);
+                tiles[i][j] = new Tile((float) (i * j) / (size * size));
             }
         }
     }

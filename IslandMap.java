@@ -21,7 +21,7 @@ public class IslandMap extends Map {
             for (int j = 0; j < size; j++) {
                 float distI = (float) Math.pow(((double) i / size - 0.5), 2);
                 float distJ = (float) Math.pow(((double) j / size - 0.5), 2);
-                heights[i][j] = Math.max(0, heights[i][j] - (distI + distJ) * 2);
+                tiles[i][j].setHeight(Math.max(0, tiles[i][j].getHeight() - (distI + distJ) * 2));
             }
         }
     }

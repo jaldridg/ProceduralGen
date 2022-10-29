@@ -5,7 +5,7 @@ public abstract class Map {
     
     protected int size; // In pixels; must be 2^n + 1
 
-    protected float[][] heights;
+    protected Tile[][] tiles;
 
     protected int seed;
     protected Random rng;
@@ -31,15 +31,15 @@ public abstract class Map {
      */
     protected void generateHeightArray() {
         // Initialize the array and variables
-        heights = new float[size][size];
+        tiles = new Tile[size][size];
         int chunkSize = size - 1;
         float randomFactor = Constants.RANDOM_FACTOR;
 
         // Generate the four corners for the first square chunk
-        heights[0][0] = rng.nextFloat();
-        heights[0][chunkSize] = rng.nextFloat();
-        heights[chunkSize][0] = rng.nextFloat();
-        heights[chunkSize][chunkSize] = rng.nextFloat();
+        tiles[0][0] = new Tile(rng.nextFloat());
+        tiles[0][chunkSize] = new Tile(rng.nextFloat());
+        tiles[chunkSize][0] = new Tile(rng.nextFloat());
+        tiles[chunkSize][chunkSize] = new Tile(rng.nextFloat());
         
         // Generate chunks, then generate chunks in the chunks, and so on
         while (chunkSize > 1) {
@@ -70,36 +70,37 @@ public abstract class Map {
                 float averageValue;
                 // Top edge case (ommit value above current point when calculating average)
                 if (i == 0) {
-                    averageValue = (heights[i + halfChunk][j]
-                                  + heights[i][j - halfChunk]
-                                  + heights[i][j + halfChunk]) / 3;
+                    averageValue = (tiles[i + halfChunk][j].getHeight()
+                                  + tiles[i][j - halfChunk].getHeight()
+                                  + tiles[i][j + halfChunk].getHeight()) / 3;
 
                 // Bottom edge case (ommit value under current point calculating average)
                 } else if (i == size - 1) {
-                    averageValue = (heights[i - halfChunk][j]
-                                  + heights[i][j - halfChunk]
-                                  + heights[i][j + halfChunk]) / 3;
+                    averageValue = (tiles[i - halfChunk][j].getHeight()
+                                  + tiles[i][j - halfChunk].getHeight()
+                                  + tiles[i][j + halfChunk].getHeight()) / 3;
 
                 // Left edge case (ommit value left of current point when calculating average)
                 } else if (j == 0) {
-                    averageValue = (heights[i - halfChunk][j]
-                                  + heights[i + halfChunk][j]
-                                  + heights[i][j + halfChunk]) / 3;
+                    averageValue = (tiles[i - halfChunk][j].getHeight()
+                                  + tiles[i + halfChunk][j].getHeight()
+                                  + tiles[i][j + halfChunk].getHeight()) / 3;
 
                 // Right edge case (ommit value right of current point when calculating average)
                 } else if (j == size - 1) {
-                    averageValue = (heights[i - halfChunk][j]
-                                  + heights[i + halfChunk][j]
-                                  + heights[i][j - halfChunk]) / 3;
+                    averageValue = (tiles[i - halfChunk][j].getHeight()
+                                  + tiles[i + halfChunk][j].getHeight()
+                                  + tiles[i][j - halfChunk].getHeight()) / 3;
 
                 // Center (normal generation)
                 } else {
-                    averageValue = (heights[i - halfChunk][j]
-                                  + heights[i + halfChunk][j]
-                                  + heights[i][j - halfChunk]
-                                  + heights[i][j + halfChunk]) / 4;
+                    averageValue = (tiles[i - halfChunk][j].getHeight()
+                                  + tiles[i + halfChunk][j].getHeight()
+                                  + tiles[i][j - halfChunk].getHeight()
+                                  + tiles[i][j + halfChunk].getHeight()) / 4;
                 }
-                heights[i][j] = averageValue + (rng.nextFloat() - 0.5f) * randomFactor;
+                float generatedHeight = averageValue + (rng.nextFloat() - 0.5f) * randomFactor;
+                tiles[i][j] = new Tile(generatedHeight);
             }
         }
     }
@@ -118,11 +119,12 @@ public abstract class Map {
         int halfChunk = chunkSize >> 1;
         for (int i = 0; i < size - 1; i += chunkSize) {
             for (int j = 0; j < size - 1; j += chunkSize) {
-                float average = (heights[i][j] 
-                               + heights[i][j + chunkSize] 
-                               + heights[i + chunkSize][j] 
-                               + heights[i + chunkSize][j + chunkSize]) / 4;
-                heights[i + halfChunk][j + halfChunk] = average + (rng.nextFloat() - 0.5f) * randomFactor;
+                float average = (tiles[i][j].getHeight() 
+                               + tiles[i][j + chunkSize].getHeight() 
+                               + tiles[i + chunkSize][j] .getHeight()
+                               + tiles[i + chunkSize][j + chunkSize].getHeight()) / 4;
+                float generatedHeight = average + (rng.nextFloat() - 0.5f) * randomFactor;
+                tiles[i + halfChunk][j + halfChunk] = new Tile(generatedHeight);
             }
         }
     }
@@ -134,14 +136,15 @@ public abstract class Map {
      */
     protected void normalizeHeightArray() {
         // Find max and min
-        float max = heights[0][0];
-        float min = heights[0][0];
-        for (int i = 0; i < heights.length; i++) {
-            for (int j = 0; j < heights[i].length; j++) {
-                if (heights[i][j] > max) {
-                    max = heights[i][j];
-                } else if (heights[i][j] < min) {
-                    min = heights[i][j];
+        float max = tiles[0][0].getHeight();
+        float min = tiles[0][0].getHeight();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                float height = tiles[i][j].getHeight();
+                if (height > max) {
+                    max = height;
+                } else if (height < min) {
+                    min = height;
                 }
             }
         }
@@ -149,9 +152,9 @@ public abstract class Map {
         float range = Math.abs(min) + Math.abs(max);
         float rangeInv = 1 / range;
         //Normalize
-        for (int i = 0; i < heights.length; i++) {
-            for (int j = 0; j < heights[i].length; j++) {
-                heights[i][j] = (heights[i][j] - min) * rangeInv;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                tiles[i][j].setHeight((tiles[i][j].getHeight() - min) * rangeInv);
             }
         }
     }
@@ -177,10 +180,14 @@ public abstract class Map {
     }
 
     public float getHeight(int x, int y) {
-        return heights[x][y];
+        return tiles[x][y].getHeight();
     }
 
     public float getHeight(Point<Integer> point) {
-        return heights[point.getX()][point.getY()];
+        return tiles[point.getX()][point.getY()].getHeight();
+    }
+
+    public Tile[][] getTiles() {
+        return tiles;
     }
 }

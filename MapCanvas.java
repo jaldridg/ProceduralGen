@@ -4,8 +4,6 @@ public class MapCanvas extends Canvas {
 
     public static final int MAP_SIZE = 513;
 
-    private Color[][] colorArray;
-
     private int pixelSize = 4;
 
     // Whether or not a realistic map should be drawn
@@ -40,14 +38,15 @@ public class MapCanvas extends Canvas {
      * Generates the colors and displays them on an image
      */
     public void paint(Graphics g) {
-        generateColorArray(isRealistic);
+        generateTileColors(isRealistic);
         mapImage = createImage(currentMap.getSize() * pixelSize, currentMap.getSize() * pixelSize);
         g2d = (Graphics2D) mapImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Tile[][] tiles = currentMap.getTiles();
         // Generate the map
-        for (int i = 0; i < colorArray.length; i++) {
-            for (int j = 0; j < colorArray[i].length; j++) {
-                g2d.setColor(colorArray[i][j]);
+        for (int i = 0; i < currentMap.getSize(); i++) {
+            for (int j = 0; j < currentMap.getSize(); j++) {
+                g2d.setColor(tiles[i][j].getColor());
                 g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
             }
         }
@@ -72,18 +71,21 @@ public class MapCanvas extends Canvas {
      * 
      * @param realistic If {@code true}, the generated colors will be realistic
      */
-    private void generateColorArray(boolean realistic) {
-        colorArray = new Color[getPixelCount()][getPixelCount()];
+    private void generateTileColors(boolean realistic) {
+        Tile[][] tiles = currentMap.getTiles();
+        int size = currentMap.getSize();
         if (realistic) {
-            for (int i = 0; i < colorArray.length; i++) {
-                for (int j = 0; j < colorArray[i].length; j++) {
-                    colorArray[i][j] = generateRealisticColor(currentMap.getHeight(i, j));
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    Tile tile = tiles[i][j];
+                    tile.setColor(generateRealisticColor(tile.getHeight()));
                 }
             }
         } else {
-            for (int i = 0; i < colorArray.length; i++) {
-                for (int j = 0; j < colorArray[i].length; j++) {
-                    colorArray[i][j] = generateColor(currentMap.getHeight(i, j));
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    Tile tile = tiles[i][j];
+                    tile.setColor(generateColor(tile.getHeight()));
                 }
             }
         } 
