@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Map {
@@ -190,4 +191,51 @@ public abstract class Map {
     public Tile getTile(int x, int y) {
         return tiles[x][y];
     }
+
+    // TODO: Yeah...so...this is really long for no reason
+    public Tile[] getSurroundingTiles(Tile tile) {
+        int x = tile.getX();
+        int y = tile.getY();
+        // Goes around like the unit circle
+        boolean leftEdge = x == 0;
+        boolean rightEdge = x == size - 1;
+        boolean topEdge = y == 0;
+        boolean bottomEdge = y == size - 1;
+        if (leftEdge) {
+            if (topEdge) { return new Tile[] {tiles[x + 1][y], tiles[x][y + 1]}; }
+            else if (bottomEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y + 1]}; }
+            return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y + 1]};
+        } else if (rightEdge) {
+            if (topEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y + 1]}; }
+            if (bottomEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y - 1]}; }
+            return new Tile[] {tiles[x - 1][y], tiles[x][y - 1], tiles[x][y + 1]};
+        } 
+        else if (topEdge) { return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y + 1]}; }
+        else if (bottomEdge) { return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y - 1]}; }
+        else { return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y - 1], tiles[x][y + 1]}; }
+    }
+
+    public Tile getMinSurroundingTile(Tile tile) {
+        Tile[] surroundingTiles = getSurroundingTiles(tile);
+        int minIndex = 0;
+        for (int i = 1; i < surroundingTiles.length; i++) {
+            if (surroundingTiles[minIndex].getHeight() > surroundingTiles[i].getHeight()) {
+                minIndex = i;
+            }
+        }
+        return surroundingTiles[minIndex];
+    }
+
+    public boolean isValley(Tile tile) {
+        return getMinSurroundingTile(tile).getHeight() > tile.getHeight();
+    }
+
+    public ArrayList<Tile> getLake(Tile tile) {
+        ArrayList<Tile> surroundingLakeTiles = new ArrayList<Tile>();
+        for (Tile t : surroundingLakeTiles) {
+            // TODO: Implement this recursive method
+        }
+        return surroundingLakeTiles;
+    }
+
 }
