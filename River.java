@@ -1,16 +1,16 @@
 import java.util.LinkedList;
 
 public class River {
-    private Point<Integer>[] points;
+    private Tile[] tiles;
 
-    private Point<Integer> origin;
+    private Tile origin;
     
-    public River(Point<Integer> origin) {
+    public River(Tile origin) {
         this.origin = origin;
     }
 
-    public Point<Integer>[] getPoints() {
-        return points;
+    public Tile[] getTiles() {
+        return tiles;
     }
 
     public void generateRiver(Map map) {

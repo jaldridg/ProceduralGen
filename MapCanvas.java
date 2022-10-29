@@ -55,9 +55,9 @@ public class MapCanvas extends Canvas {
             g2d.setColor(Constants.SHALLOW_WATER_COLOR);
             River[] rivers = aeg.getRivers();
             for (int i = 0; i < rivers.length; i++) {
-                Point<Integer>[] riverPoints = rivers[i].getPoints();
-                for (int j = 0; j < riverPoints.length; j++) {
-                    g2d.fillRect(riverPoints[j].getX() * pixelSize, riverPoints[j].getY() * pixelSize, pixelSize, pixelSize);
+                Tile[] riverTiles = rivers[i].getTiles();
+                for (int j = 0; j < riverTiles.length; j++) {
+                    g2d.fillRect(riverTiles[j].getX() * pixelSize, riverTiles[j].getY() * pixelSize, pixelSize, pixelSize);
                 }
             }
         }

@@ -183,11 +183,11 @@ public abstract class Map {
         return tiles[x][y].getHeight();
     }
 
-    public float getHeight(Point<Integer> point) {
-        return tiles[point.getX()][point.getY()].getHeight();
-    }
-
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+    public Tile getTile(int x, int y) {
+        return tiles[x][y];
     }
 }
