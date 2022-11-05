@@ -8,8 +8,10 @@ public class Lake {
 
     private Map map;
 
-    public Lake (ArrayList<Tile> tiles, Map map) {
-        this.tiles = tiles;
+    private float waterLevel;
+
+    public Lake (Map map) {
+        tiles = new ArrayList<Tile>();
         this.map = map;
         calculateBorder();
     }
@@ -76,6 +78,10 @@ public class Lake {
 
     public int getSize() {
         return tiles.size();
+    }
+
+    public void setWaterLevel(float waterLevel) {
+        this.waterLevel = waterLevel;
     }
 
     /*

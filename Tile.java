@@ -7,13 +7,18 @@ public class Tile {
 
     // The lake data structure the tile may be a part of
     private Lake lake;
+    // The river data structure the tile may be a part of
+    private River river;
 
     private int x;
     private int y;
     
-    public Tile(float height) {
+    public Tile(int x, int y, float height) {
+        this.x = x;
+        this.y = y;
         this.height = height;
         lake = null;
+        river = null;
     }
 
     public Color getColor() { return color; }
@@ -29,8 +34,15 @@ public class Tile {
     public void setY(int y) { this.y = y; }
 
     public Lake getLake() { return lake; }
-    public boolean isLake() { return lake == null; }
+    public boolean isLake() { return lake != null; }
     public void addToLake(Lake lake) { this.lake = lake; }
+
+    public River getRiver() { return river; }
+    public boolean isRiver() { return river != null; }
+    public void addToRiver(River river) { this.river = river; }
+    public void removeFromRiver() { river = null; }
+
+    public boolean isWater() { return river != null || lake != null; }
 
     public boolean isHigherThan(Tile tile) { return height > tile.getHeight(); }
 }

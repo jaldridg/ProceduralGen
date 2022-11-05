@@ -14,7 +14,7 @@ public class TestMap extends Map {
         tiles = new Tile[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                tiles[i][j] = new Tile((float) (i * j) / (size * size));
+                tiles[i][j] = new Tile(i, j, (float) (i * j) / (size * size));
             }
         }
     }
