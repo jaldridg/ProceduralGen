@@ -55,7 +55,7 @@ public class Lake {
         for (Tile bTile : borderTiles) {
             Tile[] surroundingTiles = map.getSurroundingTiles(bTile);
             for (Tile sTile : surroundingTiles) {
-                if (minTile.isHigherThan(sTile)) {
+                if (minTile.isHigherThan(sTile) && !sTile.isWater()) {
                     minTile = sTile;
                 }
             }
@@ -72,22 +72,27 @@ public class Lake {
     }
 
     public void addTile(Tile tile) {
+        if (tile.isLake()) {
+            mergeWithLake(tile.getLake());
+        }
+        tiles.add(tile);
         borderTiles.add(tile);
         recalculateBorder();
+        waterLevel = Math.max(waterLevel, tile.getHeight());
     }
 
     public int getSize() {
         return tiles.size();
     }
 
-    public void setWaterLevel(float waterLevel) {
-        this.waterLevel = waterLevel;
+    public float getWaterLevel() {
+        return waterLevel;
     }
 
     /*
      * Takes a lake and sets the tiles to be the larger lake (to merge them)
      */
-    public void mergeLake(Lake lake) {
+    private void mergeWithLake(Lake lake) {
         if (this == lake) { return; }
         Lake greaterLake = lake.getSize() > this.getSize() ? lake : this;
         Lake lesserLake = greaterLake == lake ? this : lake;

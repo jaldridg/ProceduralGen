@@ -2,83 +2,73 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class River {
+    private Map map;
+
     private Tile[] tiles;
 
     private Tile origin;
     
-    public River(Tile origin) {
+    public River(Map map, Tile origin) {
+        this.map = map;
         this.origin = origin;
+        generateRiver();
     }
 
     public Tile[] getTiles() {
         return tiles;
     }
 
-    public void generateRiver(Map map) {
-        LinkedList<Tile> riverList = new LinkedList<Tile>();
-
-        Tile currentTile = origin;
-        riverList.add(currentTile);
-
-        Lake currentLake = null;
-        int woop = 0;
-        // Descend the terrain
-        while (currentTile.getHeight() > Constants.SAND_HEIGHT) {
-            if (woop++ > 100) {
-                woop = 0;
-            }
-            // We're stuck
-            // TODO: Here's what we actually want to do
-            // river -> river if we can go downhill
-            // river -> lake if were at a valley
-            // lake -> lake if dry valley (meaning valley in terms of nonwater tiles)
-            // lake -> river if we can go downhill from the lake border
-            if (map.isValley(currentTile)) {
-                // Start building the lake
-                if (currentLake == null) {
-                    currentLake = new Lake(map);
-                }
-                currentLake.addTile(currentTile);
-                currentTile.addToLake(currentLake);
-                // The lake will have to rise to this water level and include this point
-                Tile minTile = currentLake.getMinSurroundingTile();
-                // But if the point is water, add the current lake to the preexisting lake
-                if (minTile.isWater()) {
-                    if (minTile.isLake()) {
-                        currentLake.mergeLake(minTile.getLake());
-                        currentLake = minTile.getLake();
-                    }
-                    if (minTile.isRiver()) {
-                        minTile.removeFromRiver();
-                        minTile.addToLake(currentLake);
-                    }   
-                }
-                currentLake.setWaterLevel(minTile.getHeight());
-                currentTile = minTile;
-            // Keep flowing
-            } else {
-                currentLake = null;
-                Tile[] surroundingTiles = map.getSurroundingTiles(currentTile);
-                Tile minTile = surroundingTiles[0];
-                // Get lowest nonwater tile
-                for (int i = 1; i < surroundingTiles.length; i++) {
-                    Tile tile = surroundingTiles[i];
-                    if (!tile.isWater()) {
-                        if (tile.getHeight() < minTile.getHeight()) {
-                            minTile = tile;
-                        }
-                    }
-                }
-                riverList.add(minTile);
-                currentTile = minTile;
-                currentTile.addToRiver(this);
-            }
-        }
-        // Turn river list into tiles
-        tiles = new Tile[riverList.size()];
+    public void generateRiver() {
+        LinkedList<Tile> tileList = new LinkedList<Tile>();
+        tileList = flow(origin, tileList);
+        tiles = new Tile[tileList.size()];
         for (int i = 0; i < tiles.length; i++) {
-            tiles[i] = riverList.get(i);
+            tiles[i] = tileList.get(i);
         }
+    }
+
+    private LinkedList<Tile> flow(Tile currentTile, LinkedList<Tile> list) {
+        if (currentTile.getHeight() < Constants.SAND_HEIGHT) { return list; }
+
+        Tile minTile = map.getMinSurroundingTile(currentTile);
+        if (currentTile.isHigherThan(minTile)) {
+            list.add(minTile);
+            return flow(minTile, list);
+        } else {
+            return list;
+        }
+    }
+
+    // A debugging function (may crash if point is on the edge of map)
+    private void printLocalHeights(Tile tile, Map map) {
+        int x = tile.getX();
+        int y = tile.getY();
+        System.out.print("\t");
+        int range = 2;
+        for (int i = -range; i < range + 1; i++) {
+            System.out.print(y + i + "\t");
+        }
+        System.out.println();
+        for (int i = -range; i < range + 1; i++) {
+            System.out.print(x + i + "\t");
+            for (int j = 0; j < range * 2 + 1; j++) {
+                Tile t = map.getTile(x + i - range, y + j - range);
+                if (t.isRiver()) {
+                    System.out.print("  R\t");
+                } else if (t.isLake()) {
+                    System.out.print("  L\t");
+                } else {
+                    System.out.print(String.format("%.4f\t", map.getTile(x + i - range, y + j - range).getHeight()));
+                }
+            }
+            System.out.println();
+        }
+
+    }
+
+    // For degugging
+    private String printTileXY(Tile tile) {
+       return "(" + tile.getX() + ", " + tile.getY() + ")";
     }
     /*
   * Can you go downhill from the current river point or current lake points?

@@ -34,8 +34,7 @@ public class AfterEffectsGenerator {
                 x = (int) (rng.nextFloat() * size);
                 y = (int) (rng.nextFloat() * size);
             } while(map.getHeight(x, y) < Constants.SAND_HEIGHT);
-            rivers[i] = new River(map.getTile(x, y));
-            rivers[i].generateRiver(map);
+            rivers[i] = new River(map, map.getTile(x, y));
         }
     }
 
