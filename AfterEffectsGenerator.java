@@ -10,9 +10,9 @@ public class AfterEffectsGenerator {
 
     private Map map;
 
-    public AfterEffectsGenerator(int size, Map map, Random rng) {
-        this.size = size;
+    public AfterEffectsGenerator(Map map, Random rng) {
         this.map = map;
+        size = map.getSize();
         this.rng = rng;
 
         generateAfterEffects();

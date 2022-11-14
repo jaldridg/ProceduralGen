@@ -19,7 +19,6 @@ public class MapCanvas extends Canvas {
     private IslandMap islandMap;
 
     private AfterEffectsGenerator aeg;
-    
 
     public MapCanvas(StandardMap standardMap, IslandMap islandMap) {
         isRealistic = true;
@@ -28,7 +27,7 @@ public class MapCanvas extends Canvas {
         this.islandMap = islandMap;
         currentMap = standardMap;
 
-        aeg = new AfterEffectsGenerator(getPixelCount(), currentMap, currentMap.getRNG());
+        aeg = new AfterEffectsGenerator(currentMap, currentMap.getRNG());
 
         this.setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
         this.setVisible(true);

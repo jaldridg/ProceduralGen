@@ -195,10 +195,10 @@ public class ControlPanel extends JPanel {
                     canvasMap.setAllMapSizes(resolution + 1);
 
                     // Rengerate the lower resolution map and draw it on the canvas
+                    canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     if (realisticCheckBox.isSelected()) {
                         canvasMap.getAEG().generateAfterEffects();
                     }    
-                    canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     canvasMap.repaint();
                 }
             }
@@ -223,11 +223,11 @@ public class ControlPanel extends JPanel {
                     // Size is set to 2^n + 1 for the diamond-square generation to work
                     canvasMap.setAllMapSizes(resolution + 1);
 
-                    // Rengerate the higher resolution map and draw it on the canvas
+                    // Rengerate the higher resolution map and draw it on the canvas  
+                    canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
                     if (realisticCheckBox.isSelected()) {
                         canvasMap.getAEG().generateAfterEffects();
-                    }    
-                    canvasMap.getCurrentMap().generate(canvasMap.getCurrentMap().getSeed());
+                    }  
                     canvasMap.repaint();
                 }
             }

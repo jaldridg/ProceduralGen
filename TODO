@@ -1,5 +1,8 @@
 
 LAST TIME
+- We thinking about this question: Do we want the aeg to be generated with the map and be apart of the terrain like that
+  or do we want to keep it in the MapCanvas and generate it on top. I'm leaning towards the Map because the rivers should
+  affect the terrain later like sand by lakes
 
 IN PROGRESS: RIVERS
 - Problems
@@ -7,9 +10,6 @@ IN PROGRESS: RIVERS
     > When changing the resolution, the river locations change, but the seed is the same so they shouldn't
 - Next up
     > Most rivers don't flow to the ocean, which is not how rivers work - recursive solution?
-
-TANGENT
-- Tiles instead of a height array which holds height, water level, etc.
 
 TODO
 - Clear the //TODOs in code

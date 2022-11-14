@@ -196,25 +196,24 @@ public abstract class Map {
 
     // TODO: Yeah...so...this is really long for no reason
     public Tile[] getSurroundingTiles(Tile tile) {
-        int x = tile.getX();
-        int y = tile.getY();
-        // Goes around like the unit circle
-        boolean leftEdge = x == 0;
-        boolean rightEdge = x == size - 1;
-        boolean topEdge = y == 0;
-        boolean bottomEdge = y == size - 1;
+        int i = tile.getX();
+        int j = tile.getY();
+        boolean topEdge = i == 0;
+        boolean bottomEdge = i == size - 1;
+        boolean leftEdge = j == 0;
+        boolean rightEdge = j == size - 1;
         if (leftEdge) {
-            if (topEdge) { return new Tile[] {tiles[x + 1][y], tiles[x][y + 1]}; }
-            else if (bottomEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y + 1]}; }
-            return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y + 1]};
+            if (topEdge) { return new Tile[] {tiles[i + 1][j], tiles[i][j + 1]}; }
+            else if (bottomEdge) { return new Tile[] {tiles[i - 1][j], tiles[i][j + 1]}; }
+            return new Tile[] {tiles[i - 1][j], tiles[i + 1][j], tiles[i][j + 1]};
         } else if (rightEdge) {
-            if (topEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y + 1]}; }
-            if (bottomEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y - 1]}; }
-            return new Tile[] {tiles[x - 1][y], tiles[x][y - 1], tiles[x][y + 1]};
+            if (topEdge) { return new Tile[] {tiles[i + 1][j], tiles[i][j - 1]}; }
+            if (bottomEdge) { return new Tile[] {tiles[i - 1][j], tiles[i][j - 1]}; }
+            return new Tile[] {tiles[i - 1][j], tiles[i - 1][j], tiles[i][j - 1]};
         } 
-        else if (topEdge) { return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y + 1]}; }
-        else if (bottomEdge) { return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y - 1]}; }
-        else { return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y - 1], tiles[x][y + 1]}; }
+        else if (topEdge) { return new Tile[] {tiles[i + 1][j], tiles[j - 1][j], tiles[i][j + 1]}; }
+        else if (bottomEdge) { return new Tile[] {tiles[i - 1][j], tiles[i][j + 1], tiles[i][j - 1]}; }
+        else { return new Tile[] {tiles[i - 1][j], tiles[i + 1][j], tiles[i][j - 1], tiles[i][j + 1]}; }
     }
 
     public Tile getMinSurroundingTile(Tile tile) {
