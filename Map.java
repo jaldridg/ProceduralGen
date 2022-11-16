@@ -14,10 +14,13 @@ public abstract class Map {
     protected Image mapImage = null;
     protected Graphics2D g2d;
 
+    private AfterEffectsGenerator aeg;
+
     public Map() {
         this.size = 129;
         seed = (int) (Math.random() * Integer.MAX_VALUE);
         generate(seed);
+        aeg = new AfterEffectsGenerator(this, rng);
     }
 
     public void generate(int seed) {
@@ -25,6 +28,8 @@ public abstract class Map {
 
         generateHeightArray();
         normalizeHeightArray();
+
+        aeg = new AfterEffectsGenerator(this, rng);
     }
 
     /**
@@ -162,6 +167,10 @@ public abstract class Map {
         }
     }
 
+    public void generateAfterEffects() {
+        aeg.generateAfterEffects();
+    }
+
     public Random getRNG() {
         return rng;
     }
@@ -192,6 +201,10 @@ public abstract class Map {
 
     public Tile getTile(int x, int y) {
         return tiles[x][y];
+    }
+
+    public River[] getRivers() {
+        return aeg.getRivers();
     }
 
     // TODO: Yeah...so...this is really long for no reason

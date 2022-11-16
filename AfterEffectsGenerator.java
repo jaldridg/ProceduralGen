@@ -14,8 +14,6 @@ public class AfterEffectsGenerator {
         this.map = map;
         size = map.getSize();
         this.rng = rng;
-
-        generateAfterEffects();
     }
 
     public void generateAfterEffects() {
@@ -23,7 +21,6 @@ public class AfterEffectsGenerator {
     }
  
     private void generateRivers() {
-        // int numRivers = Math.abs((int) rng.nextGaussian());
         int numRivers = 25;
         rivers = new River[numRivers];
         for (int i = 0; i < numRivers; i++) {

@@ -18,8 +18,6 @@ public class MapCanvas extends Canvas {
     private StandardMap standardMap;
     private IslandMap islandMap;
 
-    private AfterEffectsGenerator aeg;
-
     public MapCanvas(StandardMap standardMap, IslandMap islandMap) {
         isRealistic = true;
 
@@ -27,7 +25,7 @@ public class MapCanvas extends Canvas {
         this.islandMap = islandMap;
         currentMap = standardMap;
 
-        aeg = new AfterEffectsGenerator(currentMap, currentMap.getRNG());
+        currentMap.generateAfterEffects();
 
         this.setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
         this.setVisible(true);
@@ -52,7 +50,7 @@ public class MapCanvas extends Canvas {
         // If realistic, generate the rivers on top
         if (isRealistic) {
             g2d.setColor(Constants.SHALLOW_WATER_COLOR);
-            River[] rivers = aeg.getRivers();
+            River[] rivers = currentMap.getRivers();
             for (int i = 0; i < rivers.length; i++) {
                 Tile[] riverTiles = rivers[i].getTiles();
                 for (int j = 0; j < riverTiles.length; j++) {
@@ -164,9 +162,9 @@ public class MapCanvas extends Canvas {
         return (int) (minColor + ((height - minHeight) * ratio));
     }
 
-    public void setAllMapSizes(int mapSize) {
-        standardMap.setSize(mapSize);
-        islandMap.setSize(mapSize);
+    public void setSize(int size) {
+        standardMap.setSize(size);
+        islandMap.setSize(size);
     }
 
     public Map getCurrentMap() {
@@ -195,9 +193,5 @@ public class MapCanvas extends Canvas {
 
     private int getPixelCount() {
         return ((MAP_SIZE - 1) / pixelSize) + 1;
-    }
-
-    public AfterEffectsGenerator getAEG() {
-        return aeg;
     }
 }

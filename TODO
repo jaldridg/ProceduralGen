@@ -1,13 +1,7 @@
 
-LAST TIME
-- We thinking about this question: Do we want the aeg to be generated with the map and be apart of the terrain like that
-  or do we want to keep it in the MapCanvas and generate it on top. I'm leaning towards the Map because the rivers should
-  affect the terrain later like sand by lakes
-
 IN PROGRESS: RIVERS
 - Problems
-    > The program dies a horrible death when generating rivers with different resolutions (mostly smaller I think)
-    > When changing the resolution, the river locations change, but the seed is the same so they shouldn't
+    > When changing the resolution, the river locations change, but it's the same map so they shouldn't in theory
 - Next up
     > Most rivers don't flow to the ocean, which is not how rivers work - recursive solution?
 
@@ -18,7 +12,7 @@ TODO
 - Use shorts for height to reduce memory and open up bitwise operations
 - Sort the heights using some nlogn algo
     > Then, we can only generate rivers if there's a mountain in the first place since a lot of islands aren't very tall
-- More types of maps like a mountain map 
+- More types of maps like a mountain map
 - Scrollable terrain, or maps too big to fit on the screen that can be dragged around
 - Biomes by procedurally generating temperature and moisture
 - Orthogonal rendering?!?!
