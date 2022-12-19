@@ -6,8 +6,10 @@ public class River {
     // They should be in order that the river flows
     private LinkedList<Tile> tiles;
 
-    public River() {
+    public River(Tile origin, Tile nextTile) {
         tiles = new LinkedList<Tile>();
+        tiles.add(origin);
+        tiles.add(nextTile);
     }
 
     public void addTile(Tile t) {

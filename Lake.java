@@ -10,9 +10,18 @@ public class Lake {
 
     private float waterLevel;
 
-    public Lake (Map map) {
-        tiles = new ArrayList<Tile>();
+    // Constructor used for a "dead" lake
+    public Lake() {
+        tiles = null;
+        borderTiles = null;
+    }
+
+    public Lake (Map map, Tile deepestTile) {
         this.map = map;
+        tiles = new ArrayList<Tile>();
+        tiles.add(deepestTile);
+        borderTiles = new ArrayList<Tile>();
+        borderTiles.add(deepestTile);
     }
 
     // Looks at the points in the border and recalculates
@@ -47,6 +56,10 @@ public class Lake {
 
     public ArrayList<Tile> getTiles() {
         return tiles;
+    }
+
+    public Tile getShallowestTile() {
+        return tiles.get(tiles.size() - 1);
     }
 
     public ArrayList<Tile> getBorderTiles() {
@@ -84,6 +97,6 @@ public class Lake {
             greaterLake.addTile(tile);
         }
         // This is our way of destroying the smaller lake
-        lesserLake = new Lake(map);
+        lesserLake = new Lake();
     }
 }

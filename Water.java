@@ -10,30 +10,38 @@ public class Water {
     public Water(Map map, Tile origin) {
         this.map = map;
         this.origin = origin;
-        generate();
+        flow();
     }
 
-    public void generate() {
+    private void flow() {
         // call recursive functions to generate bodies of water until at the ocean
         Tile currentTile = origin;
-        while (currentTile.getHeight() < Constants.SAND_HEIGHT) { 
+        int count = 0;
+        // TODO: Need to cover cases in recursion where a body of water flows into another
+        while (currentTile.getHeight() >= Constants.SAND_HEIGHT) { 
+            count++;
+            if (count == 100) {
+                count = 0;
+            }
             Tile minTile = map.getMinSurroundingTile(currentTile);
             // Recursively generate a river when water can flow downhill
             if (currentTile.isHigherThan(minTile)) {
-                River newRiver = new River();
-                newRiver = buildRiver(newRiver);
-                currentTile = map.getMinSurroundingTile(newRiver.getLowestTile());
+                River newRiver = new River(currentTile, minTile);
+                newRiver = generateRiver(newRiver);
+                currentTile = newRiver.getLowestTile();
+                System.out.println("R");
             
             // Recursively generate a lake when water is stuck in a valley
             } else {
-                Lake newLake = new Lake(map);
-                newLake = buildLake(newLake);
-                currentTile = newLake.getMinSurroundingTile();
+                Lake newLake = new Lake(map, currentTile);
+                newLake = generateLake(newLake);
+                currentTile = newLake.getShallowestTile();
+                System.out.println("L");
             }
         }
     }
 
-    private River buildRiver(River currentRiver) {
+    private River generateRiver(River currentRiver) {
         // Base case when we reach water
         Tile minTile = map.getMinSurroundingTile(currentRiver.getLowestTile());
         if (minTile.getHeight() < Constants.SAND_HEIGHT) {
@@ -43,15 +51,15 @@ public class Water {
         // If the river can still flow, keep generating the river
         if (currentRiver.getLowestTile().isHigherThan(minTile)) {
             currentRiver.addTile(minTile);
-            return buildRiver(currentRiver);
+            return generateRiver(currentRiver);
 
-        // If not, then we need to make a lake so return the river we've got
+        // If not, we need to make a lake so return the river we've got
         } else {
             return currentRiver;
         }
     }
 
-    private Lake buildLake(Lake currentLake) {
+    private Lake generateLake(Lake currentLake) {
         // Base case when we reach water
         Tile minTile = currentLake.getMinSurroundingTile();
         if (minTile.getHeight() < Constants.SAND_HEIGHT) { 
@@ -61,9 +69,9 @@ public class Water {
         // If the lake is still in a valley, keep generating the lake
         if (minTile.getHeight() > currentLake.getWaterLevel()) {
             currentLake.addTile(minTile);
-            return buildLake(currentLake);
+            return generateLake(currentLake);
 
-        // If not, when we need to make a river so return the lake we've got
+        // If not, we need to make a river so return the lake we've got
         } else {
             return currentLake;
         }
