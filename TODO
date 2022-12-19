@@ -7,6 +7,7 @@ IN PROGRESS: RIVERS
 
 TODO
 - Clear the //TODOs in code
+- Why do tiles get added to lakes if lakes are added to tiles?
 - Make folders for the classes and structure the project instead of throwing everything in the same folder
 - Remove the normalization of height by simpily generating heights within range
 - Use shorts for height to reduce memory and open up bitwise operations

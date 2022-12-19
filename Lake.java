@@ -13,24 +13,6 @@ public class Lake {
     public Lake (Map map) {
         tiles = new ArrayList<Tile>();
         this.map = map;
-        calculateBorder();
-    }
-
-    // Looks at every point to make the border
-    // TODO: Find a way to not make this as brute force
-    private void calculateBorder() {
-        borderTiles = new ArrayList<Tile>();
-        for (Tile t : tiles) {
-            Tile[] surroundingTiles = map.getSurroundingTiles(t);
-            for (Tile st : surroundingTiles) {
-                if (st.isLake()) {
-                    continue;
-                }
-                // Add if there is a tile not completely surrounded by lake tiles
-                borderTiles.add(t);
-                break;
-            }
-        }
     }
 
     // Looks at the points in the border and recalculates
@@ -75,6 +57,7 @@ public class Lake {
         if (tile.isLake()) {
             mergeWithLake(tile.getLake());
         }
+        tile.addToLake(this);
         tiles.add(tile);
         borderTiles.add(tile);
         recalculateBorder();
@@ -98,6 +81,9 @@ public class Lake {
         Lake lesserLake = greaterLake == lake ? this : lake;
         for (Tile tile : lesserLake.getTiles()) {
             tile.addToLake(greaterLake);
+            greaterLake.addTile(tile);
         }
+        // This is our way of destroying the smaller lake
+        lesserLake = new Lake(map);
     }
 }

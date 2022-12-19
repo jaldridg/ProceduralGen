@@ -39,25 +39,16 @@ public class MapCanvas extends Canvas {
         mapImage = createImage(currentMap.getSize() * pixelSize, currentMap.getSize() * pixelSize);
         g2d = (Graphics2D) mapImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Paint the tiles
         Tile[][] tiles = currentMap.getTiles();
-        // Generate the map
         for (int i = 0; i < currentMap.getSize(); i++) {
             for (int j = 0; j < currentMap.getSize(); j++) {
                 g2d.setColor(tiles[i][j].getColor());
                 g2d.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
             }
         }
-        // If realistic, generate the rivers on top
-        if (isRealistic) {
-            g2d.setColor(Constants.SHALLOW_WATER_COLOR);
-            River[] rivers = currentMap.getRivers();
-            for (int i = 0; i < rivers.length; i++) {
-                Tile[] riverTiles = rivers[i].getTiles();
-                for (int j = 0; j < riverTiles.length; j++) {
-                    g2d.fillRect(riverTiles[j].getX() * pixelSize, riverTiles[j].getY() * pixelSize, pixelSize, pixelSize);
-                }
-            }
-        }
+        
         // Offsets the image slightly since our mapsize is not exactly cut in half
         // when we change the resolution since our size is some power of two PLUS ONE
         g.drawImage(mapImage, -pixelSize / 2, -pixelSize / 2, null);        
@@ -75,14 +66,14 @@ public class MapCanvas extends Canvas {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
                     Tile tile = tiles[i][j];
-                    tile.setColor(generateRealisticColor(tile.getHeight()));
+                    tile.setColor(generateRealisticColor(tile));
                 }
             }
         } else {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
                     Tile tile = tiles[i][j];
-                    tile.setColor(generateColor(tile.getHeight()));
+                    tile.setColor(generateColor(tile));
                 }
             }
         } 
@@ -91,10 +82,11 @@ public class MapCanvas extends Canvas {
     /**
      * Uses a handful of colors and height cutoffs to generate a color
      * 
-     * @param height The height value from 0 to 1
+     * @param tile The Tile to generate a color for
      * @return The {@code Color} of the terrain at the given height
      */
-    private Color generateColor(float height) {
+    private Color generateColor(Tile tile) {
+        float height = tile.getHeight();
         if      (height > Constants.MOUNTAIN_HEIGHT)      { return Constants.MOUNTAIN_COLOR; }
         else if (height > Constants.FOREST_HEIGHT)        { return Constants.FOREST_COLOR; } 
         else if (height > Constants.GRASS_HEIGHT)         { return Constants.GRASS_COLOR; }
@@ -107,12 +99,14 @@ public class MapCanvas extends Canvas {
      * Uses linear interpolation to generate custom colors from
      * a given height. Colors should be similar to {@code generateColor(float height)}
      * 
-     * @param height The height value from 0 to 1
+     * @param tile The Tile to generate a color for
      * @return The {@code Color} of the terrain at the given height
      * @see {@code generateColor(float height)}
      */
-    private Color generateRealisticColor(float height) {
+    private Color generateRealisticColor(Tile tile) {
+        if (tile.isWater()) { return Constants.DEEP_WATER_COLOR; }
 
+        float height = tile.getHeight();
         // Mountain to snowy/rocky mountain
         if (height > Constants.MOUNTAIN_HEIGHT) {
             int rValue = lerp(Constants.MOUNTAIN_HEIGHT, Constants.SNOW_HEIGHT, 80, 125, height);

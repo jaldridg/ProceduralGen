@@ -5,9 +5,9 @@ public class Tile {
     private float height;
     private Color color;
 
-    // The lake data structure the tile may be a part of
+    // The lake data structure the tile may belong to
     private Lake lake;
-    // The river data structure the tile may be a part of
+    // The river data structure the tile may belong to
     private River river;
 
     private int x;

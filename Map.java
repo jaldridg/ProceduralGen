@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Map {
@@ -20,7 +19,6 @@ public abstract class Map {
         this.size = 129;
         seed = (int) (Math.random() * Integer.MAX_VALUE);
         generate(seed);
-        aeg = new AfterEffectsGenerator(this, rng);
     }
 
     public void generate(int seed) {
@@ -201,10 +199,6 @@ public abstract class Map {
 
     public Tile getTile(int x, int y) {
         return tiles[x][y];
-    }
-
-    public River[] getRivers() {
-        return aeg.getRivers();
     }
 
     // TODO: Yeah...so...this is really long for no reason
