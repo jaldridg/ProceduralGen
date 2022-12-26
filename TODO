@@ -1,4 +1,9 @@
 
+LAKE ADVENTURE
+- When merging lakes, the order of the lake tiles in the lake's tileList is no longer in terms of the order the tiles were added
+    This means that we can't assume the last tile in the list is the shallowest tile so the next minTile may not be downhill
+        That explains why we're generating two lakes in a row - so we somehow need to sort the lakes tiles or just find a better way to determine which lake tile the minTile will come from
+
 IN PROGRESS: RIVERS
 - Problems
     > When changing the resolution, the river locations change, but it's the same map so they shouldn't in theory

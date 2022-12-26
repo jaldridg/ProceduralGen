@@ -225,13 +225,25 @@ public abstract class Map {
 
     public Tile getMinSurroundingTile(Tile tile) {
         Tile[] surroundingTiles = getSurroundingTiles(tile);
-        int minIndex = 0;
-        for (int i = 1; i < surroundingTiles.length; i++) {
-            if (surroundingTiles[minIndex].getHeight() > surroundingTiles[i].getHeight()) {
-                minIndex = i;
+        Tile minTile = surroundingTiles[0];
+        for (Tile t : surroundingTiles) {
+            if (minTile.isHigherThan(t)) {
+                minTile = t;
             }
         }
-        return surroundingTiles[minIndex];
+        return minTile;
+    }
+
+    public Tile getMinSurroundingTileNoLake(Tile tile) {
+        Tile[] surroundingTiles = getSurroundingTiles(tile);
+        Tile minTile = surroundingTiles[0];
+        for (Tile t : surroundingTiles) {
+            if (t.isLake()) { continue; }
+            if (minTile.isHigherThan(t)) {
+                minTile = t;
+            }
+        }
+        return minTile;
     }
 
     public boolean isValley(Tile tile) {

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 // Generates Lakes and Rivers as it flows downhill
 public class Water {
@@ -16,27 +15,29 @@ public class Water {
     private void flow() {
         // call recursive functions to generate bodies of water until at the ocean
         Tile currentTile = origin;
-        int count = 0;
+        ArrayList<River> rivers = new ArrayList<>();
+        ArrayList<Lake> lakes = new ArrayList<>();
         // TODO: Need to cover cases in recursion where a body of water flows into another
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) { 
-            count++;
-            if (count == 100) {
-                count = 0;
-            }
-            Tile minTile = map.getMinSurroundingTile(currentTile);
+            Tile minTile = map.getMinSurroundingTileNoLake(currentTile);
             // Recursively generate a river when water can flow downhill
             if (currentTile.isHigherThan(minTile)) {
-                River newRiver = new River(currentTile, minTile);
+                River newRiver = new River(minTile);
                 newRiver = generateRiver(newRiver);
                 currentTile = newRiver.getLowestTile();
-                System.out.println("R");
-            
+                rivers.add(newRiver);
+                System.out.println("River with " + newRiver.getTiles().length + " tiles");
+
             // Recursively generate a lake when water is stuck in a valley
             } else {
                 Lake newLake = new Lake(map, currentTile);
                 newLake = generateLake(newLake);
                 currentTile = newLake.getShallowestTile();
-                System.out.println("L");
+                lakes.add(newLake);
+                System.out.println("Lake with " + newLake.getSize() + " tiles");
+                if (newLake.getSize() == 1) {
+                    int x = 0;
+                }
             }
         }
     }
@@ -63,7 +64,7 @@ public class Water {
         // Base case when we reach water
         Tile minTile = currentLake.getMinSurroundingTile();
         if (minTile.getHeight() < Constants.SAND_HEIGHT) { 
-            return currentLake; 
+            return currentLake;
         }
 
         // If the lake is still in a valley, keep generating the lake

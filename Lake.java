@@ -22,6 +22,13 @@ public class Lake {
         tiles.add(deepestTile);
         borderTiles = new ArrayList<Tile>();
         borderTiles.add(deepestTile);
+        waterLevel = deepestTile.getHeight();
+        deepestTile.addToLake(this);
+        River r = deepestTile.getRiver();
+        if (r != null) {
+            r.removeTile(deepestTile);
+            deepestTile.addToRiver(null);
+        }
     }
 
     // Looks at the points in the border and recalculates
@@ -46,8 +53,11 @@ public class Lake {
         for (Tile bTile : borderTiles) {
             Tile[] surroundingTiles = map.getSurroundingTiles(bTile);
             for (Tile sTile : surroundingTiles) {
-                if (minTile.isHigherThan(sTile) && !sTile.isWater()) {
-                    minTile = sTile;
+                if (minTile.isHigherThan(sTile)) {
+                    // Make sure we're not looking at tiles in the same lake
+                    if (sTile.getLake() != this) {
+                        minTile = sTile;
+                    }
                 }
             }
         }
@@ -71,6 +81,11 @@ public class Lake {
             mergeWithLake(tile.getLake());
         }
         tile.addToLake(this);
+        River r = tile.getRiver();
+        if (r != null) {
+            r.removeTile(tile);
+            tile.addToRiver(null);
+        }
         tiles.add(tile);
         borderTiles.add(tile);
         recalculateBorder();
