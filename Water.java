@@ -18,7 +18,11 @@ public class Water {
         ArrayList<River> rivers = new ArrayList<>();
         ArrayList<Lake> lakes = new ArrayList<>();
         // TODO: Need to cover cases in recursion where a body of water flows into another
-        while (currentTile.getHeight() >= Constants.SAND_HEIGHT) { 
+        int count = 0;
+        System.out.println("Seed: " + map.getSeed());
+        printLocalHeights(currentTile, map);
+        while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
+            count++;
             Tile minTile = map.getMinSurroundingTileNoLake(currentTile);
             // Recursively generate a river when water can flow downhill
             if (currentTile.isHigherThan(minTile)) {
@@ -26,7 +30,9 @@ public class Water {
                 newRiver = generateRiver(newRiver);
                 currentTile = newRiver.getLowestTile();
                 rivers.add(newRiver);
-                System.out.println("River with " + newRiver.getTiles().length + " tiles");
+                if (count < 100) {
+                    System.out.println("River with " + newRiver.getTiles().length + " tiles");
+                }
 
             // Recursively generate a lake when water is stuck in a valley
             } else {
@@ -34,7 +40,9 @@ public class Water {
                 newLake = generateLake(newLake);
                 currentTile = newLake.getShallowestTile();
                 lakes.add(newLake);
-                System.out.println("Lake with " + newLake.getSize() + " tiles");
+                if (count < 100) {
+                    System.out.println("Lake with " + newLake.getSize() + " tiles");
+                }
                 if (newLake.getSize() == 1) {
                     int x = 0;
                 }
@@ -86,21 +94,21 @@ public class Water {
         int x = tile.getX();
         int y = tile.getY();
         System.out.print("\t");
-        int range = 2;
+        int range = 3;
         for (int i = -range; i < range + 1; i++) {
-            System.out.print(y + i + "\t");
+            System.out.print("  " + (x + i) + "\t");
         }
         System.out.println();
         for (int i = -range; i < range + 1; i++) {
-            System.out.print(x + i + "\t");
+            System.out.print(y + i + "\t");
             for (int j = 0; j < range * 2 + 1; j++) {
-                Tile t = map.getTile(x + i - range, y + j - range);
+                Tile t = map.getTile(x + j - range, y + i);
                 if (t.isRiver()) {
                     System.out.print("  R\t");
                 } else if (t.isLake()) {
                     System.out.print("  L\t");
                 } else {
-                    System.out.print(String.format("%.4f\t", map.getTile(x + i - range, y + j - range).getHeight()));
+                    System.out.print(String.format("%.4f\t", t.getHeight()));
                 }
             }
             System.out.println();

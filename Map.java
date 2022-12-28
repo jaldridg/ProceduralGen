@@ -22,7 +22,9 @@ public abstract class Map {
     }
 
     public void generate(int seed) {
-        rng = new Random(seed);
+        //TODO: Revert seed randomization after debugging
+        //rng = new Random(seed);
+        rng = new Random(966217945);
 
         generateHeightArray();
         normalizeHeightArray();
@@ -236,10 +238,10 @@ public abstract class Map {
 
     public Tile getMinSurroundingTileNoLake(Tile tile) {
         Tile[] surroundingTiles = getSurroundingTiles(tile);
-        Tile minTile = surroundingTiles[0];
+        Tile minTile = null;
         for (Tile t : surroundingTiles) {
             if (t.isLake()) { continue; }
-            if (minTile.isHigherThan(t)) {
+            if (minTile == null || minTile.isHigherThan(t)) {
                 minTile = t;
             }
         }
