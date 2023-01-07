@@ -10,25 +10,17 @@ public class Lake {
 
     private float waterLevel;
 
-    // Constructor used for a "dead" lake
+    // Constructor for a dead lake
     public Lake() {
         tiles = null;
         borderTiles = null;
     }
 
-    public Lake (Map map, Tile deepestTile) {
+    public Lake(Map map, Tile deepestTile) {
         this.map = map;
         tiles = new ArrayList<Tile>();
-        tiles.add(deepestTile);
         borderTiles = new ArrayList<Tile>();
-        borderTiles.add(deepestTile);
-        waterLevel = deepestTile.getHeight();
-        deepestTile.addToLake(this);
-        River r = deepestTile.getRiver();
-        if (r != null) {
-            r.removeTile(deepestTile);
-            deepestTile.addToRiver(null);
-        }
+        this.addTile(deepestTile);
     }
 
     // Looks at the points in the border and recalculates
@@ -67,6 +59,10 @@ public class Lake {
         this.tiles = tiles;
     }
 
+    public void setBorder(ArrayList<Tile> borderTiles) {
+        this.borderTiles = borderTiles;
+    }
+
     public Tile getShallowestTile() {
         return tiles.get(tiles.size() - 1);
     }
@@ -76,9 +72,6 @@ public class Lake {
     }
 
     public void addTile(Tile tile) {
-        if (tile.isLake()) {
-            mergeWithLake(tile.getLake());
-        }
         tile.addToLake(this);
         River r = tile.getRiver();
         if (r != null) {
@@ -87,6 +80,16 @@ public class Lake {
         }
         tiles.add(tile);
         borderTiles.add(tile);
+
+        // See if two lakes are now connected and merge
+        for (Tile sTile : map.getSurroundingTiles(tile)) {
+            if (sTile.isLake()) {
+                Lake mergedLake = mergeWithLake(sTile.getLake());
+                tiles = mergedLake.getTiles();
+                borderTiles = mergedLake.getBorderTiles();
+            }
+        }
+        
         recalculateBorder();
         waterLevel = Math.max(waterLevel, tile.getHeight());
     }
@@ -102,15 +105,15 @@ public class Lake {
     /*
      * Takes a lake and sets the tiles to be the larger lake (to merge them)
      */
-    private void mergeWithLake(Lake lake) {
-        if (this == lake) { return; }
+    private Lake mergeWithLake(Lake lake) {
+        if (this == lake) { return this; }
         Lake greaterLake = lake.getSize() > this.getSize() ? lake : this;
         Lake lesserLake = greaterLake == lake ? this : lake;
         
         greaterLake.setTiles(mergeTilesets(greaterLake, lesserLake));
-        // This is our way of destroying the smaller lake
+        greaterLake.setBorder(mergeBorders(greaterLake, lesserLake));
         
-        lesserLake = new Lake();
+        return greaterLake;
     }
 
     // Two finger sort which ensures lake tiles are still sorted
@@ -119,8 +122,11 @@ public class Lake {
         ArrayList<Tile> greaterTiles = greaterLake.getTiles();
         ArrayList<Tile> lesserTiles = lesserLake.getTiles();
         int expectedSize = lesserTiles.size() + greaterTiles.size();
-        lesserTiles.add(dummyTile);
         greaterTiles.add(dummyTile);
+        lesserTiles.add(dummyTile);
+        if (greaterTiles.size() == 10) {
+            int x = 0;
+        }
 
         int i = 0;
         int j = 0;
@@ -136,6 +142,21 @@ public class Lake {
                 i++;
             }
         }
+        // Remove dummies
+        greaterTiles.remove(greaterTiles.size() - 1);
+        lesserTiles.remove(lesserTiles.size() - 1);
         return newTiles;
+    }
+
+    // Doesn't actually calculate the new border
+    private ArrayList<Tile> mergeBorders(Lake greaterLake, Lake lesserLake) {
+        ArrayList<Tile> newBorder = new ArrayList<>();
+        for (Tile t : greaterLake.getBorderTiles()) {
+            newBorder.add(t);
+        }
+        for (Tile t : lesserLake.getBorderTiles()) {
+            newBorder.add(t);
+        }
+        return newBorder;
     }
 }

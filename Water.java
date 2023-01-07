@@ -18,11 +18,9 @@ public class Water {
         ArrayList<River> rivers = new ArrayList<>();
         ArrayList<Lake> lakes = new ArrayList<>();
         // TODO: Need to cover cases in recursion where a body of water flows into another
-        int count = 0;
         System.out.println("Seed: " + map.getSeed());
-        printLocalHeights(currentTile, map);
+        // printLocalHeights(map.getTile(81, 110), map, 4);
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
-            count++;
             Tile minTile = map.getMinSurroundingTileNoLake(currentTile);
             // Recursively generate a river when water can flow downhill
             if (currentTile.isHigherThan(minTile)) {
@@ -30,24 +28,19 @@ public class Water {
                 newRiver = generateRiver(newRiver);
                 currentTile = newRiver.getLowestTile();
                 rivers.add(newRiver);
-                if (count < 100) {
-                    System.out.println("River with " + newRiver.getTiles().length + " tiles");
-                }
+                System.out.println("R");
 
             // Recursively generate a lake when water is stuck in a valley
             } else {
                 Lake newLake = new Lake(map, currentTile);
+                newLake = currentTile.getLake();
                 newLake = generateLake(newLake);
                 currentTile = newLake.getShallowestTile();
                 lakes.add(newLake);
-                if (count < 100) {
-                    System.out.println("Lake with " + newLake.getSize() + " tiles");
-                }
-                if (newLake.getSize() == 1) {
-                    int x = 0;
-                }
+                System.out.println("L");
             }
         }
+        System.out.println("Series of " + rivers.size() + " rivers and " + lakes.size() + " lakes has reached the ocean!");
     }
 
     private River generateRiver(River currentRiver) {
@@ -69,8 +62,8 @@ public class Water {
     }
 
     private Lake generateLake(Lake currentLake) {
-        // Base case when we reach water
         Tile minTile = currentLake.getMinSurroundingTile();
+        // Base case when we reach water
         if (minTile.getHeight() < Constants.SAND_HEIGHT) { 
             return currentLake;
         }
@@ -86,15 +79,11 @@ public class Water {
         }
     }
 
-
-
-
     // A debugging function (may crash if point is on the edge of map)
-    private void printLocalHeights(Tile tile, Map map) {
+    private void printLocalHeights(Tile tile, Map map, int range) {
         int x = tile.getX();
         int y = tile.getY();
         System.out.print("\t");
-        int range = 3;
         for (int i = -range; i < range + 1; i++) {
             System.out.print("  " + (x + i) + "\t");
         }
