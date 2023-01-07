@@ -51,6 +51,17 @@ public class Lake {
         return minTile;
     }
 
+    // Gets the lake tile adjacent to the min surrounding tile
+    public Tile getMinSurroundingSource() {
+        Tile minTile = getMinSurroundingTile();
+        for (Tile t : map.getSurroundingTiles(minTile)) {
+            if (t.getLake() == this) {
+                return t;
+            }
+        }
+        return null; // This should never happen
+    }
+
     public ArrayList<Tile> getTiles() {
         return tiles;
     }
@@ -135,6 +146,7 @@ public class Lake {
             Tile gTile = greaterTiles.get(i);
             Tile lTile = lesserTiles.get(j);
             if (gTile.isHigherThan(lTile)) {
+                lTile.addToLake(greaterLake);
                 newTiles.add(lTile);
                 j++;
             } else {

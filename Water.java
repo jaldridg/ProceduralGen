@@ -22,6 +22,9 @@ public class Water {
         // printLocalHeights(map.getTile(81, 110), map, 4);
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
             Tile minTile = map.getMinSurroundingTileNoLake(currentTile);
+            if (lakes.size() % 200 == 0) {
+                int x = 0;
+            }
             // Recursively generate a river when water can flow downhill
             if (currentTile.isHigherThan(minTile)) {
                 River newRiver = new River(minTile);
@@ -35,7 +38,7 @@ public class Water {
                 Lake newLake = new Lake(map, currentTile);
                 newLake = currentTile.getLake();
                 newLake = generateLake(newLake);
-                currentTile = newLake.getShallowestTile();
+                currentTile = newLake.getMinSurroundingSource();
                 lakes.add(newLake);
                 System.out.println("L");
             }
