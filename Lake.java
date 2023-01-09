@@ -8,8 +8,6 @@ public class Lake {
 
     private Map map;
 
-    private float waterLevel;
-
     // Constructor for a dead lake
     public Lake() {
         tiles = null;
@@ -102,7 +100,6 @@ public class Lake {
         }
         
         recalculateBorder();
-        waterLevel = Math.max(waterLevel, tile.getHeight());
     }
 
     public int getSize() {
@@ -110,7 +107,7 @@ public class Lake {
     }
 
     public float getWaterLevel() {
-        return waterLevel;
+        return tiles.get(tiles.size() - 1).getHeight();
     }
 
     /*

@@ -19,26 +19,31 @@ public class Water {
         ArrayList<Lake> lakes = new ArrayList<>();
         // TODO: Need to cover cases in recursion where a body of water flows into another
         System.out.println("Seed: " + map.getSeed());
-        // printLocalHeights(map.getTile(81, 110), map, 4);
+        // printLocalHeights(map.getTile(3, 40), map, 3);
+        Tile nextTile = map.getMinSurroundingTile(currentTile);
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
-            Tile minTile = map.getMinSurroundingTileNoLake(currentTile);
-            if (lakes.size() % 200 == 0) {
+            if (lakes.size() % 4 == 0) { 
                 int x = 0;
             }
+
             // Recursively generate a river when water can flow downhill
-            if (currentTile.isHigherThan(minTile)) {
-                River newRiver = new River(minTile);
+            if (currentTile.isHigherThan(nextTile)) {
+                River newRiver = new River(nextTile);
                 newRiver = generateRiver(newRiver);
                 currentTile = newRiver.getLowestTile();
+                nextTile = map.getMinSurroundingTileNoLake(currentTile);
                 rivers.add(newRiver);
                 System.out.println("R");
 
             // Recursively generate a lake when water is stuck in a valley
             } else {
                 Lake newLake = new Lake(map, currentTile);
-                newLake = currentTile.getLake();
                 newLake = generateLake(newLake);
-                currentTile = newLake.getMinSurroundingSource();
+                // Lake may have merged so set to that lake
+                newLake = newLake.getTiles().get(0).getLake();
+                currentTile = newLake.getShallowestTile();
+                nextTile = newLake.getMinSurroundingTile();
+
                 lakes.add(newLake);
                 System.out.println("L");
             }
