@@ -18,11 +18,18 @@ public class Water {
         ArrayList<River> rivers = new ArrayList<>();
         ArrayList<Lake> lakes = new ArrayList<>();
         // TODO: Need to cover cases in recursion where a body of water flows into another
-        System.out.println("Seed: " + map.getSeed());
-        // printLocalHeights(map.getTile(3, 40), map, 3);
+        // printLocalHeights(map.getTile(1, 38), map, 1);
         Tile nextTile = map.getMinSurroundingTile(currentTile);
+        boolean border = false;
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
-            if (lakes.size() % 4 == 0) { 
+            // Let's not deal with things on the edge of the map
+            if (map.isOnBorder(nextTile)) { 
+                border = true;
+                break; 
+            }
+
+            // TODO: Debugging, remove later
+            if (rivers.size() == 5) { 
                 int x = 0;
             }
 
@@ -33,7 +40,7 @@ public class Water {
                 currentTile = newRiver.getLowestTile();
                 nextTile = map.getMinSurroundingTileNoLake(currentTile);
                 rivers.add(newRiver);
-                System.out.println("R");
+                System.out.print("R ");
 
             // Recursively generate a lake when water is stuck in a valley
             } else {
@@ -45,15 +52,19 @@ public class Water {
                 nextTile = newLake.getMinSurroundingTile();
 
                 lakes.add(newLake);
-                System.out.println("L");
+                System.out.print("L ");
             }
         }
-        System.out.println("Series of " + rivers.size() + " rivers and " + lakes.size() + " lakes has reached the ocean!");
+        if (border) {
+            System.out.println("\nSeries of " + rivers.size() + " rivers and " + lakes.size() + " lakes has stopped at the border");
+        } else {
+            System.out.println("\nSeries of " + rivers.size() + " rivers and " + lakes.size() + " lakes has reached the ocean!");
+        }
     }
 
     private River generateRiver(River currentRiver) {
         // Base case when we reach water
-        Tile minTile = map.getMinSurroundingTile(currentRiver.getLowestTile());
+        Tile minTile = map.getMinSurroundingTileNoLake(currentRiver.getLowestTile());
         if (minTile.getHeight() < Constants.SAND_HEIGHT) {
             return currentRiver; 
         }

@@ -23,7 +23,7 @@ public abstract class Map {
 
     public void generate(int seed) {
         //TODO: Revert seed randomization after debugging
-        rng = new Random(619475628);
+        rng = new Random();
 
         generateHeightArray();
         normalizeHeightArray();
@@ -249,5 +249,13 @@ public abstract class Map {
 
     public boolean isValley(Tile tile) {
         return getMinSurroundingTile(tile).getHeight() > tile.getHeight();
+    }
+
+    public boolean isOnBorder(Tile tile) {
+        int x = tile.getX();
+        int y = tile.getY();
+        boolean onXLimit = (x == 0) || (x == size - 1);
+        boolean onYLimit = (y == 0) || (y == size - 1);
+        return onXLimit || onYLimit;
     }
 }
