@@ -104,13 +104,14 @@ public class MapCanvas extends Canvas {
      * @see {@code generateColor(float height)}
      */
     private Color generateRealisticColor(Tile tile) {
-        if (tile.isRiver()) { return Constants.SHALLOW_WATER_COLOR; }
+        if (tile.isRiver()) { return Constants.RIVER_WATER_COLOR; }
         if (tile.isLake()) {
             Lake lake = tile.getLake();
-            float lakeHeightRange = lake.getWaterLevel() - lake.getDeepestTile().getHeight();
+            float waterHeightRange = Constants.SHALLOW_WATER_HEIGHT - Constants.DEEP_WATER_HEIGHT;
             float tileHeightDifference = lake.getWaterLevel() - tile.getHeight();
-            int gValue = lerp(lakeHeightRange, 0, 0, 150, tileHeightDifference);
-            return new Color(0, gValue, 150);
+            int gValue = lerp(0, waterHeightRange, 150, 0, tileHeightDifference);
+            System.out.println(gValue);
+            return new Color(0, gValue - Constants.RIVER_WATER_COLOR.getGreen(), 150);
         }
 
         float height = tile.getHeight();

@@ -16,6 +16,7 @@ public final class Constants {
 
     // RGB COLORS FOR TERRAIN
     static final Color DEEP_WATER_COLOR =     new Color(0, 0, 150);
+    static final Color RIVER_WATER_COLOR =    new Color(0, 50, 150);
     static final Color SHALLOW_WATER_COLOR =  new Color(0, 100, 150);
     static final Color SAND_COLOR =           new Color(255, 255, 100);
     static final Color GRASS_COLOR =          new Color(40, 150, 0);
