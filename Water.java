@@ -40,7 +40,7 @@ public class Water {
                 currentTile = newRiver.getLowestTile();
                 nextTile = map.getMinSurroundingTileNoLake(currentTile);
                 rivers.add(newRiver);
-                System.out.print("R ");
+                // System.out.print("R ");
 
             // Recursively generate a lake when water is stuck in a valley
             } else {
@@ -52,14 +52,10 @@ public class Water {
                 nextTile = newLake.getMinSurroundingTile();
 
                 lakes.add(newLake);
-                System.out.print("L ");
+                // System.out.print("L ");
             }
         }
-        if (border) {
-            System.out.println("\nSeries of " + rivers.size() + " rivers and " + lakes.size() + " lakes has stopped at the border");
-        } else {
-            System.out.println("\nSeries of " + rivers.size() + " rivers and " + lakes.size() + " lakes has reached the ocean!");
-        }
+        System.out.print(rivers.size() + lakes.size() + " ");
     }
 
     private River generateRiver(River currentRiver) {

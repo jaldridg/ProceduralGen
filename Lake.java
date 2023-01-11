@@ -76,6 +76,10 @@ public class Lake {
         return tiles.get(tiles.size() - 1);
     }
 
+    public Tile getDeepestTile() {
+        return tiles.get(0);
+    }
+
     public ArrayList<Tile> getBorderTiles() {
         return borderTiles;
     }

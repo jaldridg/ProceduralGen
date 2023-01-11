@@ -104,7 +104,14 @@ public class MapCanvas extends Canvas {
      * @see {@code generateColor(float height)}
      */
     private Color generateRealisticColor(Tile tile) {
-        if (tile.isWater()) { return Constants.DEEP_WATER_COLOR; }
+        if (tile.isRiver()) { return Constants.SHALLOW_WATER_COLOR; }
+        if (tile.isLake()) {
+            Lake lake = tile.getLake();
+            float lakeHeightRange = lake.getWaterLevel() - lake.getDeepestTile().getHeight();
+            float tileHeightDifference = lake.getWaterLevel() - tile.getHeight();
+            int gValue = lerp(lakeHeightRange, 0, 0, 150, tileHeightDifference);
+            return new Color(0, gValue, 150);
+        }
 
         float height = tile.getHeight();
         // Mountain to snowy/rocky mountain
