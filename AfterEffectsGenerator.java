@@ -21,6 +21,7 @@ public class AfterEffectsGenerator {
     private void generateWater() {
         int waterPoints = 25;
         boolean error = false;
+        System.out.println("Seed: " + map.getSeed());
         for (int i = 0; i < waterPoints; i++) {
             // TODO: Get a point on a mountain that isn't frozen from being too high
             // Randomly generate it for now
@@ -36,7 +37,7 @@ public class AfterEffectsGenerator {
             }
         }
         if (error) {
-            System.out.println("\nNullPointer for seed " + map.getSeed());
+            System.out.println("Null Pointer!");
         }
     }
 }

@@ -9,6 +9,9 @@ public class Water {
     public Water(Map map, Tile origin) {
         this.map = map;
         this.origin = origin;
+        if (origin.getX() == 114 && origin.getY() == 74) {
+            int x = 0;
+        }
         flow();
     }
 
@@ -20,13 +23,9 @@ public class Water {
         // TODO: Need to cover cases in recursion where a body of water flows into another
         // printLocalHeights(map.getTile(1, 38), map, 1);
         Tile nextTile = map.getMinSurroundingTile(currentTile);
-        boolean border = false;
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
             // Let's not deal with things on the edge of the map
-            if (map.isOnBorder(nextTile)) { 
-                border = true;
-                break; 
-            }
+            if (map.isOnBorder(nextTile)) { break; }
 
             // TODO: Debugging, remove later
             if (rivers.size() == 5) { 
@@ -41,21 +40,34 @@ public class Water {
                 nextTile = map.getMinSurroundingTileNoLake(currentTile);
                 rivers.add(newRiver);
                 // System.out.print("R ");
-
+        
             // Recursively generate a lake when water is stuck in a valley
             } else {
                 Lake newLake = new Lake(map, currentTile);
-                newLake = generateLake(newLake);
                 // Lake may have merged so set to that lake
                 newLake = newLake.getTiles().get(0).getLake();
+                newLake = generateLake(newLake);
                 currentTile = newLake.getShallowestTile();
                 nextTile = newLake.getMinSurroundingTile();
 
                 lakes.add(newLake);
+                for (Tile t : newLake.getTiles()) {
+                    if (t.getX() == 97 && t.getY() == 106) {
+                        int x = 0;
+                    }
+                }
                 // System.out.print("L ");
             }
         }
-        System.out.print(rivers.size() + lakes.size() + " ");
+        // TODO: Remove debugging counter
+        int count = 0;
+        for (River r : rivers) {
+            count += r.getTiles().length;
+        }
+        for (Lake l : lakes) {
+            count += l.getTiles().size();
+        }
+        System.out.print(rivers.size() + lakes.size() + ":" + count + " ");
     }
 
     private River generateRiver(River currentRiver) {

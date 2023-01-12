@@ -96,7 +96,8 @@ public class Lake {
 
         // See if two lakes are now connected and merge
         for (Tile sTile : map.getSurroundingTiles(tile)) {
-            if (sTile.isLake()) {
+            Lake lake = sTile.getLake();
+            if (lake != null && lake != this) {
                 Lake mergedLake = mergeWithLake(sTile.getLake());
                 tiles = mergedLake.getTiles();
                 borderTiles = mergedLake.getBorderTiles();
@@ -136,6 +137,7 @@ public class Lake {
         int expectedSize = lesserTiles.size() + greaterTiles.size();
         greaterTiles.add(dummyTile);
         lesserTiles.add(dummyTile);
+        // TODO: Remove after debugging
         if (greaterTiles.size() == 10) {
             int x = 0;
         }

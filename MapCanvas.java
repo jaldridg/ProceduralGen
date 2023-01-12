@@ -110,7 +110,6 @@ public class MapCanvas extends Canvas {
             float waterHeightRange = Constants.SHALLOW_WATER_HEIGHT - Constants.DEEP_WATER_HEIGHT;
             float tileHeightDifference = lake.getWaterLevel() - tile.getHeight();
             int gValue = lerp(0, waterHeightRange, 150, 0, tileHeightDifference);
-            System.out.println(gValue);
             return new Color(0, gValue - Constants.RIVER_WATER_COLOR.getGreen(), 150);
         }
 
