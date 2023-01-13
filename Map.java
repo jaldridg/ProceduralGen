@@ -23,7 +23,8 @@ public abstract class Map {
 
     public void generate(int seed) {
         //TODO: Revert seed randomization after debugging
-        rng = new Random();
+        seed = 1919571069;
+        rng = new Random(seed);
 
         generateHeightArray();
         normalizeHeightArray();

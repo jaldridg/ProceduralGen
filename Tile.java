@@ -45,5 +45,17 @@ public class Tile {
     public boolean isWater() { return river != null || lake != null; }
 
     public boolean isHigherThan(Tile tile) { return height > tile.getHeight(); }
+
+    public boolean equals(Object o) {
+        if (o == null) { return false; }
+        if (!(o instanceof Tile)) { return false; }
+
+        Tile tile = (Tile) o;
+        return tile.getX() == this.x && tile.getY() == this.y;
+    }
+
+    public boolean quickEquals(Tile tile) {
+        return tile.getX() == this.x && tile.getY() == this.y;
+    }
 }
 

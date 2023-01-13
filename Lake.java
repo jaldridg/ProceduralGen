@@ -97,7 +97,8 @@ public class Lake {
         // See if two lakes are now connected and merge
         for (Tile sTile : map.getSurroundingTiles(tile)) {
             Lake lake = sTile.getLake();
-            if (lake != null && lake != this) {
+            if (lake == null) { continue; }
+            if (!lake.equals(this)) {
                 Lake mergedLake = mergeWithLake(sTile.getLake());
                 tiles = mergedLake.getTiles();
                 borderTiles = mergedLake.getBorderTiles();
@@ -173,5 +174,20 @@ public class Lake {
             newBorder.add(t);
         }
         return newBorder;
+    }
+
+    public boolean equals(Object o) {
+        if (o == null) { return false; }
+        if (!(o instanceof Lake)) { return false;}
+
+        // If any of the lake's tiles belong to the other lake, they must be the same
+        Lake lake = (Lake) o;
+        Tile testTile = tiles.get(0);
+        for (Tile t : lake.getTiles()) {
+            if (t.quickEquals(testTile)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

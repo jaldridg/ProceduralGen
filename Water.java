@@ -9,7 +9,7 @@ public class Water {
     public Water(Map map, Tile origin) {
         this.map = map;
         this.origin = origin;
-        if (origin.getX() == 114 && origin.getY() == 74) {
+        if (origin.getX() == 114 && origin.getY() == 88) {
             int x = 0;
         }
         flow();
@@ -20,7 +20,6 @@ public class Water {
         Tile currentTile = origin;
         ArrayList<River> rivers = new ArrayList<>();
         ArrayList<Lake> lakes = new ArrayList<>();
-        // TODO: Need to cover cases in recursion where a body of water flows into another
         // printLocalHeights(map.getTile(1, 38), map, 1);
         Tile nextTile = map.getMinSurroundingTile(currentTile);
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
@@ -28,7 +27,7 @@ public class Water {
             if (map.isOnBorder(nextTile)) { break; }
 
             // TODO: Debugging, remove later
-            if (rivers.size() == 5) { 
+            if (rivers.size() % 5 == 0) { 
                 int x = 0;
             }
 
