@@ -44,7 +44,8 @@ public class Tile {
 
     public boolean isWater() { return river != null || lake != null; }
 
-    public boolean isHigherThan(Tile tile) { return height > tile.getHeight(); }
+    // Need to cover case where tiles are identical heights so title is slightly misleading
+    public boolean isHigherThan(Tile tile) { return height >= tile.getHeight(); }
 
     public boolean equals(Object o) {
         if (o == null) { return false; }

@@ -27,4 +27,5 @@ public final class Constants {
     // GENERATION VARIABLES
     // Higher values make denser noise but not very effective since heights are normalized
     static final float RANDOM_FACTOR = 10.0f;
+    static final int WATER_POINTS = 25;
 }

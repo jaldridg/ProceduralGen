@@ -19,17 +19,18 @@ public class AfterEffectsGenerator {
     }
  
     private void generateWater() {
-        int waterPoints = 25;
         boolean error = false;
         System.out.println("Seed: " + map.getSeed());
-        for (int i = 0; i < waterPoints; i++) {
+        for (int i = 0; i < Constants.WATER_POINTS; i++) {
             // TODO: Get a point on a mountain that isn't frozen from being too high
             // Randomly generate it for now
             int x, y;
+            float height = 0;
             do {
                 x = (int) (rng.nextFloat() * size);
                 y = (int) (rng.nextFloat() * size);
-            } while(map.getHeight(x, y) < Constants.SAND_HEIGHT);
+                height = map.getHeight(x, y);
+            } while(height < Constants.GRASS_HEIGHT || height > Constants.MOUNTAIN_HEIGHT);
             try {
                 Water w = new Water(map, map.getTile(x, y));
             } catch (NullPointerException e) {

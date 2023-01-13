@@ -9,7 +9,7 @@ public class Water {
     public Water(Map map, Tile origin) {
         this.map = map;
         this.origin = origin;
-        if (origin.getX() == 114 && origin.getY() == 88) {
+        if (origin.getX() == 39 && origin.getY() == 94) {
             int x = 0;
         }
         flow();
@@ -20,14 +20,14 @@ public class Water {
         Tile currentTile = origin;
         ArrayList<River> rivers = new ArrayList<>();
         ArrayList<Lake> lakes = new ArrayList<>();
-        // printLocalHeights(map.getTile(1, 38), map, 1);
+        // printLocalHeights(map.getTile(47, 95), map, 4);
         Tile nextTile = map.getMinSurroundingTile(currentTile);
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
             // Let's not deal with things on the edge of the map
             if (map.isOnBorder(nextTile)) { break; }
 
             // TODO: Debugging, remove later
-            if (rivers.size() % 5 == 0) { 
+            if (rivers.size() == 6) { 
                 int x = 0;
             }
 
@@ -65,6 +65,11 @@ public class Water {
         }
         for (Lake l : lakes) {
             count += l.getTiles().size();
+        }
+        if (count > 100000) { 
+            for (int i = 0; i < 50; i++) {
+                System.out.println();
+            }
         }
         System.out.print(rivers.size() + lakes.size() + ":" + count + " ");
     }
