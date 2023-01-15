@@ -1,13 +1,13 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class River {
 
     // The tiles which belong to the river
     // They should be in order that the river flows
-    private LinkedList<Tile> tiles;
+    private ArrayList<Tile> tiles;
 
     public River(Tile origin) {
-        tiles = new LinkedList<Tile>();
+        tiles = new ArrayList<Tile>();
         tiles.add(origin);
         origin.addToRiver(this);
         origin.addToLake(null);

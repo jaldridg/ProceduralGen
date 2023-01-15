@@ -1,8 +1,7 @@
 # procedural-gen
-A GUI that generates and displays procedurally generated terrain using the diamond-square generation algorithm. It comes with a many features such as custom seeds, different map resolutions, island generation, and a realistic terrain option.
+A GUI that generates and displays procedurally generated terrain using the diamond-square generation algorithm. It comes with a many features such as custom seeds, different map resolutions, island generation, flowing water, and a realistic terrain option.
 
-This project is in progress
- - Currently adding rivers/lakes to the terrain
+This project is not finished, but rather at a good stopping point
 
 ## Motivation
 I've played a lot of Minecraft and have always wanted to make my own procedurally generated worlds. 

@@ -27,9 +27,7 @@ public class Lake {
         for (Tile t : borderTiles) {
             Tile[] surroundingTiles = map.getSurroundingTiles(t);
             for (Tile st : surroundingTiles) {
-                if (st.isLake()) {
-                    continue;
-                }
+                if (st.isLake()) { continue; }
                 // Add if there is a tile not completely surrounded by lake tiles
                 newBorder.add(t);
                 break;
@@ -57,7 +55,7 @@ public class Lake {
                 return t;
             }
         }
-        return null; // This should never happen
+        return null; // This should never happen (but it is)
     }
 
     public ArrayList<Tile> getTiles() {
@@ -104,7 +102,7 @@ public class Lake {
                 borderTiles = mergedLake.getBorderTiles();
             }
         }
-        
+
         recalculateBorder();
     }
 
@@ -138,10 +136,6 @@ public class Lake {
         int expectedSize = lesserTiles.size() + greaterTiles.size();
         greaterTiles.add(dummyTile);
         lesserTiles.add(dummyTile);
-        // TODO: Remove after debugging
-        if (greaterTiles.size() == 10) {
-            int x = 0;
-        }
 
         int i = 0;
         int j = 0;
@@ -164,15 +158,10 @@ public class Lake {
         return newTiles;
     }
 
-    // Doesn't actually calculate the new border
     private ArrayList<Tile> mergeBorders(Lake greaterLake, Lake lesserLake) {
         ArrayList<Tile> newBorder = new ArrayList<>();
-        for (Tile t : greaterLake.getBorderTiles()) {
-            newBorder.add(t);
-        }
-        for (Tile t : lesserLake.getBorderTiles()) {
-            newBorder.add(t);
-        }
+        for (Tile t : greaterLake.getBorderTiles()) { newBorder.add(t); }
+        for (Tile t : lesserLake.getBorderTiles()) {  newBorder.add(t); }
         return newBorder;
     }
 
@@ -184,7 +173,7 @@ public class Lake {
         Lake lake = (Lake) o;
         Tile testTile = tiles.get(0);
         for (Tile t : lake.getTiles()) {
-            if (t.quickEquals(testTile)) {
+            if (t.equals(testTile)) {
                 return true;
             }
         }

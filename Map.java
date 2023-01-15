@@ -22,12 +22,10 @@ public abstract class Map {
     }
 
     public void generate(int seed) {
-        //TODO: Revert seed randomization after debugging
-        // seed = 1072484542;
         rng = new Random(seed);
 
-        generateHeightArray();
-        normalizeHeightArray();
+        generateTileArray();
+        normalizeTileHeights();
 
         aeg = new AfterEffectsGenerator(this, rng);
     }
@@ -35,7 +33,7 @@ public abstract class Map {
     /**
      * Generates height array using the diamond-square algorithm
      */
-    protected void generateHeightArray() {
+    protected void generateTileArray() {
         // Initialize the array and variables
         tiles = new Tile[size][size];
         int chunkSize = size - 1;
@@ -137,12 +135,7 @@ public abstract class Map {
         }
     }
 
-    /**
-     * Normalizes the height array by first finding the min and max,
-     * then making the heights positive by subtracting the min.
-     * Finally, the heights become 0 to 1 after dividing by the range
-     */
-    protected void normalizeHeightArray() {
+    protected void normalizeTileHeights() {
         // Find max and min
         float max = tiles[0][0].getHeight();
         float min = tiles[0][0].getHeight();
@@ -156,7 +149,7 @@ public abstract class Map {
                 }
             }
         }
-        // Calculate values before the loop for speed
+
         float range = Math.abs(min) + Math.abs(max);
         float rangeInv = 1 / range;
         //Normalize
@@ -203,23 +196,27 @@ public abstract class Map {
         return tiles[x][y];
     }
 
-    // TODO: Yeah...so...this is really long for no reason
+    // Used to get tiles neighbors, considering border tiles with less neighbors
     public Tile[] getSurroundingTiles(Tile tile) {
         int x = tile.getX();
         int y = tile.getY();
-        boolean leftEdge = x == 0;
-        boolean rightEdge = x == size - 1;
         boolean topEdge = y == 0;
         boolean bottomEdge = y == size - 1;
-        if (leftEdge) {
+
+        // Case where tile is on the left edge
+        if (x == 0) {
             if (topEdge) { return new Tile[] {tiles[x + 1][y], tiles[x][y + 1]}; }
             else if (bottomEdge) { return new Tile[] {tiles[x + 1][y], tiles[x][y - 1]}; }
             return new Tile[] {tiles[x + 1][y], tiles[x][y - 1], tiles[x][y + 1] };
-        } else if (rightEdge) {
+        
+        // Case where tile is on the right edge
+        } else if (x == size - 1) {
             if (topEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y + 1]}; }
             if (bottomEdge) { return new Tile[] {tiles[x - 1][y], tiles[x][y - 1]}; }
             return new Tile[] {tiles[x - 1][y], tiles[x][y - 1], tiles[x][y + 1]};
         } 
+
+        // Remaining cases
         else if (topEdge) { return new Tile[] {tiles[x + 1][y], tiles[x - 1][y], tiles[x][y + 1]}; }
         else if (bottomEdge) { return new Tile[] {tiles[x + 1][y], tiles[x - 1][y], tiles[x][y - 1]}; }
         else { return new Tile[] {tiles[x - 1][y], tiles[x + 1][y], tiles[x][y - 1], tiles[x][y + 1]}; }
@@ -246,10 +243,6 @@ public abstract class Map {
             }
         }
         return minTile;
-    }
-
-    public boolean isValley(Tile tile) {
-        return getMinSurroundingTile(tile).getHeight() > tile.getHeight();
     }
 
     public boolean isOnBorder(Tile tile) {

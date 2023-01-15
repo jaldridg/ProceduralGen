@@ -1,44 +1,21 @@
-import java.util.ArrayList;
 
 // Generates Lakes and Rivers as it flows downhill
 public class Water {
-    private Map map;
 
-    private Tile origin;
-    
-    public Water(Map map, Tile origin) {
-        this.map = map;
-        this.origin = origin;
-        if (origin.getX() == 39 && origin.getY() == 94) {
-            int x = 0;
-        }
-        flow();
-    }
-
-    private void flow() {
+    public static void flow(Map map, Tile origin) {
         // call recursive functions to generate bodies of water until at the ocean
         Tile currentTile = origin;
-        ArrayList<River> rivers = new ArrayList<>();
-        ArrayList<Lake> lakes = new ArrayList<>();
-        // printLocalHeights(map.getTile(47, 95), map, 4);
         Tile nextTile = map.getMinSurroundingTile(currentTile);
         while (currentTile.getHeight() >= Constants.SAND_HEIGHT) {
             // Let's not deal with things on the edge of the map
             if (map.isOnBorder(nextTile)) { break; }
 
-            // TODO: Debugging, remove later
-            if (rivers.size() == 6) { 
-                int x = 0;
-            }
-
             // Recursively generate a river when water can flow downhill
             if (currentTile.isHigherThan(nextTile)) {
                 River newRiver = new River(nextTile);
-                newRiver = generateRiver(newRiver);
+                newRiver = generateRiver(map, newRiver);
                 currentTile = newRiver.getLowestTile();
                 nextTile = map.getMinSurroundingTileNoLake(currentTile);
-                rivers.add(newRiver);
-                // System.out.print("R ");
         
             // Recursively generate a lake when water is stuck in a valley
             } else {
@@ -48,33 +25,11 @@ public class Water {
                 newLake = generateLake(newLake);
                 currentTile = newLake.getShallowestTile();
                 nextTile = newLake.getMinSurroundingTile();
-
-                lakes.add(newLake);
-                for (Tile t : newLake.getTiles()) {
-                    if (t.getX() == 97 && t.getY() == 106) {
-                        int x = 0;
-                    }
-                }
-                // System.out.print("L ");
             }
         }
-        // TODO: Remove debugging counter
-        int count = 0;
-        for (River r : rivers) {
-            count += r.getTiles().length;
-        }
-        for (Lake l : lakes) {
-            count += l.getTiles().size();
-        }
-        if (count > 100000) { 
-            for (int i = 0; i < 50; i++) {
-                System.out.println();
-            }
-        }
-        System.out.print(rivers.size() + lakes.size() + ":" + count + " ");
     }
 
-    private River generateRiver(River currentRiver) {
+    private static River generateRiver(Map map, River currentRiver) {
         // Base case when we reach water
         Tile minTile = map.getMinSurroundingTileNoLake(currentRiver.getLowestTile());
         if (minTile.getHeight() < Constants.SAND_HEIGHT) {
@@ -84,7 +39,7 @@ public class Water {
         // If the river can still flow, keep generating the river
         if (currentRiver.getLowestTile().isHigherThan(minTile)) {
             currentRiver.addTile(minTile);
-            return generateRiver(currentRiver);
+            return generateRiver(map, currentRiver);
 
         // If not, we need to make a lake so return the river we've got
         } else {
@@ -92,7 +47,7 @@ public class Water {
         }
     }
 
-    private Lake generateLake(Lake currentLake) {
+    private static Lake generateLake(Lake currentLake) {
         Tile minTile = currentLake.getMinSurroundingTile();
         // Base case when we reach water
         if (minTile.getHeight() < Constants.SAND_HEIGHT) { 
@@ -135,34 +90,4 @@ public class Water {
         }
 
     }
-
-    // For degugging
-    private String printTileXY(Tile tile) {
-       return "(" + tile.getX() + ", " + tile.getY() + ")";
-    }
-
-        
-    /*
-  * Can you go downhill from the current river point or current lake points?
-  *     Yes: End lake (if applicable) and make the current river point the lowest surrounding point
-  *     No: Begin the lake by adding this trapped points to lakePoints
-  *         No matter what, the water will build up and flow to lowest point
-  *         Count the surrounding min point as part of the lake
-  *             But if surrounding point is part of a lake, this trapped point should be added to the preexisting lake
-  *         The water level is now at that height
-  *         Then, test the surrounding points to each point in the lake, ignoring lake points (river points are okay though)
-  *         
-  * Finish lake by adding the lake points which were not already water
-  */
-
-  // Possible edge case above: We need to look at the water level and not the height of the lakes
-
-  // River and valley -> lake
-  // River and downhill -> river
-  // Lake and valley -> lake
-  // Lake and downhill -> river
-
-  // So
-  // Downhill -> river
-  // Valley -> Lake
 }

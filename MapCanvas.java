@@ -2,9 +2,7 @@ import java.awt.*;
 
 public class MapCanvas extends Canvas {
 
-    public static final int MAP_SIZE = 513;
-
-    private int pixelSize = 4;
+    private int pixelSize;
 
     // Whether or not a realistic map should be drawn
     private boolean isRealistic;
@@ -12,13 +10,15 @@ public class MapCanvas extends Canvas {
     private Image mapImage = null;
     private Graphics2D g2d;
 
-    // The two maps that could be generated. The canvas will draw
-    // the currentMap which could be set to either of the two maps
+    /* The two maps that could be generated. The canvas will draw
+    ** the currentMap which could be set to either of the two maps */
     private Map currentMap;
     private StandardMap standardMap;
     private IslandMap islandMap;
 
     public MapCanvas(StandardMap standardMap, IslandMap islandMap) {
+        pixelSize = 4;
+
         isRealistic = true;
 
         this.standardMap = standardMap;
@@ -27,7 +27,7 @@ public class MapCanvas extends Canvas {
 
         currentMap.generateAfterEffects();
 
-        this.setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
+        this.setPreferredSize(new Dimension(Constants.MAP_SIZE, Constants.MAP_SIZE));
         this.setVisible(true);
     }
 
@@ -106,7 +106,6 @@ public class MapCanvas extends Canvas {
     private Color generateRealisticColor(Tile tile) {
         if (tile.isRiver()) { return Constants.RIVER_WATER_COLOR; }
         if (tile.isLake()) {
-            // TODO: Colors will crash sometimes for deep lakes so it was avoided by just doing max
             Lake lake = tile.getLake();
             float waterHeightRange = Constants.SHALLOW_WATER_HEIGHT - Constants.DEEP_WATER_HEIGHT;
             float tileHeightDifference = lake.getWaterLevel() - tile.getHeight();
@@ -192,9 +191,5 @@ public class MapCanvas extends Canvas {
 
     public void setPixelSize(int pixelSize) {
         this.pixelSize = pixelSize;
-    }
-
-    private int getPixelCount() {
-        return ((MAP_SIZE - 1) / pixelSize) + 1;
     }
 }

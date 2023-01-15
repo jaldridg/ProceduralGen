@@ -5,9 +5,9 @@ public class Tile {
     private float height;
     private Color color;
 
-    // The lake data structure the tile may belong to
+    // The lake that the tile may belong to
     private Lake lake;
-    // The river data structure the tile may belong to
+    // The river that the tile may belong to
     private River river;
 
     private int x;
@@ -47,15 +47,8 @@ public class Tile {
     // Need to cover case where tiles are identical heights so title is slightly misleading
     public boolean isHigherThan(Tile tile) { return height >= tile.getHeight(); }
 
-    public boolean equals(Object o) {
-        if (o == null) { return false; }
-        if (!(o instanceof Tile)) { return false; }
-
-        Tile tile = (Tile) o;
-        return tile.getX() == this.x && tile.getY() == this.y;
-    }
-
-    public boolean quickEquals(Tile tile) {
+    // Note: only works for tile to tile comparison
+    public boolean equals(Tile tile) {
         return tile.getX() == this.x && tile.getY() == this.y;
     }
 }

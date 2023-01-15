@@ -6,10 +6,8 @@ import java.awt.*;
 
 public class ControlPanel extends JPanel {
 
-    public static final int PANEL_WIDTH = 200;
-
     private static final int MIN_RESOLUTION = 32;
-    public static final int MAX_RESOLUTION = 512;
+    private static final int MAX_RESOLUTION = 512;
 
     // Controls the pixel size and map size
     private int resolution = 128;
@@ -71,15 +69,15 @@ public class ControlPanel extends JPanel {
         this.add(displaySettingsPanel);
 
         // Configure lower level panels
-        genPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 70));
+        genPanel.setPreferredSize(new Dimension(Constants.PANEL_WIDTH, 70));
         genPanel.setBackground(Color.LIGHT_GRAY);
-        seedPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
+        seedPanel.setPreferredSize(new Dimension(Constants.PANEL_WIDTH, 30));
         seedPanel.setBackground(Color.LIGHT_GRAY);
-        islandPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
+        islandPanel.setPreferredSize(new Dimension(Constants.PANEL_WIDTH, 30));
         islandPanel.setBackground(Color.LIGHT_GRAY);
-        resolutionPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 40));
+        resolutionPanel.setPreferredSize(new Dimension(Constants.PANEL_WIDTH, 40));
         resolutionPanel.setBackground(Color.LIGHT_GRAY);
-        realisticPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 30));
+        realisticPanel.setPreferredSize(new Dimension(Constants.PANEL_WIDTH, 30));
         realisticPanel.setBackground(Color.LIGHT_GRAY);
         
         // Configuration and custom border for generation settings panel
@@ -87,7 +85,7 @@ public class ControlPanel extends JPanel {
         genSettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         genSettingsPanel.setBorder(BorderFactory.createTitledBorder(
             new TitledBorder(genSettingsPanelBorder)));
-        genSettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 100));
+        genSettingsPanel.setPreferredSize(new Dimension(Constants.PANEL_WIDTH + 50, 100));
         genSettingsPanel.setBackground(Color.WHITE);
         
         // Configuration and custom border for display settings panel
@@ -95,11 +93,11 @@ public class ControlPanel extends JPanel {
         displaySettingsPanelBorder.setTitleJustification(TitledBorder.CENTER);
         displaySettingsPanel.setBorder(BorderFactory.createTitledBorder(
             new TitledBorder(displaySettingsPanelBorder)));
-        displaySettingsPanel.setPreferredSize(new Dimension(PANEL_WIDTH + 50, 110));
+        displaySettingsPanel.setPreferredSize(new Dimension(Constants.PANEL_WIDTH + 50, 110));
         displaySettingsPanel.setBackground(Color.WHITE);
 
         // Configure control panel
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, MapCanvas.MAP_SIZE));
+        this.setPreferredSize(new Dimension(Constants.PANEL_WIDTH, Constants.MAP_SIZE));
         this.setBackground(Color.WHITE);
         
         // Set every component to visible
