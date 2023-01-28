@@ -17,12 +17,12 @@ public class IslandMap extends Map {
      * of the distance from the center of the map.
      */
     private void islandDistortion() {
+        int halfSize = size / 2;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                float distI = (float) Math.pow(((double) i / size - 0.5), 2);
-                float distJ = (float) Math.pow(((double) j / size - 0.5), 2);
-                float heightCorrection = (distI + distJ) * 2;
-                tiles[i][j].setHeight((short)(Math.max(0, tiles[i][j].getHeight() - heightCorrection)));
+                int heightCorrection = (int) (Math.pow(i - halfSize, 2) + Math.pow(j - halfSize, 2));
+                short adjustedHeight = (short) (tiles[i][j].getHeight() - heightCorrection * Constants.ISLAND_GENERTION_STRENGTH);
+                tiles[i][j].setHeight((short)(Math.max(0, adjustedHeight)));
             }
         }
     }

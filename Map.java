@@ -25,7 +25,7 @@ public abstract class Map {
         rng = new Random(seed);
 
         generateTileArray();
-        normalizeTileHeights();
+        adjustTileHeights();
 
         aeg = new AfterEffectsGenerator(this, rng);
     }
@@ -101,6 +101,7 @@ public abstract class Map {
                                   + tiles[i][j - halfChunk].getHeight()
                                   + tiles[i][j + halfChunk].getHeight()) >> 2;
                 }
+                // Random shift keeps our values form 0 to the max short value
                 float randomVariation = (rng.nextFloat() - 0.5f) * (Constants.RANDOM_FACTOR * chunkSize);
                 tiles[i][j] = new Tile(i, j, (short)(averageValue + randomVariation));
             }
@@ -134,7 +135,7 @@ public abstract class Map {
         }
     }
 
-    protected void normalizeTileHeights() {
+    protected void adjustTileHeights() {
         // Find max and min
         short max = tiles[0][0].getHeight();
         short min = tiles[0][0].getHeight();

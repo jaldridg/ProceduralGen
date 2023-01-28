@@ -169,7 +169,7 @@ public class MapCanvas extends Canvas {
      * based on the {@code height}'s distance between {@code minHeight} and {@code maxHeight}
      */
     private int lerp(short minHeight, short maxHeight, int minColor, int maxColor, short height) {
-        float ratio = (minColor - maxColor) / (minHeight - maxHeight);
+        float ratio = (minColor - maxColor) / (float)(minHeight - maxHeight);
         return (int) (minColor + ((height - minHeight) * ratio));
     }
 

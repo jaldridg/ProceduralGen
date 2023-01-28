@@ -1,6 +1,8 @@
+SHORT CONVERSION
+- Overflow/underflow when generating islands make rings
+- Resolution changes makes the map "zoom out" rather than regenerating the same thing in more detail
 
-LAST TIME: RIVERS
-Working but with a few problems
+RIVERS
 - NullPointers are common when generating water which we catch (but they shouldn't happen in the first place)
 - When changing the resolution, the river locations change, but it's the same map so they shouldn't in theory 
     
@@ -9,7 +11,6 @@ OTHER TODOs
 - Let's have the map or aeg store its rivers and lakes
 - Hashtables for storing a lakes points. That way, the lake's equals() method runs in constant time
 - Remove the normalization of height by simpily generating heights within range
-- Use shorts for height to reduce memory and open up bitwise operations
 - More types of maps like a mountain map
 - Scrollable terrain, or maps too big to fit on the screen that can be dragged around
 - Biomes by procedurally generating temperature and moisture

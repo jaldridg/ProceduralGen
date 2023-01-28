@@ -7,11 +7,11 @@ public final class Constants {
     public static final short MAX_HEIGHT =             Short.MAX_VALUE;
 
     public static final short DEEP_WATER_HEIGHT =      MIN_HEIGHT;
-    public static final short SHALLOW_WATER_HEIGHT =   (short) (MAX_HEIGHT * 0.2);
-    public static final short SAND_HEIGHT =            (short) (MAX_HEIGHT * 0.3);
-    public static final short GRASS_HEIGHT =           (short) (MAX_HEIGHT * 0.45);
-    public static final short FOREST_HEIGHT =          (short) (MAX_HEIGHT * 0.6);
-    public static final short MOUNTAIN_HEIGHT =        (short) (MAX_HEIGHT * 0.8);
+    public static final short SHALLOW_WATER_HEIGHT =   (short) (MAX_HEIGHT * 0.3);
+    public static final short SAND_HEIGHT =            (short) (MAX_HEIGHT * 0.4);
+    public static final short GRASS_HEIGHT =           (short) (MAX_HEIGHT * 0.55);
+    public static final short FOREST_HEIGHT =          (short) (MAX_HEIGHT * 0.75);
+    public static final short MOUNTAIN_HEIGHT =        (short) (MAX_HEIGHT * 0.9);
     public static final short SNOW_HEIGHT =            MAX_HEIGHT;
 
 
@@ -28,6 +28,7 @@ public final class Constants {
 
     // GENERATION VARIABLES
     public static final int RANDOM_FACTOR = 750;
+    public static final double ISLAND_GENERTION_STRENGTH = 4.0;
     public static final int WATER_POINTS = 25;
 
 
