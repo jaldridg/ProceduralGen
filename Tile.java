@@ -2,7 +2,7 @@ import java.awt.Color;
 
 public class Tile {
 
-    private float height;
+    private short height;
     private Color color;
 
     // The lake that the tile may belong to
@@ -13,7 +13,7 @@ public class Tile {
     private int x;
     private int y;
     
-    public Tile(int x, int y, float height) {
+    public Tile(int x, int y, short height) {
         this.x = x;
         this.y = y;
         this.height = height;
@@ -24,8 +24,8 @@ public class Tile {
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color; }
 
-    public float getHeight() { return height; }
-    public void setHeight(float height) { this.height = height; }
+    public short getHeight() { return height; }
+    public void setHeight(short height) { this.height = height; }
 
     public int getX() { return x; }
     public void setX(int x) { this.x = x; }

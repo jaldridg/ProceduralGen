@@ -110,7 +110,7 @@ public class Lake {
         return tiles.size();
     }
 
-    public float getWaterLevel() {
+    public short getWaterLevel() {
         return tiles.get(tiles.size() - 1).getHeight();
     }
 
@@ -130,7 +130,8 @@ public class Lake {
 
     // Two finger sort which ensures lake tiles are still sorted
     private ArrayList<Tile> mergeTilesets(Lake greaterLake, Lake lesserLake) {
-        Tile dummyTile = new Tile(-1, -1, 1.1f);
+        // Dummy edge case: There are other tiles at max height
+        Tile dummyTile = new Tile(-1, -1, Short.MAX_VALUE);
         ArrayList<Tile> greaterTiles = greaterLake.getTiles();
         ArrayList<Tile> lesserTiles = lesserLake.getTiles();
         int expectedSize = lesserTiles.size() + greaterTiles.size();

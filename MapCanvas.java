@@ -86,7 +86,7 @@ public class MapCanvas extends Canvas {
      * @return The {@code Color} of the terrain at the given height
      */
     private Color generateColor(Tile tile) {
-        float height = tile.getHeight();
+        short height = tile.getHeight();
         if      (height > Constants.MOUNTAIN_HEIGHT)      { return Constants.MOUNTAIN_COLOR; }
         else if (height > Constants.FOREST_HEIGHT)        { return Constants.FOREST_COLOR; } 
         else if (height > Constants.GRASS_HEIGHT)         { return Constants.GRASS_COLOR; }
@@ -97,24 +97,24 @@ public class MapCanvas extends Canvas {
 
     /**
      * Uses linear interpolation to generate custom colors from
-     * a given height. Colors should be similar to {@code generateColor(float height)}
+     * a given height. Colors should be similar to {@code generateColor(Tile tile)}
      * 
      * @param tile The Tile to generate a color for
      * @return The {@code Color} of the terrain at the given height
-     * @see {@code generateColor(float height)}
+     * @see {@code generateColor(Tile tile)}
      */
     private Color generateRealisticColor(Tile tile) {
         if (tile.isRiver()) { return Constants.RIVER_WATER_COLOR; }
         if (tile.isLake()) {
             Lake lake = tile.getLake();
-            float waterHeightRange = Constants.SHALLOW_WATER_HEIGHT - Constants.DEEP_WATER_HEIGHT;
-            float tileHeightDifference = lake.getWaterLevel() - tile.getHeight();
-            int gValue = lerp(0, waterHeightRange, 150, 0, tileHeightDifference);
+            short waterHeightRange = Constants.SHALLOW_WATER_HEIGHT - Constants.DEEP_WATER_HEIGHT;
+            short tileHeightDifference = (short) (lake.getWaterLevel() - tile.getHeight());
+            int gValue = lerp(Constants.MIN_HEIGHT, waterHeightRange, 150, 0, tileHeightDifference);
             gValue = Math.max(0, gValue - Constants.RIVER_WATER_COLOR.getGreen());
             return new Color(0, gValue, 150);
         }
 
-        float height = tile.getHeight();
+        short height = tile.getHeight();
         // Mountain to snowy/rocky mountain
         if (height > Constants.MOUNTAIN_HEIGHT) {
             int rValue = lerp(Constants.MOUNTAIN_HEIGHT, Constants.SNOW_HEIGHT, 80, 125, height);
@@ -159,7 +159,7 @@ public class MapCanvas extends Canvas {
      * @return A linear interporlated color value in between {@code colorOne} and {@code colorTwo}
      * based on the {@code height}'s distance between {@code minHeight} and {@code maxHeight}
      */
-    private int lerp(float minHeight, float maxHeight, int minColor, int maxColor, float height) {
+    private int lerp(short minHeight, short maxHeight, int minColor, int maxColor, short height) {
         float ratio = (minColor - maxColor) / (minHeight - maxHeight);
         return (int) (minColor + ((height - minHeight) * ratio));
     }

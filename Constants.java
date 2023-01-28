@@ -3,16 +3,16 @@ import java.awt.Color;
 public final class Constants {
     
     // HEIGHT VALUE CUTOFFS
-    public static final float MIN_HEIGHT =             0.0f;
-    public static final float MAX_HEIGHT =             1.0f;
+    public static final short MIN_HEIGHT =             0;
+    public static final short MAX_HEIGHT =             Short.MAX_VALUE;
 
-    public static final float DEEP_WATER_HEIGHT =      MIN_HEIGHT;
-    public static final float SHALLOW_WATER_HEIGHT =   0.2f;
-    public static final float SAND_HEIGHT =            0.3f;
-    public static final float GRASS_HEIGHT =           0.45f;
-    public static final float FOREST_HEIGHT =          0.6f;
-    public static final float MOUNTAIN_HEIGHT =        0.8f;
-    public static final float SNOW_HEIGHT =            MAX_HEIGHT;
+    public static final short DEEP_WATER_HEIGHT =      MIN_HEIGHT;
+    public static final short SHALLOW_WATER_HEIGHT =   (short) (MAX_HEIGHT * 0.2);
+    public static final short SAND_HEIGHT =            (short) (MAX_HEIGHT * 0.3);
+    public static final short GRASS_HEIGHT =           (short) (MAX_HEIGHT * 0.45);
+    public static final short FOREST_HEIGHT =          (short) (MAX_HEIGHT * 0.6);
+    public static final short MOUNTAIN_HEIGHT =        (short) (MAX_HEIGHT * 0.8);
+    public static final short SNOW_HEIGHT =            MAX_HEIGHT;
 
 
     // RGB COLORS FOR TERRAIN
@@ -28,7 +28,7 @@ public final class Constants {
 
     // GENERATION VARIABLES
     // Higher values make denser noise but not very effective since heights are normalized
-    public static final float RANDOM_FACTOR = 10.0f;
+    public static final float RANDOM_FACTOR = 0.1f;
     public static final int WATER_POINTS = 25;
 
 

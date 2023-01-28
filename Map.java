@@ -37,20 +37,18 @@ public abstract class Map {
         // Initialize the array and variables
         tiles = new Tile[size][size];
         int chunkSize = size - 1;
-        float randomFactor = Constants.RANDOM_FACTOR;
 
         // Generate the four corners for the first square chunk
-        tiles[0][0] = new Tile(0, 0, rng.nextFloat());
-        tiles[0][chunkSize] = new Tile(0, chunkSize, rng.nextFloat());
-        tiles[chunkSize][0] = new Tile(chunkSize, 0, rng.nextFloat());
-        tiles[chunkSize][chunkSize] = new Tile(chunkSize, chunkSize, rng.nextFloat());
+        tiles[0][0] = new Tile(0, 0, getNextShort());
+        tiles[0][chunkSize] = new Tile(0, chunkSize, getNextShort());
+        tiles[chunkSize][0] = new Tile(chunkSize, 0, getNextShort());
+        tiles[chunkSize][chunkSize] = new Tile(chunkSize, chunkSize, getNextShort());
         
         // Generate chunks, then generate chunks in the chunks, and so on
         while (chunkSize > 1) {
-            generateSquareChunk(chunkSize, randomFactor);
-            generateDiamondChunk(chunkSize, randomFactor);
+            generateSquareChunk(chunkSize);
+            generateDiamondChunk(chunkSize);
             chunkSize >>= 1;
-            randomFactor /= 2;
         }   
     }
 
@@ -66,12 +64,12 @@ public abstract class Map {
      * @param randomFactor The amount of randomness added onto the averaged heights.
      * It's proportional to chunkSize
      */
-    protected void generateDiamondChunk(int chunkSize, float randomFactor) {
+    protected void generateDiamondChunk(int chunkSize) {
         int halfChunk = chunkSize >> 1;
         for (int i = 0; i <= size - 1; i += halfChunk) {
             // Offsets the height in every other row by halfChunk
             for (int j = ((i + halfChunk) % chunkSize); j <= size - 1; j += chunkSize) {
-                float averageValue;
+                int averageValue;
                 // Top edge case (ommit value above current point when calculating average)
                 if (i == 0) {
                     averageValue = (tiles[i + halfChunk][j].getHeight()
@@ -96,15 +94,15 @@ public abstract class Map {
                                   + tiles[i + halfChunk][j].getHeight()
                                   + tiles[i][j - halfChunk].getHeight()) / 3;
 
-                // Center (normal generation)
+                // Center (normal generation) with bitwise division :)
                 } else {
                     averageValue = (tiles[i - halfChunk][j].getHeight()
                                   + tiles[i + halfChunk][j].getHeight()
                                   + tiles[i][j - halfChunk].getHeight()
-                                  + tiles[i][j + halfChunk].getHeight()) / 4;
+                                  + tiles[i][j + halfChunk].getHeight()) >> 2;
                 }
-                float generatedHeight = averageValue + (rng.nextFloat() - 0.5f) * randomFactor;
-                tiles[i][j] = new Tile(i, j, generatedHeight);
+                float randomVariation = (rng.nextFloat() - 0.5f) * (Constants.RANDOM_FACTOR * chunkSize);
+                tiles[i][j] = new Tile(i, j, (short)(averageValue * randomVariation));
             }
         }
     }
@@ -119,29 +117,29 @@ public abstract class Map {
      * @param randomFactor The amount of randomness added onto the averaged heights.
      * It's proportional to chunkSize
      */
-    protected void generateSquareChunk(int chunkSize, float randomFactor) {
+    protected void generateSquareChunk(int chunkSize) {
         int halfChunk = chunkSize >> 1;
         for (int i = 0; i < size - 1; i += chunkSize) {
             for (int j = 0; j < size - 1; j += chunkSize) {
-                float average = (tiles[i][j].getHeight() 
+                int averageValue = (tiles[i][j].getHeight() 
                                + tiles[i][j + chunkSize].getHeight() 
                                + tiles[i + chunkSize][j] .getHeight()
-                               + tiles[i + chunkSize][j + chunkSize].getHeight()) / 4;
-                float generatedHeight = average + (rng.nextFloat() - 0.5f) * randomFactor;
+                               + tiles[i + chunkSize][j + chunkSize].getHeight()) >> 2;
+                float randomVariation = (rng.nextFloat() - 0.5f) * (Constants.RANDOM_FACTOR * chunkSize);
                 int xIndex = i + halfChunk;
                 int yIndex = j + halfChunk;
-                tiles[xIndex][yIndex] = new Tile(xIndex, yIndex, generatedHeight);
+                tiles[xIndex][yIndex] = new Tile(xIndex, yIndex, (short) (averageValue * randomVariation));
             }
         }
     }
 
     protected void normalizeTileHeights() {
         // Find max and min
-        float max = tiles[0][0].getHeight();
-        float min = tiles[0][0].getHeight();
+        short max = tiles[0][0].getHeight();
+        short min = tiles[0][0].getHeight();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                float height = tiles[i][j].getHeight();
+                short height = tiles[i][j].getHeight();
                 if (height > max) {
                     max = height;
                 } else if (height < min) {
@@ -155,9 +153,14 @@ public abstract class Map {
         //Normalize
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                tiles[i][j].setHeight((tiles[i][j].getHeight() - min) * rangeInv);
+                short newHeight = (short)((tiles[i][j].getHeight() - min) * rangeInv);
+                tiles[i][j].setHeight(newHeight);
             }
         }
+    }
+
+    public short getNextShort() {
+        return (short) rng.nextInt(Short.MAX_VALUE);
     }
 
     public void generateAfterEffects() {
@@ -184,7 +187,7 @@ public abstract class Map {
         this.size = size;
     }
 
-    public float getHeight(int x, int y) {
+    public short getHeight(int x, int y) {
         return tiles[x][y].getHeight();
     }
 

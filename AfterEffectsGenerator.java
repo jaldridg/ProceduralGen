@@ -21,7 +21,7 @@ public class AfterEffectsGenerator {
     private void generateWater() {
         for (int i = 0; i < Constants.WATER_POINTS; i++) {
             int x, y;
-            float height = 0;
+            short height = 0;
             do {
                 x = (int) (rng.nextFloat() * size);
                 y = (int) (rng.nextFloat() * size);
