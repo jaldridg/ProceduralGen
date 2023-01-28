@@ -15,7 +15,8 @@ public class AfterEffectsGenerator {
     }
 
     public void generateAfterEffects() {
-        generateWater();
+        // TODO: Uncomment when generation is working again
+        // generateWater();
     }
  
     private void generateWater() {

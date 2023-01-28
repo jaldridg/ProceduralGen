@@ -31,6 +31,15 @@ public class MapCanvas extends Canvas {
         this.setVisible(true);
     }
 
+    public MapCanvas(TestMap map) {
+        pixelSize = 4;
+        isRealistic = false;
+        currentMap = map;
+
+        this.setPreferredSize(new Dimension(Constants.MAP_SIZE, Constants.MAP_SIZE));
+        this.setVisible(true);
+    }
+
     /**
      * Generates the colors and displays them on an image
      */

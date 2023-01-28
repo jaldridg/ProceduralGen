@@ -102,7 +102,7 @@ public abstract class Map {
                                   + tiles[i][j + halfChunk].getHeight()) >> 2;
                 }
                 float randomVariation = (rng.nextFloat() - 0.5f) * (Constants.RANDOM_FACTOR * chunkSize);
-                tiles[i][j] = new Tile(i, j, (short)(averageValue * randomVariation));
+                tiles[i][j] = new Tile(i, j, (short)(averageValue + randomVariation));
             }
         }
     }
@@ -128,7 +128,8 @@ public abstract class Map {
                 float randomVariation = (rng.nextFloat() - 0.5f) * (Constants.RANDOM_FACTOR * chunkSize);
                 int xIndex = i + halfChunk;
                 int yIndex = j + halfChunk;
-                tiles[xIndex][yIndex] = new Tile(xIndex, yIndex, (short) (averageValue * randomVariation));
+                short height = (short) (averageValue + randomVariation);
+                tiles[xIndex][yIndex] = new Tile(xIndex, yIndex, height);
             }
         }
     }
@@ -149,11 +150,11 @@ public abstract class Map {
         }
 
         float range = Math.abs(min) + Math.abs(max);
-        float rangeInv = 1 / range;
+        float adjustmentValue = Short.MAX_VALUE / range;
         //Normalize
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                short newHeight = (short)((tiles[i][j].getHeight() - min) * rangeInv);
+                short newHeight = (short)((tiles[i][j].getHeight() - min) * adjustmentValue);
                 tiles[i][j].setHeight(newHeight);
             }
         }

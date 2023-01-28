@@ -6,6 +6,7 @@ public class ProceduralGen extends JComponent implements Runnable {
     // Both availible maps
     IslandMap islandMap;
     StandardMap standardMap;
+    TestMap testMap;
 
     // The canvas the maps are drawn onto
     MapCanvas mapCanvas;
@@ -24,6 +25,7 @@ public class ProceduralGen extends JComponent implements Runnable {
         JFrame frame = new JFrame("Procedural Gen");
         islandMap = new IslandMap();
         standardMap = new StandardMap();
+        testMap = new TestMap();
         mapCanvas = new MapCanvas(standardMap, islandMap);
         controls = new ControlPanel(mapCanvas);
 
