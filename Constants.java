@@ -27,9 +27,9 @@ public final class Constants {
 
 
     // GENERATION VARIABLES
-    public static final int RANDOM_FACTOR = 750;
-    public static final double ISLAND_GENERTION_STRENGTH = 4.0;
-    public static final int WATER_POINTS = 25;
+    public static final int RANDOM_FACTOR = 75000;
+    public static final int ISLAND_GENERATION_STRENGTH = 100000;
+    public static final int WATER_POINTS = 0; // 25
 
 
     // SIZE CONSTANTS FOR GUI

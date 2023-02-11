@@ -1,7 +1,3 @@
-SHORT CONVERSION
-- Overflow/underflow when generating islands make rings
-- Resolution changes makes the map "zoom out" rather than regenerating the same thing in more detail
-
 RIVERS
 - NullPointers are common when generating water which we catch (but they shouldn't happen in the first place)
 - When changing the resolution, the river locations change, but it's the same map so they shouldn't in theory 

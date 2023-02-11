@@ -61,11 +61,10 @@ public abstract class Map {
      * 
      * @param chunkSize The number of pixels from opposite corners of the diamond.
      * A smaller chunkSize means the sampled heights lie closer to the new height.
-     * @param randomFactor The amount of randomness added onto the averaged heights.
-     * It's proportional to chunkSize
      */
     protected void generateDiamondChunk(int chunkSize) {
         int halfChunk = chunkSize >> 1;
+        float randomScaling = (Constants.RANDOM_FACTOR * chunkSize) / size;
         for (int i = 0; i <= size - 1; i += halfChunk) {
             // Offsets the height in every other row by halfChunk
             for (int j = ((i + halfChunk) % chunkSize); j <= size - 1; j += chunkSize) {
@@ -102,7 +101,7 @@ public abstract class Map {
                                   + tiles[i][j + halfChunk].getHeight()) >> 2;
                 }
                 // Random shift keeps our values form 0 to the max short value
-                float randomVariation = (rng.nextFloat() - 0.5f) * (Constants.RANDOM_FACTOR * chunkSize);
+                float randomVariation = (rng.nextFloat() - 0.5f) * randomScaling;
                 tiles[i][j] = new Tile(i, j, (short)(averageValue + randomVariation));
             }
         }
@@ -115,18 +114,17 @@ public abstract class Map {
      * 
      * @param chunkSize The number of pixels measuring the side of the square.
      * A smaller chunkSize means the sampled heights lie closer to the new height.
-     * @param randomFactor The amount of randomness added onto the averaged heights.
-     * It's proportional to chunkSize
      */
     protected void generateSquareChunk(int chunkSize) {
         int halfChunk = chunkSize >> 1;
+        float randomScaling = (Constants.RANDOM_FACTOR * chunkSize) / size;
         for (int i = 0; i < size - 1; i += chunkSize) {
             for (int j = 0; j < size - 1; j += chunkSize) {
                 int averageValue = (tiles[i][j].getHeight() 
                                + tiles[i][j + chunkSize].getHeight() 
                                + tiles[i + chunkSize][j] .getHeight()
                                + tiles[i + chunkSize][j + chunkSize].getHeight()) >> 2;
-                float randomVariation = (rng.nextFloat() - 0.5f) * (Constants.RANDOM_FACTOR * chunkSize);
+                float randomVariation = (rng.nextFloat() - 0.5f) * randomScaling;
                 int xIndex = i + halfChunk;
                 int yIndex = j + halfChunk;
                 short height = (short) (averageValue + randomVariation);

@@ -18,10 +18,11 @@ public class IslandMap extends Map {
      */
     private void islandDistortion() {
         int halfSize = size / 2;
+        float heightMultiplier = (float) Constants.ISLAND_GENERATION_STRENGTH / (size * size); 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 int heightCorrection = (int) (Math.pow(i - halfSize, 2) + Math.pow(j - halfSize, 2));
-                short adjustedHeight = (short) (tiles[i][j].getHeight() - heightCorrection * Constants.ISLAND_GENERTION_STRENGTH);
+                int adjustedHeight = (int) (tiles[i][j].getHeight() - heightCorrection * heightMultiplier);
                 tiles[i][j].setHeight((short)(Math.max(0, adjustedHeight)));
             }
         }
